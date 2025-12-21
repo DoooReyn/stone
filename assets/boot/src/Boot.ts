@@ -3,12 +3,12 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Boot')
 export class Boot extends Component {
-    start() {
+  start() {
 
-    }
+  }
 
-    update(deltaTime: number) {
+  update(deltaTime: number) {
         
-    }
+  }
 }
 
