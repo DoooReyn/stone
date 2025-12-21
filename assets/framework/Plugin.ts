@@ -1,18 +1,6 @@
 import { logcat, Logger } from './Logcat';
 import { runAsync } from './util/Might';
 
-/**
- * 插件信息
- */
-export interface IPluginInfo {
-  /** 标识 */
-  readonly token: string;
-  /** 版本 */
-  readonly version?: string;
-  /** 作者 */
-  readonly author?: string;
-}
-
 /** 插件状态 */
 export enum PluginState {
   /** 未初始化 */
@@ -32,15 +20,15 @@ export enum PluginState {
  */
 export class Plugin {
   /**
-   * 信息
-   * @requires 子类必须重写
+   * 标识
    * @static
+   * @notes 子类必须重写
    */
-  public static readonly Infomation: IPluginInfo;
+  public static readonly Token: string;
 
   /** 标识 */
   public get token() {
-    return (this.constructor as typeof Plugin).Infomation.token;
+    return (this.constructor as typeof Plugin).Token;
   }
 
   /** 日志 */

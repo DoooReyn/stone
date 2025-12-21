@@ -24,7 +24,7 @@ export class KVPair<T> {
       return this.container.get(token)!;
     }
 
-    const instance = new this.cls(...args);
+    const instance = new this.cls(token, ...args);
     this.container.set(token, instance);
     return instance;
   }

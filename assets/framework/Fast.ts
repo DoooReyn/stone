@@ -29,12 +29,12 @@ export class Fast {
    * @param plugin 插件类
    */
   public static Register(plugin: typeof Plugin) {
-    if (this._Container.has(plugin.Infomation.token)) {
-      throw new FastError(TOKENS.FAST, `Plugin ${plugin.Infomation.token} has been registered already.`);
+    if (this._Container.has(plugin.Token)) {
+      throw new FastError(TOKENS.FAST, `Plugin 『${plugin.Token}』 has been registered already.`);
     }
 
-    this.logger.d(`Register plugin: ${plugin.Infomation.token}`);
-    this._Container.set(plugin.Infomation.token, new plugin());
+    this.logger.d(`Register plugin: 『${plugin.Token}』`);
+    this._Container.set(plugin.Token, new plugin());
   }
 
   /**
@@ -44,7 +44,7 @@ export class Fast {
   public static Unregister(name: string) {
     if (this._Container.has(name)) {
       this._Container.delete(name);
-      this.logger.d(`Plugin ${name} has been unregistered`);
+      this.logger.d(`Plugin 『${name}』 has been unregistered`);
       this._Container.get(name)!.dispose();
     }
   }
@@ -55,10 +55,10 @@ export class Fast {
    * @returns 插件实例
    */
   public static Acquire<T extends IPlugin>(alias: string | Constructor<T>): T {
-    const token = typeof alias !== 'string' ? (alias as unknown as typeof Plugin).Infomation.token : alias;
+    const token = typeof alias !== 'string' ? (alias as unknown as typeof Plugin).Token : alias;
 
     if (!this._Container.has(token)) {
-      throw new FastError(TOKENS.FAST, `Plugin ${token} has not been registered yet.`);
+      throw new FastError(TOKENS.FAST, `Plugin 『${token}』 has not been registered yet.`);
     }
 
     return this._Container.get(token) as T;

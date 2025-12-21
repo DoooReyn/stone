@@ -51,7 +51,7 @@ export class Logger {
    * @param level 输出等级
    * @param args 入参
    */
-  private _output(level: LogLevel, ...args: any[]): void {
+  private _output(level: LogLevel, args: any): void {
     if (this.level <= level) {
       const key = LogLevel[level] as keyof typeof LogLevel;
       const flag = FLAGS[key];
