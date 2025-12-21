@@ -1,12 +1,12 @@
 import { Constructor } from 'cc';
 
 import { FrameworkError } from './FrameworkError';
-import { ISystem, System } from './System';
+import { IPlugin, Plugin } from './Plugin';
 
 export class Framework {
-  private static readonly _Container: Map<string, ISystem> = new Map();
+  private static readonly _Container: Map<string, IPlugin> = new Map();
 
-  public static Register(cls: typeof System) {
+  public static Register(cls: typeof Plugin) {
     if (this._Container.has(cls.Infomation.name)) {
       throw new FrameworkError(`System ${cls.Infomation.name} has been registered already.`);
     }
@@ -21,8 +21,8 @@ export class Framework {
     }
   }
 
-  public static Acquire<T extends ISystem>(cname: string | Constructor<T>): T {
-    const token = typeof cname !== 'string' ? (cname as unknown as typeof System).Infomation.name : cname;
+  public static Acquire<T extends IPlugin>(cname: string | Constructor<T>): T {
+    const token = typeof cname !== 'string' ? (cname as unknown as typeof Plugin).Infomation.name : cname;
 
     if (!this._Container.has(token)) {
       throw new FrameworkError(`System ${token} has not been registered yet.`);
