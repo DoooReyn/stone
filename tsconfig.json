@@ -5,14 +5,15 @@
   /* Add your custom configuration here. */
   "compilerOptions": {
     "strict": false,
+    "lib": ["es2017", "DOM"],
     // 渐进式启用严格模式选项
-    "noImplicitAny": true,           // 禁止隐式any类型
-    "strictNullChecks": true,        // 严格的null检查
-    "strictFunctionTypes": true,     // 严格的函数类型检查
-    "noImplicitReturns": true,       // 函数必须有明确的返回值
+    "noImplicitAny": true, // 禁止隐式any类型
+    "strictNullChecks": true, // 严格的null检查
+    "strictFunctionTypes": true, // 严格的函数类型检查
+    "noImplicitReturns": true, // 函数必须有明确的返回值
     "noFallthroughCasesInSwitch": true, // switch语句必须有break
     "noUncheckedIndexedAccess": false, // 暂时禁用，游戏开发中可能需要
     "exactOptionalPropertyTypes": false, // 暂时禁用，避免过于严格
-    "skipLibCheck": true             // 跳过库文件的类型检查，避免引擎文件错误
+    "skipLibCheck": true // 跳过库文件的类型检查，避免引擎文件错误
   }
 }

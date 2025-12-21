@@ -42,24 +42,8 @@ export default [
       'prefer-const': 'error',
       // === Airbnb规则：严格的命名约定
       camelcase: ['error', { properties: 'never', ignoreDestructuring: true }],
-      '@typescript-eslint/naming-convention': [
-        'error',
-        {
-          selector: 'variableLike',
-          format: ['camelCase'],
-          leadingUnderscore: 'allow',
-        },
-        {
-          selector: 'typeLike',
-          format: ['PascalCase'],
-        },
-        {
-          selector: 'memberLike',
-          modifiers: ['private'],
-          format: ['camelCase'],
-          leadingUnderscore: 'require',
-        },
-      ],
+      // 禁用过于严格的命名约定规则，保持代码简洁
+      '@typescript-eslint/naming-convention': 'off',
       // === Airbnb规则：强制使用现代语法
       'prefer-arrow-callback': 'error',
       'prefer-template': 'error',
