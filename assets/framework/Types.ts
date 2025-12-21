@@ -1,5 +1,8 @@
 import { __private } from 'cc';
 
+/** 无返回值函数类型 */
+export type VoidFn = (...args: any[]) => void;
+
 /** 字典类型 */
 export type Dict = Record<string | symbol, any>;
 

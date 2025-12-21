@@ -1,29 +1,36 @@
 import { Constructor } from 'cc';
 
-import { FrameworkError } from './FrameworkError';
-
-export class CRUD<T> {
+/**
+ * 以键值对存储的对象容器
+ */
+export class KVPair<T> {
+  /** 容器 */
   protected container: Map<string, T> = new Map();
 
+  /**
+   * 构造函数
+   * @param cls 对象构造
+   */
   public constructor(public readonly cls: Constructor<T>) {}
 
   /**
-   * CREATE
+   * 获取
    * @param token 标识
    * @param args 入参
    * @returns
    */
   public acquire(token: string, ...args: ConstructorParameters<Constructor<T>>): T {
     if (this.container.has(token)) {
-      throw new FrameworkError(`Token ${token} has been created already.`);
+      return this.container.get(token)!;
     }
+
     const instance = new this.cls(...args);
     this.container.set(token, instance);
     return instance;
   }
 
   /**
-   * DELETE
+   * 删除
    * @param token 标识
    */
   public unset(token: string) {
@@ -31,7 +38,7 @@ export class CRUD<T> {
   }
 
   /**
-   * UPDATE
+   * 更新
    * @param token 标识
    * @param item 对象
    */
@@ -40,7 +47,7 @@ export class CRUD<T> {
   }
 
   /**
-   * READ
+   * 查询
    * @param token 标识
    * @returns
    */
