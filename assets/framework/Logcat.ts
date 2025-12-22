@@ -1,3 +1,5 @@
+import { sys } from 'cc';
+
 import { KVPair } from './KVPair';
 import { VoidFn } from './Types';
 import { literal } from './util';
@@ -22,17 +24,28 @@ export enum LogLevel {
 /**
  * 日志标记
  *
- * - DEBUG 🐤
- * - INFO 🐓
- * - WARN 🦩
- * - ERROR 🐦
+ * - DEBUG 🐱
+ * - INFO 🐶
+ * - WARN 🐯
+ * - ERROR 🪳
  */
 const FLAGS: Record<keyof typeof LogLevel, string> = {
-  DEBUG: '🐤',
-  INFO: '🐓',
-  WARN: '🦩',
-  ERROR: '🐦',
+  DEBUG: '🐱',
+  INFO: '🐶',
+  WARN: '🐯',
+  ERROR: '🪳',
   NONE: '🦢',
+} as const;
+
+/**
+ * 日志颜色
+ */
+const COLORS: Record<keyof typeof LogLevel, string> = {
+  DEBUG: 'border: solid 1px #808080;color:#808080;',
+  INFO: 'border: solid 2px #4ba4dc;font-weight:bold;color:#4ba4dc;',
+  WARN: 'border: solid 2px #d518fb;font-weight:bolder;color:#d518fb;',
+  ERROR: 'border: solid 2px #e74032;font-weight:bolder;color:#e74032;',
+  NONE: 'border: solid 1px #ffffff;',
 } as const;
 
 /**
@@ -51,19 +64,50 @@ export class Logger {
    * @param level 输出等级
    * @param args 入参
    */
-  private _output(level: LogLevel, args: any): void {
+  private _output(level: LogLevel, ...args: any[]): void {
     if (this.level <= level) {
+      const useColor = sys.isBrowser && (sys.os === sys.OS.WINDOWS || sys.os === sys.OS.OSX);
+      const now = new Date();
       const key = LogLevel[level] as keyof typeof LogLevel;
       const flag = FLAGS[key];
+      const color = COLORS[key];
+      const prefix = `${flag} ${now.toLocaleTimeString()} ${this.token}`;
       const out: { token: string; content: any; timestamp: number; stack?: string } = {
         token: this.token,
         content: args,
-        timestamp: Date.now(),
+        timestamp: now.getTime(),
       };
-      if (level >= LogLevel.ERROR) {
+
+      if (level >= LogLevel.WARN) {
         out.stack = new Error().stack?.split('\n').slice(2).join('\n') ?? '';
+        if (args.length === 1 && typeof args[0] === 'string') {
+          if (useColor) {
+            console.log('%c%s', color, prefix, args[0], '\n' + out.stack);
+          } else {
+            console.log(prefix, args[0], '\n' + out.stack);
+          }
+        } else {
+          if (useColor) {
+            console.log('%c%s', color, prefix, ...args, '\n' + out.stack);
+          } else {
+            console.log(prefix, ...args, '\n' + out.stack);
+          }
+        }
+      } else {
+        if (args.length === 1 && typeof args[0] === 'string') {
+          if (useColor) {
+            console.log('%c%s', color, prefix, args[0]);
+          } else {
+            console.log(prefix, args[0]);
+          }
+        } else {
+          if (useColor) {
+            console.log('%c%s', color, prefix, ...args);
+          } else {
+            console.log(prefix, ...args);
+          }
+        }
       }
-      console.log(flag + ' ' + this.token, out);
     }
   }
 

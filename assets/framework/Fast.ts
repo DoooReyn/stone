@@ -1,6 +1,5 @@
 import { Constructor } from 'cc';
 
-import { TOKENS } from './config/Token';
 import { FastError } from './Error';
 import { logcat } from './Logcat';
 import { IPlugin, Plugin } from './Plugin';
@@ -8,44 +7,44 @@ import { IPlugin, Plugin } from './Plugin';
 /**
  * Fast 框架
  */
-export class Fast {
+class Fast {
   /** 框架信息 */
-  public static readonly Infomation = {
+  public readonly infomation = {
     name: 'Fast',
     version: '1.0.0',
     author: 'github.com/DoooReyn',
   } as const;
 
   /** 插件容器 */
-  private static readonly _Container: Map<string, IPlugin> = new Map();
+  private readonly _container: Map<string, IPlugin> = new Map();
 
   /** 日志 */
-  public static get logger() {
-    return logcat.acquire(this.Infomation.name);
+  public get logger() {
+    return logcat.acquire(this.infomation.name);
   }
 
   /**
    * 注册插件
    * @param plugin 插件类
    */
-  public static Register(plugin: typeof Plugin) {
-    if (this._Container.has(plugin.Token)) {
-      throw new FastError(TOKENS.FAST, `Plugin 『${plugin.Token}』 has been registered already.`);
+  public register(plugin: typeof Plugin) {
+    if (this._container.has(plugin.Token)) {
+      throw new FastError(this.infomation.name, `插件⁅${plugin.Token}⁆重复注册`);
     }
 
-    this.logger.d(`Register plugin: 『${plugin.Token}』`);
-    this._Container.set(plugin.Token, new plugin());
+    this._container.set(plugin.Token, new plugin());
+    this.logger.d(`插件⁅${plugin.Token}⁆已注册`);
   }
 
   /**
    * 注销插件
    * @param name 插件标识
    */
-  public static Unregister(name: string) {
-    if (this._Container.has(name)) {
-      this._Container.delete(name);
-      this.logger.d(`Plugin 『${name}』 has been unregistered`);
-      this._Container.get(name)!.dispose();
+  public unregister(name: string) {
+    if (this._container.has(name)) {
+      this._container.delete(name);
+      this._container.get(name)!.dispose();
+      this.logger.d(`插件⁅${name}⁆已注销`);
     }
   }
 
@@ -54,13 +53,19 @@ export class Fast {
    * @param alias 插件标识或插件类
    * @returns 插件实例
    */
-  public static Acquire<T extends IPlugin>(alias: string | Constructor<T>): T {
+  public acquire<T extends IPlugin>(alias: string | Constructor<T>): T {
     const token = typeof alias !== 'string' ? (alias as unknown as typeof Plugin).Token : alias;
 
-    if (!this._Container.has(token)) {
-      throw new FastError(TOKENS.FAST, `Plugin 『${token}』 has not been registered yet.`);
+    if (!this._container.has(token)) {
+      throw new FastError(this.infomation.name, `插件⁅${token}⁆未注册`);
     }
 
-    return this._Container.get(token) as T;
+    return this._container.get(token) as T;
   }
 }
+
+/**
+ * Fast 唯一单例
+ * @exports
+ */
+export const fast = new Fast();

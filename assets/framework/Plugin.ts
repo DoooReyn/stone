@@ -52,7 +52,7 @@ export class Plugin {
     if (this._state === PluginState.Uninitialized) {
       this._state = PluginState.Initializing;
       const err = (await might.runAsync(this.doInitialize()))[1];
-      if (err) this.logger.e(`Plugin ${this.token} initialize failed.`, err);
+      if (err) this.logger.e(`插件⁅${this.token}⁆初始化失败`, err);
       else this._state = PluginState.Initialized;
     }
   }
@@ -65,7 +65,7 @@ export class Plugin {
     if (this._state === PluginState.Initialized || this._state === PluginState.Uninitialized) {
       this._state = PluginState.Disposing;
       const err = (await might.runAsync(this.doDispose()))[1];
-      if (err) this.logger.e(`Plugin ${this.token} dispose failed.`, err);
+      if (err) this.logger.e(`插件⁅${this.token}⁆销毁失败`, err);
       else this._state = PluginState.Disposed;
     }
   }

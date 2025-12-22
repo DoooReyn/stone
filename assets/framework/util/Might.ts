@@ -48,7 +48,7 @@ function runSync<T = any>(syncFn: (...args: any[]) => T, context?: any, ...args:
 async function logAsync<T = any>(asyncFn: Promise<T>, logger?: Logger): Promise<T> {
   const result = await runAsync(asyncFn);
   if (result[1]) {
-    logger ? logger.e(result[1]) : console.error(result[1]);
+    (logger ? logger.e : console.error)('异步失败记录', result[1]);
   }
   return result[0]!;
 }
@@ -64,7 +64,7 @@ async function logAsync<T = any>(asyncFn: Promise<T>, logger?: Logger): Promise<
 function logSync<T = any>(syncFn: (...args: any[]) => T, logger?: Logger, context?: any, ...args: any[]): T {
   const result = runSync(syncFn, context, ...args);
   if (result[1]) {
-    logger ? logger.e(result[1]) : console.error(result[1]);
+    (logger ? logger.e : console.error)('同步失败记录', result[1]);
   }
   return result[0]!;
 }

@@ -4,12 +4,12 @@ import { dict } from '../../util';
 /**
  * 全局变量管理插件
  */
-export class Global extends Plugin {
+export class GlobalPlugin extends Plugin {
   public static readonly Token = 'Global';
 
   /** 全局对象 */
   // @ts-ignore
-  private _env: Global = globalThis ?? window ?? self ?? frames ?? GameGlobal ?? {};
+  private _env = globalThis ?? window ?? self ?? frames ?? GameGlobal ?? {};
 
   /**
    * 获取
@@ -27,9 +27,9 @@ export class Global extends Plugin {
    */
   set<T>(varname: string, value: T): void {
     if (this.has(varname)) {
-      this.logger.wf(`Global var 『${varname}』 already exists, will be override.`);
+      this.logger.w(`全局变量⁅${varname}⁆已覆盖`);
     } else {
-      this.logger.df(`Global var 『${varname}』 has been set.`);
+      this.logger.d(`全局变量⁅${varname}⁆已添加`);
     }
     dict.set(this._env, varname, value);
   }
@@ -50,7 +50,7 @@ export class Global extends Plugin {
   unset(varname: string): void {
     if (this.has(varname)) {
       dict.unset(this._env, varname);
-      this.logger.df(`Global var 『${varname}』 has been deleted.`);
+      this.logger.d(`全局变量⁅${varname}⁆已删除`);
     }
   }
 }
