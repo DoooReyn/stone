@@ -1,5 +1,5 @@
 import { Plugin } from '../../Plugin';
-import { get, own, set, unset } from '../../util/Dict';
+import { dict } from '../../util';
 
 /**
  * 全局变量管理插件
@@ -17,7 +17,7 @@ export class Global extends Plugin {
    * @returns 值
    */
   get<T>(varname: string): T | undefined {
-    return get(this._env, varname) as T | undefined;
+    return dict.get(this._env, varname) as T | undefined;
   }
 
   /**
@@ -31,7 +31,7 @@ export class Global extends Plugin {
     } else {
       this.logger.df(`Global var 『${varname}』 has been set.`);
     }
-    set(this._env, varname, value);
+    dict.set(this._env, varname, value);
   }
 
   /**
@@ -40,7 +40,7 @@ export class Global extends Plugin {
    * @returns 是否存在
    */
   has(varname: string): boolean {
-    return own(this._env, varname);
+    return dict.own(this._env, varname);
   }
 
   /**
@@ -49,7 +49,7 @@ export class Global extends Plugin {
    */
   unset(varname: string): void {
     if (this.has(varname)) {
-      unset(this._env, varname);
+      dict.unset(this._env, varname);
       this.logger.df(`Global var 『${varname}』 has been deleted.`);
     }
   }

@@ -1,9 +1,6 @@
 import { _decorator, Component } from 'cc';
 
-import { Fast } from '../../framework/Fast';
-import { Global } from '../../framework/plugin/global/Global';
-
-import type { IGlobal } from '../../framework/plugin/global/IGlobal';
+import { Fast, Global, IGlobal } from '../../framework';
 
 const { ccclass, property } = _decorator;
 

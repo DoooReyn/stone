@@ -1,5 +1,5 @@
 import { logcat, Logger } from './Logcat';
-import { runAsync } from './util/Might';
+import { might } from './util';
 
 /** 插件状态 */
 export enum PluginState {
@@ -51,7 +51,7 @@ export class Plugin {
   public async initialize() {
     if (this._state === PluginState.Uninitialized) {
       this._state = PluginState.Initializing;
-      const err = (await runAsync(this.doInitialize()))[1];
+      const err = (await might.runAsync(this.doInitialize()))[1];
       if (err) this.logger.e(`Plugin ${this.token} initialize failed.`, err);
       else this._state = PluginState.Initialized;
     }
@@ -64,7 +64,7 @@ export class Plugin {
   public async dispose() {
     if (this._state === PluginState.Initialized || this._state === PluginState.Uninitialized) {
       this._state = PluginState.Disposing;
-      const err = (await runAsync(this.doDispose()))[1];
+      const err = (await might.runAsync(this.doDispose()))[1];
       if (err) this.logger.e(`Plugin ${this.token} dispose failed.`, err);
       else this._state = PluginState.Disposed;
     }

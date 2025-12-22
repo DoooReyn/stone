@@ -1,6 +1,6 @@
 import { KVPair } from './KVPair';
 import { VoidFn } from './Types';
-import { fmt } from './util/Literal';
+import { literal } from './util';
 
 /**
  * 日志等级
@@ -75,7 +75,7 @@ export class Logger {
    */
   private _fmt(level: LogLevel, template: string, ...args: any[]) {
     if (this.level <= level) {
-      this._output(level, fmt(template, ...args));
+      this._output(level, literal.fmt(template, ...args));
     }
   }
 

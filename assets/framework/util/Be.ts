@@ -41,18 +41,17 @@ function notNull<T>(value: T | null): value is T {
 }
 
 /**
- * 检查值是否无效（undefined 或 null）
+ * 检查值是否有效（不为 undefined 且不为 null）
  * @template T - 值的类型
  * @param value - 要检查的值
  * @returns 如果值为 undefined 或 null 则返回 true
- * @deprecated 此函数名称可能令人困惑，实际上检查的是无效值
  */
 function isValid<T>(value: T | undefined | null): value is undefined | null {
   return notUndefined(value) && notNull(value);
 }
 
 /**
- * 检查值是否有效（不为 undefined 且不为 null）
+ * 检查值是否无效（undefined 或 null）
  * @template T - 值的类型
  * @param value - 要检查的值
  * @returns 如果值有效则返回 true
