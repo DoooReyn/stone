@@ -1,4 +1,4 @@
-import { PRESET_GLOBAL } from './config';
+import { PRESET_GLOBAL } from './config/Global';
 import * as stone from './index';
 
 export async function boot() {

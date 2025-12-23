@@ -1,5 +1,5 @@
 import { Constructor, Prefab } from 'cc';
-import { PRESET_TOKEN } from 'fast/config';
+import { PRESET_TOKEN } from 'fast/config/Token';
 import { FastError } from 'fast/foundation/Error';
 import { Plugin } from 'fast/foundation/Plugin';
 

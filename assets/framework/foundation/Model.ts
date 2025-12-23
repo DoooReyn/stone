@@ -1,4 +1,4 @@
-import { ObjectEntry } from 'fast/plugin';
+import { ObjectEntry } from 'fast/plugin/pool/ObjectEntry';
 import { Dto, OnPropertyChanged, Subscription } from 'fast/Types';
 import { list } from 'fast/util';
 

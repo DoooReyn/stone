@@ -1,5 +1,5 @@
 import { Constructor, Prefab } from 'cc';
-import { IPlugin } from 'fast/plugin';
+import { IPlugin } from 'fast/foundation/Plugin';
 
 import { IRecyclableNode, IRecyclableOptions } from './IRecycleable';
 import { NodePool } from './NodePool';

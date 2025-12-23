@@ -1,5 +1,5 @@
 import { Constructor } from 'cc';
-import { PRESET_TOKEN } from 'fast/config';
+import { PRESET_TOKEN } from 'fast/config/Token';
 import { FastError } from 'fast/foundation/Error';
 import { Plugin } from 'fast/foundation/Plugin';
 import { Pair } from 'fast/Types';
@@ -9,8 +9,6 @@ import { IObjectPoolPlugin } from './IObjectPoolPlugin';
 import { IRecyclableOptions } from './IRecycleable';
 import { ObjectPool } from './ObjectPool';
 
-Plugin;
-Plugin;
 /**
  * 对象池容器插件
  */

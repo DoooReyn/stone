@@ -1,4 +1,4 @@
-import { PRESET_TOKEN } from 'fast/config';
+import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
 
 /**
