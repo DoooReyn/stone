@@ -1,9 +1,15 @@
-import { PRESET_GLOBAL } from './config/Global';
 import * as stone from './index';
 
 export async function boot() {
   // 插件列表（按照依赖关系进行排序，无依赖的应该放在最前面）
-  const plugins = [stone.GlobalPlugin, stone.Catcher, stone.ObjectPoolPlugin, stone.NodePoolPlugin, stone.TimerPlugin];
+  const plugins = [
+    stone.GlobalPlugin,
+    stone.Catcher,
+    stone.ObjectPoolPlugin,
+    stone.NodePoolPlugin,
+    stone.EventBusPlugin,
+    stone.TimerPlugin,
+  ];
 
   // 注册插件
   for (const plugin of plugins) {
@@ -24,8 +30,8 @@ export async function boot() {
 
   // 将 Fast 框架实例注册到全局变量中
   const gg = stone.fast.acquire<stone.IGlobalPlugin>(stone.PRESET_TOKEN.GLOBAL);
-  gg.set(PRESET_GLOBAL.STONE, stone);
-  gg.set(PRESET_GLOBAL.FAST, stone.fast);
+  gg.set(stone.PRESET_GLOBAL.STONE, stone);
+  gg.set(stone.PRESET_GLOBAL.FAST, stone.fast);
 
   stone.fast.logger.i('框架启动完成');
 }
