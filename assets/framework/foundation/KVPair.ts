@@ -5,7 +5,7 @@ import { Constructor } from 'cc';
  */
 export class KVPair<T> {
   /** 容器 */
-  protected container: Map<string, T> = new Map();
+  private _container: Map<string, T> = new Map();
 
   /**
    * 构造函数
@@ -20,12 +20,12 @@ export class KVPair<T> {
    * @returns
    */
   public acquire(token: string, ...args: ConstructorParameters<Constructor<T>>): T {
-    if (this.container.has(token)) {
-      return this.container.get(token)!;
+    if (this._container.has(token)) {
+      return this._container.get(token)!;
     }
 
     const instance = new this.cls(token, ...args);
-    this.container.set(token, instance);
+    this._container.set(token, instance);
     return instance;
   }
 
@@ -34,7 +34,7 @@ export class KVPair<T> {
    * @param token 标识
    */
   public unset(token: string) {
-    this.container.delete(token);
+    this._container.delete(token);
   }
 
   /**
@@ -43,7 +43,7 @@ export class KVPair<T> {
    * @param item 对象
    */
   public set(token: string, item: T) {
-    this.container.set(token, item);
+    this._container.set(token, item);
   }
 
   /**
@@ -52,6 +52,6 @@ export class KVPair<T> {
    * @returns
    */
   public has(token: string): boolean {
-    return this.container.has(token);
+    return this._container.has(token);
   }
 }

@@ -23,3 +23,12 @@ export type Tuple<T, L = number> = T[] & { length: L };
 
 /** 纹理原始信息 */
 export type IMemoryImageSource = __private._cocos_asset_assets_image_asset__IMemoryImageSource;
+
+/** 数据传输对象 */
+export interface Dto {}
+
+/** 数据属性变化回调 */
+export type OnPropertyChanged = (path: string, value: any) => void;
+
+/** 订阅结构 */
+export type Subscription = Pair<OnPropertyChanged, any>;

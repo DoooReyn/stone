@@ -1,12 +1,12 @@
-import { TOKENS } from '../../config';
-import { Plugin } from '../../foundation';
+import { PRESET_TOKEN } from '../../config';
+import { Plugin } from '../../foundation/Plugin';
 import { dict } from '../../util';
 
 /**
  * 全局变量管理插件
  */
 export class GlobalPlugin extends Plugin {
-  public static readonly Token = TOKENS.GLOBAL;
+  public static readonly Token = PRESET_TOKEN.GLOBAL;
 
   /** 全局对象 */
   // @ts-ignore

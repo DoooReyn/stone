@@ -1,6 +1,6 @@
 import { instantiate, Constructor, Prefab } from 'cc';
 
-import { TOKENS } from '../../config';
+import { PRESET_TOKEN } from '../../config';
 import { FastError, Plugin } from '../../foundation';
 import { time } from '../../util';
 import { IRecyclableNode, IRecyclableOptions } from './IRecycleable';
@@ -129,7 +129,7 @@ export class NodePool {
  * 节点池容器服务
  */
 export class NodePoolPlugin extends Plugin {
-  public static readonly Token = TOKENS.NODE_POOL;
+  public static readonly Token = PRESET_TOKEN.NODE_POOL;
 
   /** 节点池容器 */
   private _container: Map<string, NodePool> = new Map();
