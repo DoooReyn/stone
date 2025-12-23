@@ -1,5 +1,5 @@
-import { PRESET_TOKEN } from '../../config';
-import { Plugin } from '../../foundation/Plugin';
+import { PRESET_TOKEN } from 'fast/config';
+import { Plugin } from 'fast/foundation/Plugin';
 
 /**
  * 递增ID生成器

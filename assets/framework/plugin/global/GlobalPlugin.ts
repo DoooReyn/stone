@@ -1,6 +1,6 @@
-import { PRESET_TOKEN } from '../../config';
-import { Plugin } from '../../foundation/Plugin';
-import { dict } from '../../util';
+import { PRESET_TOKEN } from 'fast/config';
+import { Plugin } from 'fast/foundation/Plugin';
+import { dict } from 'fast/util';
 
 /**
  * 全局变量管理插件

@@ -1,7 +1,7 @@
-import { PRESET_ID, PRESET_TOKEN } from '../config';
-import { fast } from '../Fast';
-import { IAscendingId } from '../plugin/ascending-id/IAscendingId';
-import { ObjectEntry } from '../plugin/pool/ObjectPool';
+import { PRESET_ID, PRESET_TOKEN } from 'fast/config';
+import { fast } from 'fast/Fast';
+import { IAscendingIdPlugin, ObjectEntry } from 'fast/plugin';
+
 import { Triggers } from './Trigger';
 
 /**
@@ -62,7 +62,7 @@ export class Counter extends ObjectEntry {
   }
 
   onInitialize(interval: number = 0, total: number = 1): void {
-    this._cid = fast.acquire<IAscendingId>(PRESET_TOKEN.ASCENDING_ID).next(PRESET_ID.TIMER);
+    this._cid = fast.acquire<IAscendingIdPlugin>(PRESET_TOKEN.ASCENDING_ID).next(PRESET_ID.TIMER);
     this.$interval = interval;
     this.$total = total;
     this.$accumulated = 0;

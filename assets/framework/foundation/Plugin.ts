@@ -1,4 +1,5 @@
-import { might } from '../util';
+import { might } from 'fast/util';
+
 import { logcat, Logger } from './Logcat';
 
 /** 插件状态 */

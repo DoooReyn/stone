@@ -1,6 +1,7 @@
-import { PRESET_TOKEN } from '../config';
-import { fast } from '../Fast';
-import { IObjectPoolPlugin } from '../plugin';
+import { PRESET_TOKEN } from 'fast/config';
+import { fast } from 'fast/Fast';
+import { IObjectPoolPlugin } from 'fast/plugin';
+
 import { Option, SelectMode } from './Option';
 
 /**

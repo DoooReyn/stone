@@ -1,9 +1,9 @@
-import { IPlugin } from '../../foundation/Plugin';
+import { IPlugin } from 'fast/foundation/Plugin';
 
 /**
  * 递增ID生成器接口
  */
-export interface IAscendingId extends IPlugin {
+export interface IAscendingIdPlugin extends IPlugin {
   /**
    * 检查是否存在指定标签的递增ID生成器
    * @param tag 生成器标签

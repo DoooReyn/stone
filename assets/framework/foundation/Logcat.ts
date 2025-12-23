@@ -1,7 +1,7 @@
 import { sys } from 'cc';
+import { VoidFn } from 'fast/Types';
+import { literal } from 'fast/util';
 
-import { VoidFn } from '../Types';
-import { literal } from '../util';
 import { KVPair } from './KVPair';
 
 /**

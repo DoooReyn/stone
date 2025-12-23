@@ -23,7 +23,7 @@ export async function boot() {
   objectPool.register(stone.Model, stone.PRESET_OBJECT_POOL.MODEL);
 
   // 将 Fast 框架实例注册到全局变量中
-  const gg = stone.fast.acquire<stone.IGlobal>(stone.PRESET_TOKEN.GLOBAL);
+  const gg = stone.fast.acquire<stone.IGlobalPlugin>(stone.PRESET_TOKEN.GLOBAL);
   gg.set(PRESET_GLOBAL.STONE, stone);
   gg.set(PRESET_GLOBAL.FAST, stone.fast);
 

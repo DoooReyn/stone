@@ -1,7 +1,7 @@
-import { PRESET_TOKEN } from '../config';
-import { fast } from '../Fast';
-import { IObjectPoolPlugin, ObjectEntry } from '../plugin/pool/ObjectPool';
-import { might, misc } from '../util';
+import { PRESET_TOKEN } from 'fast/config';
+import { fast } from 'fast/Fast';
+import { IObjectPoolPlugin, ObjectEntry } from 'fast/plugin';
+import { might, misc } from 'fast/util';
 
 /**
  * 触发器

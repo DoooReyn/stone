@@ -1,6 +1,7 @@
-import { ObjectEntry } from '../plugin/pool/ObjectPool';
-import { Dto, OnPropertyChanged, Subscription } from '../Types';
-import { list } from '../util';
+import { ObjectEntry } from 'fast/plugin';
+import { Dto, OnPropertyChanged, Subscription } from 'fast/Types';
+import { list } from 'fast/util';
+
 import { DeepProxy } from './DeepProxy';
 
 /** 数据模型 */
