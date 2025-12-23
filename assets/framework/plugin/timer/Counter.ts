@@ -4,7 +4,7 @@ import { fast } from 'fast/Fast';
 import { IAscendingIdPlugin } from 'fast/plugin/ascending-id/IAscendingIdPlugin';
 import { ObjectEntry } from 'fast/plugin/pool/ObjectEntry';
 
-import { Triggers } from './Trigger';
+import { Triggers } from '../../foundation/Trigger';
 
 /**
  * 计数器

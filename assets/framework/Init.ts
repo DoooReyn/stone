@@ -3,7 +3,7 @@ import * as stone from './index';
 
 export async function boot() {
   // 插件列表（按照依赖关系进行排序，无依赖的应该放在最前面）
-  const plugins = [stone.GlobalPlugin, stone.ObjectPoolPlugin, stone.NodePoolPlugin];
+  const plugins = [stone.GlobalPlugin, stone.ObjectPoolPlugin, stone.NodePoolPlugin, stone.TimerPlugin];
 
   // 注册插件
   for (const plugin of plugins) {

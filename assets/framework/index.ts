@@ -10,7 +10,6 @@ export * from './config/ObjectPool';
 export * from './config/Token';
 
 // foundation
-export * from './foundation/Counter';
 export * from './foundation/DeepProxy';
 export * from './foundation/Error';
 export * from './foundation/Group';
@@ -38,6 +37,10 @@ export * from './plugin/pool/ObjectEntry';
 export * from './plugin/pool/ObjectPool';
 export * from './plugin/pool/IObjectPoolPlugin';
 export * from './plugin/pool/ObjectPoolPlugin';
+export * from './plugin/timer/Counter';
+export * from './plugin/timer/Tick';
+export * from './plugin/timer/ITimerPlugin';
+export * from './plugin/timer/TimerPlugin';
 
 // util
 export * from './util';
