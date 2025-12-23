@@ -1,0 +1,86 @@
+import { PRESET_ID } from 'fast/config/ID';
+import { PRESET_TOKEN } from 'fast/config/Token';
+import { fast } from 'fast/Fast';
+import { IAscendingIdPlugin } from 'fast/plugin/ascending-id/IAscendingIdPlugin';
+
+/**
+ * 分组辅助工具
+ */
+export class Group<T extends object = any> {
+  /** 分组标识 */
+  public readonly id: string;
+
+  /** 对象列表 */
+  protected $list: T[] = [];
+
+  /** 对象过滤器 */
+  public filter: undefined | ((d: T) => boolean);
+
+  constructor() {
+    this.id = 'group_' + fast.acquire<IAscendingIdPlugin>(PRESET_TOKEN.ASCENDING_ID).next(PRESET_ID.GROUP);
+  }
+
+  /**
+   * 执行统一动作
+   * @param action 动作
+   */
+  public with(action: (d: T) => void) {
+    for (let i = 0; i < this.$list.length; i++) {
+      if (this.filter && !this.filter(this.$list[i])) {
+        this.$list.splice(i, 1);
+        i--;
+        continue;
+      }
+      action(this.$list[i]);
+    }
+  }
+
+  /**
+   * 添加成员
+   * @param member 成员
+   */
+  public add(member: T) {
+    if (this.$list.indexOf(member) == -1) {
+      this.$list.push(member);
+    }
+  }
+
+  /**
+   * 批量添加成员
+   * @param members 成员列表
+   */
+  public addBatch(...members: T[]) {
+    members.forEach(this.add, this);
+  }
+
+  /**
+   * 移除成员
+   * @param member 成员
+   */
+  public del(member: T) {
+    const at = this.$list.indexOf(member);
+    if (at > -1) this.$list.splice(at, 1);
+  }
+
+  /**
+   * 批量移除成员
+   * @param items 成员列表
+   */
+  public delBatch(items: T[]) {
+    items.forEach(this.del, this);
+  }
+
+  /**
+   * 移除所有成员
+   */
+  public clear() {
+    this.$list.length = 0;
+  }
+
+  /**
+   * 成员数量
+   */
+  public get size() {
+    return this.$list.length;
+  }
+}
