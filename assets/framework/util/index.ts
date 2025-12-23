@@ -15,5 +15,6 @@ export * as re from './RegExp';
 export * as time from './Time';
 export * as base64 from './Base64';
 export * as json from './Json';
+export * as lzs from './LZString';
 export * as md5 from './Md5';
 export * as zlib from './Zlib';
