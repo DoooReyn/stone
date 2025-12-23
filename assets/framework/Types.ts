@@ -3,6 +3,12 @@ import { __private } from 'cc';
 /** 无返回值函数类型 */
 export type VoidFn = (...args: any[]) => void;
 
+/** 任意函数 */
+export type AnyFn = (...args: any[]) => any;
+
+/** 任意异步函数 */
+export type AnyPromise = (...args: any[]) => Promise<any>;
+
 /** 字典类型 */
 export type Dict = Record<string | symbol, any>;
 

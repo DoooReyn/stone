@@ -1,6 +1,7 @@
 import { misc, sys, Texture2D } from 'cc';
+import { AnyFn } from 'fast/Types';
 
-import { runSync } from './Might';
+import { runAsync, runSync } from './Might';
 
 /** 内置上下文 */
 const CTX: object = {};
@@ -100,4 +101,35 @@ function setAntiAliasing(tex: Texture2D, enabled: boolean): void {
   tex && tex.setFilters(filter, filter);
 }
 
-export { CTX, idle, debounce, throttle, ban, nextTick, setAntiAliasing };
+/**
+ * 同步计时
+ * @param flag 计时标识
+ * @param operation 耗时操作
+ */
+function timeSync(flag: string, operation: AnyFn) {
+  console.time(flag);
+  runSync(operation);
+  console.timeEnd(flag);
+}
+
+/**
+ * 异步计时
+ * @param flag 计时标识
+ * @param operation 耗时操作
+ */
+async function timeAsync(flag: string, operation: Promise<any>) {
+  console.time(flag);
+  await runAsync(operation);
+  console.timeEnd(flag);
+}
+
+/**
+ * 模拟耗时操作
+ * @param ms 操作时间
+ */
+function simulateLongTask(ms: number) {
+  const start = performance.now();
+  while (performance.now() - start < ms) {}
+}
+
+export { CTX, idle, debounce, throttle, ban, nextTick, setAntiAliasing, timeAsync, timeSync, simulateLongTask };

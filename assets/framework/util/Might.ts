@@ -1,4 +1,4 @@
-import { Logger } from '../foundation';
+import { Logger } from 'fast/foundation/Logcat';
 
 /** 异常捕获返回值类型 */
 type ReturnType<T> = Readonly<[T?, Error?]>;
