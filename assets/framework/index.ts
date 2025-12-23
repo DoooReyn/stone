@@ -24,6 +24,9 @@ export * from './foundation/Selector';
 export * from './foundation/Trigger';
 
 // plugin
+export * from './plugin/arg-parser/ArgParser';
+export * from './plugin/arg-parser/IAppArgs';
+export * from './plugin/arg-parser/IArgParser';
 export * from './plugin/ascending-id/AscendingIdPlugin';
 export * from './plugin/ascending-id/IAscendingIdPlugin';
 export * from './plugin/catcher/ICatcherPlugin';
@@ -44,6 +47,9 @@ export * from './plugin/pool/ObjectEntry';
 export * from './plugin/pool/ObjectPool';
 export * from './plugin/pool/IObjectPoolPlugin';
 export * from './plugin/pool/ObjectPoolPlugin';
+export * from './plugin/storage/IStoragePlugin';
+export * from './plugin/storage/StorageEntry';
+export * from './plugin/storage/StoragePlugin';
 export * from './plugin/timer/Counter';
 export * from './plugin/timer/Tick';
 export * from './plugin/timer/ITimerPlugin';

@@ -9,6 +9,8 @@ export async function boot() {
     stone.NodePoolPlugin,
     stone.EventBusPlugin,
     stone.TimerPlugin,
+    stone.ArgParserPlugin,
+    stone.StoragePlugin,
   ];
 
   // 注册插件
