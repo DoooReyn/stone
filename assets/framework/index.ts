@@ -26,6 +26,8 @@ export * from './foundation/Trigger';
 // plugin
 export * from './plugin/ascending-id/AscendingIdPlugin';
 export * from './plugin/ascending-id/IAscendingIdPlugin';
+export * from './plugin/catcher/ICatcherPlugin';
+export * from './plugin/catcher/CatcherPlugin';
 export * from './plugin/global/GlobalPlugin';
 export * from './plugin/global/IGlobalPlugin';
 export * from './plugin/pool/INodePoolPlugin';
