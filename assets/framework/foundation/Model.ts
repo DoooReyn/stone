@@ -1,4 +1,4 @@
-import { ObjectEntry } from '../plugin';
+import { ObjectEntry } from '../plugin/pool/ObjectPool';
 import { Dto, OnPropertyChanged, Subscription } from '../Types';
 import { list } from '../util';
 import { DeepProxy } from './DeepProxy';

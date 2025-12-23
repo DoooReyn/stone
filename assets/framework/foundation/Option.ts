@@ -1,4 +1,4 @@
-import { ObjectEntry } from '../plugin';
+import { ObjectEntry } from '../plugin/pool/ObjectPool';
 import { Triggers } from './Trigger';
 
 /** 选择模式 */

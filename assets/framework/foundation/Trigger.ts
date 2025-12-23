@@ -1,7 +1,6 @@
-import { PRESET_TOKEN } from 'fast/config';
-
+import { PRESET_TOKEN } from '../config';
 import { fast } from '../Fast';
-import { IObjectPoolPlugin, ObjectEntry } from '../plugin';
+import { IObjectPoolPlugin, ObjectEntry } from '../plugin/pool/ObjectPool';
 import { might, misc } from '../util';
 
 /**

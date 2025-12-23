@@ -1,6 +1,7 @@
 import { PRESET_ID, PRESET_TOKEN } from '../config';
 import { fast } from '../Fast';
-import { IAscendingId, ObjectEntry } from '../plugin';
+import { IAscendingId } from '../plugin/ascending-id/IAscendingId';
+import { ObjectEntry } from '../plugin/pool/ObjectPool';
 import { Triggers } from './Trigger';
 
 /**

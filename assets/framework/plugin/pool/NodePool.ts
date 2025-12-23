@@ -1,7 +1,8 @@
 import { instantiate, Constructor, Prefab } from 'cc';
 
 import { PRESET_TOKEN } from '../../config';
-import { FastError, Plugin } from '../../foundation';
+import { FastError } from '../../foundation/Error';
+import { Plugin } from '../../foundation/Plugin';
 import { time } from '../../util';
 import { IRecyclableNode, IRecyclableOptions } from './IRecycleable';
 

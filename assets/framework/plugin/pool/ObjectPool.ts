@@ -1,7 +1,8 @@
 import { Constructor } from 'cc';
 
 import { PRESET_TOKEN } from '../../config';
-import { FastError, IPlugin, Plugin } from '../../foundation';
+import { FastError } from '../../foundation/Error';
+import { IPlugin, Plugin } from '../../foundation/Plugin';
 import { Pair } from '../../Types';
 import { time } from '../../util';
 import { IObjectEntry } from './IObjectEntry';
