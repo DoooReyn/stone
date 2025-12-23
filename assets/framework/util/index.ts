@@ -1,3 +1,4 @@
+export * as base64 from './Base64';
 export * as be from './Be';
 export * as color from './Color';
 export * as dict from './Dict';
