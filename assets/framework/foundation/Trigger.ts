@@ -17,14 +17,14 @@ export class Trigger extends ObjectEntry {
   /** 回调入参 */
   private _args: any[] = [];
 
-  onInitialize(handle: (...args: any[]) => unknown, context: any, once: boolean = false, args: any[]) {
+  protected onInitialize(handle: (...args: any[]) => unknown, context: any, once: boolean = false, args: any[]) {
     this._handle = handle;
     this._ctx = context ?? misc.CTX;
     this._once = once;
     this._args = args;
   }
 
-  onRecycled() {
+  protected onRecycled() {
     this._handle = null;
     this._ctx = null;
     this._once = false;

@@ -63,7 +63,7 @@ export class Counter extends ObjectEntry {
     return this._cid;
   }
 
-  onInitialize(interval: number = 0, total: number = 1): void {
+  protected onInitialize(interval: number = 0, total: number = 1): void {
     this._cid = fast.acquire<IAscendingIdPlugin>(PRESET_TOKEN.ASCENDING_ID).next(PRESET_ID.TIMER);
     this.$interval = interval;
     this.$total = total;
@@ -73,7 +73,7 @@ export class Counter extends ObjectEntry {
     this.$done = false;
   }
 
-  onRecycled(): void {
+  protected onRecycled(): void {
     this.onCount.clear();
     this.onTick.clear();
     this.onFixedTick.clear();

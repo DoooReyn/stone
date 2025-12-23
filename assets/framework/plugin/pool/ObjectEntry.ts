@@ -50,7 +50,18 @@ export abstract class ObjectEntry implements IObjectEntry {
    */
   reset(): void {}
 
-  abstract onInitialize(...args: any[]): void;
+  /**
+   * 初始化回调
+   * @abstract
+   * @param args 入参
+   * @notes 子类需要重写
+   */
+  protected abstract onInitialize(...args: any[]): void;
 
-  abstract onRecycled(): void;
+  /**
+   * 回收回调
+   * @abstract
+   * @notes 子类需要重写
+   */
+  protected abstract onRecycled(): void;
 }

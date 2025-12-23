@@ -10,8 +10,8 @@ export interface IObjectEntry extends IRecyclableObject {
   get destroyed(): boolean;
   /**
    * 自动初始化
-   * @notes 请勿手动调用
    * @param args 入参
+   * @notes 请勿手动调用
    */
   initialize(...args: any[]): void;
   /**
@@ -22,17 +22,4 @@ export interface IObjectEntry extends IRecyclableObject {
   recycle(): boolean;
   /** 重置 */
   reset(): void;
-  /**
-   * 初始化回调
-   *
-   * 可以在此处执行自定义操作
-   * @param args 入参
-   */
-  onInitialize(...args: any[]): void;
-  /**
-   * 回收回调
-   *
-   * 可以在此处执行自定义操作
-   */
-  onRecycled(): void;
 }

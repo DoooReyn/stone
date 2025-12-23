@@ -18,9 +18,9 @@ export class Model<D extends Dto> extends ObjectEntry {
   /** （粗粒度）属性订阅者 */
   private _coarseSubscriptions: Subscription[] = [];
 
-  onInitialize(..._: any[]): void {}
+  protected onInitialize(..._: any[]): void {}
 
-  onRecycled(): void {
+  protected onRecycled(): void {
     this.$dto = null;
     this.$proxy = null;
     this.unsubscribeAll();
