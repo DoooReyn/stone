@@ -1,5 +1,6 @@
 import { Constructor } from 'cc';
 
+import { TOKENS } from '../../config';
 import { FastError } from '../../Error';
 import { Plugin } from '../../Plugin';
 import { Pair } from '../../Types';
@@ -177,7 +178,7 @@ export class ObjectPool<T extends ObjectEntry> {
  * 对象池容器插件
  */
 export class ObjectPoolPlugin extends Plugin {
-  public static readonly Token = 'ObjectPool';
+  public static readonly Token = TOKENS.OBJECT_POOL;
 
   /** 池子容器 */
   private _container: Map<string, Pair<ObjectPool<IObjectEntry>, Constructor<IObjectEntry>>> = new Map();

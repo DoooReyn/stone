@@ -1,6 +1,7 @@
 import { _decorator, Component } from 'cc';
 
 import * as stone from '../../framework';
+import { GLOBALS } from '../../framework/config/Global';
 
 const { ccclass, property } = _decorator;
 
@@ -21,8 +22,9 @@ export class Boot extends Component {
     }
 
     // 将 Fast 框架实例注册到全局变量中
-    stone.fast.acquire<stone.IGlobal>(stone.GlobalPlugin.Token).set('stone', stone);
-    stone.fast.acquire<stone.IGlobal>(stone.GlobalPlugin.Token).set('fast', stone.fast);
+    const gg = stone.fast.acquire<stone.IGlobal>(stone.TOKENS.GLOBAL);
+    gg.set(GLOBALS.STONE, stone);
+    gg.set(GLOBALS.FAST, stone.fast);
 
     stone.fast.logger.i('框架启动完成');
   }

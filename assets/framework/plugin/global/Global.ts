@@ -1,3 +1,4 @@
+import { TOKENS } from '../../config';
 import { Plugin } from '../../Plugin';
 import { dict } from '../../util';
 
@@ -5,7 +6,7 @@ import { dict } from '../../util';
  * 全局变量管理插件
  */
 export class GlobalPlugin extends Plugin {
-  public static readonly Token = 'Global';
+  public static readonly Token = TOKENS.GLOBAL;
 
   /** 全局对象 */
   // @ts-ignore
