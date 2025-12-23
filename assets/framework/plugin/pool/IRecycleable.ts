@@ -20,17 +20,17 @@ export interface IRecyclableOptions {
 export interface IRecyclableObject {
   /**
    * 标记
-   * @warn 请勿手动修改
+   * @notes 请勿手动修改
    */
   token: string;
   /**
    * 创建时间
-   * @warn 请勿手动修改
+   * @notes 请勿手动修改
    */
   createdAt: number;
   /**
    * 回收时间
-   * @warn 请勿手动修改
+   * @notes 请勿手动修改
    */
   recycledAt: number;
 }
@@ -41,17 +41,17 @@ export interface IRecyclableObject {
 export interface IRecyclableNode extends Node {
   /**
    * 标记
-   * @warn 请勿手动修改
+   * @notes 请勿手动修改
    */
   token: string;
   /**
    * 创建时间
-   * @warn 请勿手动修改
+   * @notes 请勿手动修改
    */
   createdAt: number;
   /**
    * 回收时间
-   * @warn 请勿手动修改
+   * @notes 请勿手动修改
    */
   recycledAt: number;
   /**

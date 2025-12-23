@@ -10,13 +10,13 @@ export interface IObjectEntry extends IRecyclableObject {
   get destroyed(): boolean;
   /**
    * 自动初始化
-   * @warn 请勿手动调用
+   * @notes 请勿手动调用
    * @param args 入参
    */
   initialize(...args: any[]): void;
   /**
    * 自动回收
-   * @warn 请勿手动调用
+   * @notes 请勿手动调用
    * @returns 回收结果
    */
   recycle(): boolean;

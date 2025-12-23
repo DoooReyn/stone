@@ -11,9 +11,9 @@ import { IRecyclableOptions } from './IRecycleable';
  * 对象条目
  */
 export abstract class ObjectEntry implements IObjectEntry {
+  token: string;
   createdAt: number = 0;
   recycledAt: number = 0;
-  token: string;
 
   get initialized(): boolean {
     return this.createdAt > 0;
@@ -23,6 +23,10 @@ export abstract class ObjectEntry implements IObjectEntry {
     return this.recycledAt > 0;
   }
 
+  /**
+   * 初始化对象
+   * @param args 初始化参数
+   */
   initialize(...args: any[]): void {
     if (!this.initialized) {
       this.reset();
@@ -32,6 +36,10 @@ export abstract class ObjectEntry implements IObjectEntry {
     }
   }
 
+  /**
+   * 回收对象
+   * @returns 回收是否成功
+   */
   recycle(): boolean {
     if (!this.destroyed) {
       this.recycledAt = time.now();
@@ -42,6 +50,9 @@ export abstract class ObjectEntry implements IObjectEntry {
     return false;
   }
 
+  /**
+   * 重置对象状态
+   */
   reset(): void {}
 
   abstract onInitialize(...args: any[]): void;
@@ -54,7 +65,7 @@ export abstract class ObjectEntry implements IObjectEntry {
  */
 export class ObjectPool<T extends ObjectEntry> {
   /** 条目列表 */
-  private readonly _items: T[];
+  private readonly _container: T[];
 
   /**
    * 构造函数
@@ -62,37 +73,55 @@ export class ObjectPool<T extends ObjectEntry> {
    * @param options 对象池条目配置
    */
   constructor(public readonly construct: Constructor<T>, public readonly options: IRecyclableOptions) {
-    this._items = [];
+    this._container = [];
     this.fill(this.options.expands);
   }
 
+  /** 标识 */
   get token() {
     return this.options.token;
   }
 
-  get capacity() {
-    return this.options.capacity;
-  }
-
+  /** 过期时间 */
   get expires() {
     return this.options.expires;
   }
 
-  get size(): number {
-    return this._items.length;
+  /** 扩容数量 */
+  get expands() {
+    return this.options.expands;
   }
 
+  /** 容量限制 */
+  get capacity() {
+    return this.options.capacity;
+  }
+
+  /** 当前数量 */
+  get size(): number {
+    return this._container.length;
+  }
+
+  /**
+   * 填充池子
+   * @param n 目标数量
+   */
   fill(n: number): void {
     if (n == undefined || n <= 0 || this.size >= n) return;
 
     const need = n - this.size;
     for (let i = 0; i < need; i++) {
-      this._items.push(new this.construct());
+      this._container.push(new this.construct());
     }
   }
 
+  /**
+   * 获取对象实例
+   * @param args 初始化参数
+   * @returns 对象实例
+   */
   acquire(...args: any[]): T {
-    const instance = this._items.shift() ?? new this.construct();
+    const instance = this._container.shift() ?? new this.construct();
     instance.token = this.token;
     instance.initialize(...args);
 
@@ -103,17 +132,24 @@ export class ObjectPool<T extends ObjectEntry> {
     return instance;
   }
 
+  /**
+   * 回收对象实例
+   * @param instance 要回收的对象实例
+   */
   recycle(instance: T): void {
     if (instance && instance.recycle()) {
       const capacity = this.capacity;
       const size = this.size;
       if (capacity <= 0 || size < capacity) {
         // 延迟回收，防止同一时间被回收又被取出使用可能引起不必要的麻烦
-        setTimeout(() => this._items.push(instance), 0);
+        setTimeout(() => this._container.push(instance), 0);
       }
     }
   }
 
+  /**
+   * 清理过期未使用的对象
+   */
   clearUnused(): void {
     const expires = this.expires;
     if (expires <= 0) return;
@@ -122,14 +158,17 @@ export class ObjectPool<T extends ObjectEntry> {
     if (this.size <= expands) return;
 
     for (let i = this.size - 1 - expands; i >= 0; i--) {
-      this._items.splice(i, 1);
+      this._container.splice(i, 1);
     }
   }
 
+  /**
+   * 清空池子中的所有对象
+   */
   clear(): void {
     for (let i = this.size - 1; i >= 0; i--) {
-      this._items[i].recycle();
-      this._items.splice(i, 1);
+      this._container[i].recycle();
+      this._container.splice(i, 1);
     }
   }
 }
@@ -143,6 +182,11 @@ export class ObjectPoolPlugin extends Plugin {
   /** 池子容器 */
   private _container: Map<string, Pair<ObjectPool<IObjectEntry>, Constructor<IObjectEntry>>> = new Map();
 
+  /**
+   * 注册对象池
+   * @param cls 对象构造函数
+   * @param options 池子配置
+   */
   register(cls: Constructor<IObjectEntry>, options: IRecyclableOptions): void {
     const token = options.token;
 
@@ -153,6 +197,10 @@ export class ObjectPoolPlugin extends Plugin {
     this._container.set(token, [new ObjectPool(cls, options), cls]);
   }
 
+  /**
+   * 注销对象池
+   * @param cls 对象构造函数或池子标记
+   */
   unregister(cls: Constructor<IObjectEntry> | string): void {
     if (typeof cls === 'string') {
       if (this._container.has(cls)) {
@@ -171,6 +219,11 @@ export class ObjectPoolPlugin extends Plugin {
     }
   }
 
+  /**
+   * 检查对象池是否存在
+   * @param cls 对象构造函数或池子标记
+   * @returns 是否存在
+   */
   has(cls: Constructor<IObjectEntry> | string): boolean {
     if (typeof cls === 'string') {
       return this._container.has(cls);
@@ -185,6 +238,11 @@ export class ObjectPoolPlugin extends Plugin {
     return false;
   }
 
+  /**
+   * 获取对象池
+   * @param cls 对象构造函数或池子标记
+   * @returns 对象池实例
+   */
   poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): ObjectPool<T> {
     let token = '';
 
@@ -206,6 +264,12 @@ export class ObjectPoolPlugin extends Plugin {
     return this._container.get(token)![0] as ObjectPool<T>;
   }
 
+  /**
+   * 从对象池获取实例
+   * @param cls 对象构造函数
+   * @param args 初始化参数
+   * @returns 对象实例
+   */
   acquire<T extends IObjectEntry>(cls: Constructor<T>, ...args: any[]): T | undefined {
     const inst = this.poolOf(cls);
 
@@ -216,6 +280,10 @@ export class ObjectPoolPlugin extends Plugin {
     return inst.acquire(...args) as T;
   }
 
+  /**
+   * 回收对象实例到池子
+   * @param instance 要回收的对象实例
+   */
   recycle<T extends IObjectEntry>(instance: T): void {
     if (instance && instance.token !== undefined && instance.recycle !== undefined) {
       if (!this._container.has(instance.token)) {
@@ -227,10 +295,16 @@ export class ObjectPoolPlugin extends Plugin {
     }
   }
 
+  /**
+   * 清理所有池子中过期未使用的对象
+   */
   clearUnused(): void {
     this._container.forEach((v) => v[0].clearUnused());
   }
 
+  /**
+   * 清空所有池子
+   */
   clear(): void {
     this._container.forEach((p) => p[0].clear());
   }
