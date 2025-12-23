@@ -15,3 +15,4 @@ export * as platform from './Platform';
 export * as random from './Random';
 export * as re from './RegExp';
 export * as time from './Time';
+export * as zlib from './Zlib';

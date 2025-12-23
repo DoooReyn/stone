@@ -25,12 +25,14 @@
   },
   "homepage": "https://github.com/DoooReyn/stone#readme",
   "devDependencies": {
+    "@types/pako": "^2.0.4",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@typescript-eslint/parser": "^8.50.0",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "js-base64": "^3.7.8"
+    "js-base64": "^3.7.8",
+    "pako": "^2.1.0"
   }
 }
