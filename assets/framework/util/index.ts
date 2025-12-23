@@ -9,6 +9,7 @@ export * as literal from './Literal';
 export * as might from './Might';
 export * as misc from './Misc';
 export * as native from './Native';
+export * as platform from './Platform';
 export * as random from './Random';
 export * as re from './RegExp';
 export * as time from './Time';
