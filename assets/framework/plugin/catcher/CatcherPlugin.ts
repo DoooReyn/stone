@@ -26,7 +26,7 @@ export class Catcher extends Plugin implements ICatcherPlugin {
     if (gg.has('addEventListener')) {
       const addEventListener = gg.get<Function>('addEventListener')!;
       addEventListener('unhandledrejection', function (event: PromiseRejectionEvent) {
-        self.logger.e('捕获到异步错误', event);
+        self.logger.e('捕获到异步错误\n', event.reason);
         if (self._reporter) {
           self._reporter({
             message: 'Unhandled Promise Rejection',
@@ -35,7 +35,7 @@ export class Catcher extends Plugin implements ICatcherPlugin {
         }
       });
       addEventListener('error', function (event: ErrorEvent) {
-        self.logger.e('捕获到同步错误', event);
+        self.logger.e('捕获到同步错误\n', event.error);
         if (self._reporter && event && event.error) {
           self._reporter({
             message: event.error.message,

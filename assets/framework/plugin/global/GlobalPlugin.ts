@@ -1,6 +1,6 @@
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
-import { dict } from 'fast/util';
+import { Global } from 'fast/Types';
 
 /**
  * 全局变量管理插件
@@ -10,7 +10,7 @@ export class GlobalPlugin extends Plugin {
 
   /** 全局对象 */
   // @ts-ignore
-  private _env = globalThis ?? window ?? self ?? frames ?? GameGlobal ?? {};
+  private _env: Global = globalThis ?? window ?? self ?? frames ?? GameGlobal ?? {};
 
   /**
    * 获取
@@ -18,7 +18,16 @@ export class GlobalPlugin extends Plugin {
    * @returns 值
    */
   get<T>(varname: string): T | undefined {
-    return dict.get(this._env, varname) as T | undefined;
+    return this._env[varname] as T | undefined;
+  }
+
+  /**
+   * 查询
+   * @param varname 变量名
+   * @returns 是否存在
+   */
+  has(varname: string): boolean {
+    return this._env[varname] !== undefined;
   }
 
   /**
@@ -32,16 +41,7 @@ export class GlobalPlugin extends Plugin {
     } else {
       this.logger.d(`全局变量⁅${varname}⁆已添加`);
     }
-    dict.set(this._env, varname, value);
-  }
-
-  /**
-   * 查询
-   * @param varname 变量名
-   * @returns 是否存在
-   */
-  has(varname: string): boolean {
-    return dict.own(this._env, varname);
+    this._env[varname] = value;
   }
 
   /**
@@ -50,7 +50,7 @@ export class GlobalPlugin extends Plugin {
    */
   unset(varname: string): void {
     if (this.has(varname)) {
-      dict.unset(this._env, varname);
+      delete this._env[varname];
       this.logger.d(`全局变量⁅${varname}⁆已删除`);
     }
   }
