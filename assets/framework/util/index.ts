@@ -5,6 +5,7 @@ export * as dict from './Dict';
 export * as digit from './Digit';
 export * as effect from './Effect';
 export * as grapheme from './Grapheme';
+export * as json from './Json';
 export * as list from './List';
 export * as literal from './Literal';
 export * as might from './Might';
