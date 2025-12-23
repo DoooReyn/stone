@@ -1,5 +1,6 @@
 export * from './Error';
 export * from './Fast';
+export * from './Init';
 export * from './KVPair';
 export * from './Logcat';
 export * from './Plugin';

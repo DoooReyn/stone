@@ -1,6 +1,5 @@
 import { _decorator, Component } from 'cc';
-
-import { boot } from '../../framework/Init';
+import { boot } from 'fast/index';
 
 const { ccclass, property } = _decorator;
 

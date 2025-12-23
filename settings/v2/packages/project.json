@@ -5,5 +5,9 @@
       "width": 720,
       "height": 1280
     }
-  }
+  },
+  "script": {
+    "importMap": "F:\\cocos\\stone\\import-map.json"
+  },
+  "custom_joint_texture_layouts": []
 }
