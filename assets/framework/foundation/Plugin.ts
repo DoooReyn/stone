@@ -1,5 +1,5 @@
+import { might } from '../util';
 import { logcat, Logger } from './Logcat';
-import { might } from './util';
 
 /** 插件状态 */
 export enum PluginState {

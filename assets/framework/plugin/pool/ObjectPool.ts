@@ -1,8 +1,7 @@
 import { Constructor } from 'cc';
 
 import { TOKENS } from '../../config';
-import { FastError } from '../../Error';
-import { Plugin } from '../../Plugin';
+import { FastError, Plugin } from '../../foundation';
 import { Pair } from '../../Types';
 import { time } from '../../util';
 import { IObjectEntry } from './IObjectEntry';

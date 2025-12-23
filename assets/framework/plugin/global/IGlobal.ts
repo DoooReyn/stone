@@ -1,4 +1,4 @@
-import { IPlugin } from '../../Plugin';
+import { IPlugin } from '../../foundation';
 
 /**
  * 全局变量管理插件接口

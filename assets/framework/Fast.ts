@@ -1,8 +1,6 @@
 import { Constructor } from 'cc';
 
-import { FastError } from './Error';
-import { logcat } from './Logcat';
-import { IPlugin, Plugin } from './Plugin';
+import { logcat, FastError, IPlugin, Plugin } from './foundation';
 
 /**
  * Fast 框架

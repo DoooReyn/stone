@@ -1,5 +1,5 @@
 import { TOKENS } from '../../config';
-import { Plugin } from '../../Plugin';
+import { Plugin } from '../../foundation';
 import { dict } from '../../util';
 
 /**

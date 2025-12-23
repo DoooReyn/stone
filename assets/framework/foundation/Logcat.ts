@@ -1,8 +1,8 @@
 import { sys } from 'cc';
 
+import { VoidFn } from '../Types';
+import { literal } from '../util';
 import { KVPair } from './KVPair';
-import { VoidFn } from './Types';
-import { literal } from './util';
 
 /**
  * 日志等级
