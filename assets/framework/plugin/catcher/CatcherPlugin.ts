@@ -5,7 +5,7 @@ import { IGlobalPlugin } from '../global/IGlobalPlugin';
 import { ErrorReporter, ICatcherPlugin } from './ICatcherPlugin';
 
 /**
- * 异常捕获服务
+ * 异常捕获插件
  */
 export class Catcher extends Plugin implements ICatcherPlugin {
   public static Token: string = PRESET_TOKEN.CATCHER;

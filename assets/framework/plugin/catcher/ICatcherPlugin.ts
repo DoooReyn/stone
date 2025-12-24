@@ -4,7 +4,7 @@ import { IPlugin } from 'fast/foundation/Plugin';
 export type ErrorReporter = (info: Object) => void;
 
 /**
- * 异常捕获服务接口
+ * 异常捕获插件接口
  */
 export interface ICatcherPlugin extends IPlugin {
   /**

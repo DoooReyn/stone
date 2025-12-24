@@ -28,7 +28,7 @@ export interface IStorageModem {
 }
 
 /**
- * 本地存储容器服务接口
+ * 本地存储容器插件接口
  */
 export interface IStoragePlugin extends IPlugin {
   /** 存储条目调制解调器 */

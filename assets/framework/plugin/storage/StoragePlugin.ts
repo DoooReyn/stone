@@ -8,7 +8,7 @@ import { IStorageModem, IStoragePlugin } from './IStoragePlugin';
 import { StorageEntry } from './StorageEntry';
 
 /**
- * 本地存储容器服务
+ * 本地存储容器插件
  */
 export class StoragePlugin extends Plugin implements IStoragePlugin {
   public static readonly Token: string = PRESET_TOKEN.STORAGE;

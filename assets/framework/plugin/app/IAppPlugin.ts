@@ -2,7 +2,7 @@ import { Camera, Canvas, Node, Scene } from 'cc';
 import { IPlugin } from 'fast/foundation/Plugin';
 
 /**
- * 应用启动器服务接口
+ * 应用启动器插件接口
  */
 export interface IAppPlugin extends IPlugin {
   /** 场景 */

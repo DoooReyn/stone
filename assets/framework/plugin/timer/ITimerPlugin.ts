@@ -3,8 +3,8 @@ import { IPlugin } from 'fast/foundation/Plugin';
 import { Tick } from './Tick';
 
 /**
- * 定时器服务接口
- * @description 定时器服务接口定义了定时器服务的行为
+ * 定时器插件接口
+ * @description 定时器插件接口定义了定时器插件的行为
  */
 export interface ITimerPlugin extends IPlugin {
   /**

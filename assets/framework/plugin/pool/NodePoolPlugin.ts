@@ -8,7 +8,7 @@ import { IRecyclableNode, IRecyclableOptions } from './IRecycleable';
 import { NodePool } from './NodePool';
 
 /**
- * 节点池容器服务
+ * 节点池容器插件
  */
 export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
   public static readonly Token = PRESET_TOKEN.NODE_POOL;
