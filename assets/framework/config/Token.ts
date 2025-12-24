@@ -24,6 +24,8 @@ export const PRESET_TOKEN = {
   PROFILER: 'Profiler',
   /** 红点 */
   RED: 'Red',
+  /** 敏感词过滤器 */
+  SENSITIVE: 'Sensitive',
   /** 本地存储 */
   STORAGE: 'Storage',
   /** 定时器 */

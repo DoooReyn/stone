@@ -103,14 +103,26 @@ function setAntiAliasing(tex: Texture2D, enabled: boolean): void {
 }
 
 /**
+ * 添加计时点
+ * @param flag 计时标识
+ * @returns
+ */
+function addTimeStop(flag: string) {
+  const start = Date.now();
+  return function stop() {
+    fast.logger.d(`${flag} 耗时 ${Date.now() - start} ms`);
+  };
+}
+
+/**
  * 同步计时
  * @param flag 计时标识
  * @param operation 耗时操作
  */
 function timeSync(flag: string, operation: AnyFn) {
-  const start = Date.now();
+  const stop = addTimeStop(flag);
   runSync(operation);
-  fast.logger.d(`${flag} 耗时 ${Date.now() - start} ms`);
+  stop();
 }
 
 /**
@@ -119,9 +131,9 @@ function timeSync(flag: string, operation: AnyFn) {
  * @param operation 耗时操作
  */
 async function timeAsync(flag: string, operation: Promise<any>) {
-  const start = Date.now();
+  const stop = addTimeStop(flag);
   await runAsync(operation);
-  fast.logger.d(`${flag} 耗时 ${Date.now() - start} ms`);
+  stop();
 }
 
 /**
@@ -147,4 +159,16 @@ function simulateProbability(probability: number, delay = 1000) {
   });
 }
 
-export { CTX, idle, debounce, throttle, ban, nextTick, setAntiAliasing, timeAsync, timeSync, simulateLongTask };
+export {
+  CTX,
+  idle,
+  debounce,
+  throttle,
+  ban,
+  nextTick,
+  setAntiAliasing,
+  addTimeStop,
+  timeAsync,
+  timeSync,
+  simulateLongTask,
+};

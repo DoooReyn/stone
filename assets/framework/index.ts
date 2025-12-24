@@ -58,6 +58,8 @@ export * from './plugin/profiler/IProfilerPlugin';
 export * from './plugin/profiler/ProfilerPlugin';
 export * from './plugin/red/IRedPlugin';
 export * from './plugin/red/RedPlugin';
+export * from './plugin/sensitive/ISensitivePlugin';
+export * from './plugin/sensitive/SensitivePlugin';
 export * from './plugin/storage/IStoragePlugin';
 export * from './plugin/storage/StorageEntry';
 export * from './plugin/storage/StoragePlugin';

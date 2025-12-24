@@ -10,6 +10,7 @@ export async function boot() {
     stone.NodePoolPlugin,
     stone.EventBusPlugin,
     stone.TimerPlugin,
+    stone.SensitivePlugin,
 
     stone.Catcher,
     stone.ArgParserPlugin,
