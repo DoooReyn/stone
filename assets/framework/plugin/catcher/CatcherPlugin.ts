@@ -1,7 +1,7 @@
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IGlobalPlugin } from 'fast/plugin/global/IGlobalPlugin';
 
-import { IGlobalPlugin } from '../global/IGlobalPlugin';
 import { ErrorReporter, ICatcherPlugin } from './ICatcherPlugin';
 
 /**

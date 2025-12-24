@@ -1,9 +1,9 @@
 import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IEventBusPlugin } from 'fast/plugin/event-bus/IEventBusPlugin';
+import { IStoragePlugin } from 'fast/plugin/storage/IStoragePlugin';
 
-import { IEventBusPlugin } from '../event-bus/IEventBusPlugin';
-import { IStoragePlugin } from '../storage/IStoragePlugin';
 import { IRedChangeEvent, IRedConfig, IRedData, IRedPlugin, IRedPool } from './IRedPlugin';
 
 /**

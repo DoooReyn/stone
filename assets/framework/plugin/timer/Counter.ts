@@ -1,8 +1,7 @@
 import { PRESET_ID } from 'fast/config/ID';
+import { Triggers } from 'fast/foundation/Trigger';
 import { ObjectEntry } from 'fast/plugin/pool/ObjectEntry';
 import { asc } from 'fast/util';
-
-import { Triggers } from '../../foundation/Trigger';
 
 /**
  * 计数器

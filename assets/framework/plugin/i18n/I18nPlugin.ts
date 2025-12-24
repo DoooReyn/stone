@@ -3,11 +3,11 @@ import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_STORAGE } from 'fast/config/Storage';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IArgParserPlugin } from 'fast/plugin/arg-parser/IArgParser';
+import { IEventBusPlugin } from 'fast/plugin/event-bus/IEventBusPlugin';
+import { IStoragePlugin } from 'fast/plugin/storage/IStoragePlugin';
 import { literal } from 'fast/util';
 
-import { IArgParserPlugin } from '../arg-parser/IArgParser';
-import { IEventBusPlugin } from '../event-bus/IEventBusPlugin';
-import { IStoragePlugin } from '../storage/IStoragePlugin';
 import { II18nPlugin, IStorageEntryLanguage, Language, LanguagePack } from './II18nPlugin';
 
 /**

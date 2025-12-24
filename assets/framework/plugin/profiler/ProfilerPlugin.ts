@@ -1,9 +1,9 @@
 import { director, game, profiler, Director, DynamicAtlasManager, Texture2D } from 'cc';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IArgParserPlugin } from 'fast/plugin/arg-parser/IArgParser';
 import { misc, platform } from 'fast/util';
 
-import { IArgParserPlugin } from '../arg-parser/IArgParser';
 import { IProfilerPlugin } from './IProfilerPlugin';
 
 /**

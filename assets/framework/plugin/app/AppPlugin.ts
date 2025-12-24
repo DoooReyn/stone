@@ -4,10 +4,10 @@ import { PRESET_GUI } from 'fast/config/Gui';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { FastError } from 'fast/foundation/Error';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IEventBusPlugin } from 'fast/plugin/event-bus/IEventBusPlugin';
+import { ITimerPlugin } from 'fast/plugin/timer/ITimerPlugin';
 import { digit, misc, time } from 'fast/util';
 
-import { IEventBusPlugin } from '../event-bus/IEventBusPlugin';
-import { ITimerPlugin } from '../timer/ITimerPlugin';
 import { IAppPlugin } from './IAppPlugin';
 
 /**

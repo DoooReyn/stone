@@ -1,4 +1,4 @@
-import { IRecyclableOptions } from '../plugin/pool/IRecycleable';
+import { IRecyclableOptions } from 'fast/plugin/pool/IRecycleable';
 
 /**
  * 框架内置对象池回收配置接口

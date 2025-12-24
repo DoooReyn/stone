@@ -1,7 +1,7 @@
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { fast } from 'fast/Fast';
+import { IObjectPoolPlugin } from 'fast/plugin/pool/IObjectPoolPlugin';
 
-import { IObjectPoolPlugin } from '../pool/IObjectPoolPlugin';
 import { Counter } from './Counter';
 
 /**

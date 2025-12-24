@@ -1,9 +1,9 @@
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IArgParserPlugin } from 'fast/plugin/arg-parser/IArgParser';
 import { Dict } from 'fast/Types';
 import { json, lzs, platform } from 'fast/util';
 
-import { IArgParserPlugin } from '../arg-parser/IArgParser';
 import { IStorageModem, IStoragePlugin } from './IStoragePlugin';
 import { StorageEntry } from './StorageEntry';
 

@@ -1,4 +1,5 @@
-import { Dict } from '../Types';
+import { Dict } from 'fast/Types';
+
 import { isObject } from './Be';
 import { random, randomInteger, randomOp } from './Random';
 

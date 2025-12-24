@@ -1,4 +1,4 @@
-import { Dict, Key } from '../Types';
+import { Dict, Key } from 'fast/Types';
 
 /** 冻结字典（防止修改） */
 function freeze(d: Dict) {

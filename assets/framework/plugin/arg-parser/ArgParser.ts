@@ -1,10 +1,10 @@
 import { PRESET_APP_ARGS } from 'fast/config/AppArgs';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
+import { IGlobalPlugin } from 'fast/plugin/global/IGlobalPlugin';
 import { Dict } from 'fast/Types';
 import { dict } from 'fast/util';
 
-import { IGlobalPlugin } from '../global/IGlobalPlugin';
 import { IAppArgs } from './IAppArgs';
 import { IArgParserPlugin } from './IArgParser';
 
