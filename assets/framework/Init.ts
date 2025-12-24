@@ -4,14 +4,17 @@ export async function boot() {
   // 插件列表（按照依赖关系进行排序，无依赖的应该放在最前面）
   const plugins = [
     stone.GlobalPlugin,
-    stone.Catcher,
     stone.ObjectPoolPlugin,
     stone.NodePoolPlugin,
     stone.EventBusPlugin,
     stone.TimerPlugin,
+
+    stone.Catcher,
     stone.ArgParserPlugin,
     stone.StoragePlugin,
     stone.I18nPlugin,
+
+    stone.ProfilerPlugin,
     stone.AppPlugin,
   ];
 

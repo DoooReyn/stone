@@ -56,6 +56,8 @@ export * from './plugin/pool/ObjectEntry';
 export * from './plugin/pool/ObjectPool';
 export * from './plugin/pool/IObjectPoolPlugin';
 export * from './plugin/pool/ObjectPoolPlugin';
+export * from './plugin/profiler/IProfilerPlugin';
+export * from './plugin/profiler/ProfilerPlugin';
 export * from './plugin/storage/IStoragePlugin';
 export * from './plugin/storage/StorageEntry';
 export * from './plugin/storage/StoragePlugin';

@@ -132,7 +132,7 @@ export interface IPlugin {
   /** 日志 */
   get logger(): Logger;
   /** 初始化 */
-  initialize(...args: any[]): Promise<void>;
+  initialize(): Promise<void>;
   /** 销毁 */
   dispose(): Promise<void>;
 }

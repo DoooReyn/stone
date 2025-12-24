@@ -10,6 +10,7 @@ export const PRESET_TOKEN = {
   I18N: 'I18n',
   NODE_POOL: 'NodePool',
   OBJECT_POOL: 'ObjectPool',
+  PROFILER: 'Profiler',
   STORAGE: 'Storage',
   TIMER: 'Timer',
 } as const;
