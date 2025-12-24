@@ -17,9 +17,9 @@ export class Catcher extends Plugin implements ICatcherPlugin {
     this._reporter = handle;
   }
 
-  constructor() {
-    super();
+  protected readonly $dependencies: string[] = [PRESET_TOKEN.GLOBAL];
 
+  async onInitialize() {
     const self = this;
     const gg = this.of<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
     if (gg.has('addEventListener')) {

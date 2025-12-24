@@ -25,6 +25,8 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
   /** 语言包容器 */
   private readonly _container: Map<Language, Map<string, LanguagePack>> = new Map();
 
+  protected readonly $dependencies: string[] = [PRESET_TOKEN.ARG_PARSER, PRESET_TOKEN.STORAGE, PRESET_TOKEN.EVENT_BUS];
+
   get language() {
     return this._current;
   }
@@ -36,7 +38,7 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
     this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.LANGUAGE_CHANGED, this._current);
   }
 
-  async initialize() {
+  async onInitialize() {
     const languages = this.of<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER).args.languages;
     // 添加支持的语言
     for (let i = 0; i < languages.length; i++) {

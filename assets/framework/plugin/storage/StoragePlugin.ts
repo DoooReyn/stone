@@ -12,10 +12,13 @@ import { StorageEntry } from './StorageEntry';
  */
 export class StoragePlugin extends Plugin implements IStoragePlugin {
   public static readonly Token: string = PRESET_TOKEN.STORAGE;
+
   /** 存储条目容器 */
   private readonly _container: Map<string, StorageEntry<Dict>> = new Map();
 
   public readonly modem: IStorageModem;
+
+  protected readonly $dependencies: string[] = [PRESET_TOKEN.ARG_PARSER];
 
   constructor() {
     super();
@@ -24,22 +27,22 @@ export class StoragePlugin extends Plugin implements IStoragePlugin {
     const isBrowser = platform.browser;
     this.modem = {
       generateKey(token: string) {
-        if (argParser.isDev && isBrowser) {
+        if (argParser?.isDev && isBrowser) {
           const user = argParser.args.user ?? 'guest';
           return `[${argParser.args.appName}]@${user}:${token}`;
         } else {
-          return `[${argParser.args.appName}]:${token}`;
+          return `[${argParser?.args.appName}]:${token}`;
         }
       },
       encode<T extends Dict>(data: T) {
-        if (argParser.isProd) {
+        if (argParser?.isProd) {
           return lzs.encodeToBase64(json.encode(data));
         } else {
           return json.encode(data);
         }
       },
       decode<T extends Dict>(data: string): T | undefined {
-        if (argParser.isProd) {
+        if (argParser?.isProd) {
           return json.decode(lzs.decodeFromBase64(data)!) as T;
         } else {
           return json.decode(data) as T;

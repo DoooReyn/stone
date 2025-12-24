@@ -12,6 +12,7 @@ export async function boot() {
     stone.ArgParserPlugin,
     stone.StoragePlugin,
     stone.I18nPlugin,
+    stone.AppPlugin,
   ];
 
   // 注册插件

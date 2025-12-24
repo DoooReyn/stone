@@ -17,13 +17,15 @@ export class ArgParserPlugin extends Plugin implements IArgParserPlugin {
   /** 参数 */
   public args: IAppArgs = dict.deepCopy(PRESET_APP_ARGS) as IAppArgs;
 
-  async initialize() {
+  protected readonly $dependencies: string[] = [PRESET_TOKEN.GLOBAL];
+
+  async onInitialize() {
     this.parse();
   }
 
   parse(args?: Dict) {
     const gg = this.of<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
-    if (gg?.has('location')) {
+    if (gg.has('location')) {
       const url = gg.get<Location>('location')?.href ?? '';
       const query = url.split('?');
       if (query.length == 2) {

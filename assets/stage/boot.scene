@@ -58,7 +58,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Canvas",
+    "_name": "root",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -119,7 +119,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Camera",
+    "_name": "camera-2d",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {

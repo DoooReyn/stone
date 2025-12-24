@@ -1,5 +1,7 @@
+import { PRESET_TOKEN } from 'fast/config/Token';
 import { might } from 'fast/util';
 
+import { FastError } from './Error';
 import { logcat, Logger } from './Logcat';
 
 /** 插件状态 */
@@ -27,10 +29,28 @@ export class Plugin {
    */
   public static readonly Token: string;
 
-  public static Of: <T extends IPlugin>(token: string) => T;
+  /**
+   * 获取插件句柄
+   * @see assets/framework/Fast
+   */
+  public static Of: <T extends IPlugin>(token: string) => T | undefined;
 
-  public of<T extends IPlugin>(token: string) {
-    return Plugin.Of<T>(token);
+  /** 依赖项 */
+  private _dependencies: Record<string, IPlugin> = {};
+
+  /**
+   * 依赖项
+   * @notes 子类用到时必须重写
+   */
+  protected readonly $dependencies: string[] = [];
+
+  /**
+   * 获取依赖插件
+   * @param token 插件标识
+   * @returns
+   */
+  public of<T extends IPlugin>(token: string): T {
+    return this._dependencies[token] as unknown as T;
   }
 
   /** 标识 */
@@ -58,8 +78,15 @@ export class Plugin {
   public async initialize() {
     if (this._state === PluginState.Uninitialized) {
       this._state = PluginState.Initializing;
-      const err = (await might.runAsync(this.doInitialize()))[1];
-      if (err) this.logger.e(`插件⁅${this.token}⁆初始化失败`, err);
+
+      this.$dependencies.forEach((token) => {
+        const dep = Plugin.Of(token);
+        if (!dep) throw new FastError(PRESET_TOKEN.FAST, `插件 ⁅${token}⁆ 不存在或未注册`);
+        this._dependencies[token] = dep;
+      });
+
+      const err = (await might.runAsync(this.onInitialize()))[1];
+      if (err) this.logger.e(`插件 ⁅${this.token}⁆ 初始化失败`, err);
       else this._state = PluginState.Initialized;
     }
   }
@@ -71,7 +98,7 @@ export class Plugin {
   public async dispose() {
     if (this._state === PluginState.Initialized || this._state === PluginState.Uninitialized) {
       this._state = PluginState.Disposing;
-      const err = (await might.runAsync(this.doDispose()))[1];
+      const err = (await might.runAsync(this.onDispose()))[1];
       if (err) this.logger.e(`插件⁅${this.token}⁆销毁失败`, err);
       else this._state = PluginState.Disposed;
     }
@@ -83,7 +110,7 @@ export class Plugin {
    * @async
    * @notes 子类可重写此方法以实现自定义初始化逻辑
    */
-  protected async doInitialize() {}
+  protected async onInitialize() {}
 
   /**
    * 销毁逻辑
@@ -91,7 +118,7 @@ export class Plugin {
    * @async
    * @notes 子类可重写此方法以实现自定义销毁逻辑
    */
-  protected async doDispose() {}
+  protected async onDispose() {}
 }
 
 /**

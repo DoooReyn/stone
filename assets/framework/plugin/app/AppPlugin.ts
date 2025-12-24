@@ -2,6 +2,7 @@ import { director, game, screen, view, Camera, Canvas, Director, Game, Node, Sce
 import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_GUI } from 'fast/config/Gui';
 import { PRESET_TOKEN } from 'fast/config/Token';
+import { FastError } from 'fast/foundation/Error';
 import { Plugin } from 'fast/foundation/Plugin';
 import { digit, misc, time } from 'fast/util';
 
@@ -26,64 +27,63 @@ export class AppPlugin extends Plugin implements IAppPlugin {
   /** 时间记录点：进入后台 */
   private _timeEnterBG: number = 0;
 
-  private get _evt() {
-    return this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS);
+  protected readonly $dependencies: string[] = [PRESET_TOKEN.EVENT_BUS, PRESET_TOKEN.TIMER];
+
+  private setup(scene: Scene | null) {
+    if (!scene) return;
+
+    // 场景
+    this.scene = scene;
+
+    // 根节点： PRESET.ROOT
+    const root = scene.getChildByName(PRESET_GUI.ROOT);
+    if (!root) {
+      throw new FastError(this.token, `未正确配置根节点`);
+    }
+    this.root = root!;
+
+    // 舞台
+    const stage = this.root.getComponent(Canvas);
+    if (!stage) {
+      throw new FastError(this.token, '根节点未挂载画布组件');
+    }
+    this.stage = stage!;
+
+    // 2D相机: PRESET.CAMERA_2D
+    const cameraNode = this.root.getChildByName(PRESET_GUI.CAMERA_2D);
+    if (!cameraNode) {
+      throw new FastError(this.token, '未正确配置2D相机节点');
+    }
+
+    // 2D相机组件
+    const camera2D = cameraNode!.getComponent(Camera);
+    if (!camera2D) {
+      throw new FastError(this.token, `未正确配置摄像机组件`);
+    }
+    this.camera2D = camera2D!;
+
+    // 代理窗口尺寸变换事件
+    this.onScreenSizeChangedMock = misc.throttle(this.onScreenSizeChanged, this).bind(this);
+
+    // 注册基础事件
+    game.on(Game.EVENT_SHOW, this.onEnterFG, this);
+    game.on(Game.EVENT_HIDE, this.onEnterBG, this);
+    game.on(Game.EVENT_CLOSE, this.onEnded, this);
+    game.on(Game.EVENT_LOW_MEMORY, this.onLowMemory, this);
+    screen.on(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this.onScreenSizeChangedMock, this);
+    screen.on(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this.onScreenSizeChangedMock, this);
+    screen.on(PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED, this.onScreenOrientationChanged, this);
+    director.on(Director.EVENT_AFTER_UPDATE, this.onUpdate, this);
   }
 
-  private get _timer() {
-    return this.of<ITimerPlugin>(PRESET_TOKEN.EVENT_BUS);
-  }
-
-  initialize() {
+  onInitialize() {
     return new Promise<void>((resolve, reject) => {
-      director.once(
-        Director.EVENT_AFTER_SCENE_LAUNCH,
-        (scene: Scene) => {
-          this.scene = scene;
-
-          // 根节点： PRESET.ROOT
-          const root = scene.getChildByName(PRESET_GUI.ROOT);
-          if (!root) {
-            reject(`未正确配置根节点`);
-          }
-          this.root = root!;
-
-          // 舞台
-          const stage = this.root.getComponent(Canvas);
-          if (!stage) {
-            reject('根节点未挂载画布组件');
-          }
-          this.stage = stage!;
-
-          // 2D相机: PRESET.CAMERA_2D
-          const cameraNode = this.root.getChildByName(PRESET_GUI.CAMERA_2D);
-          if (!cameraNode) {
-            reject('未正确配置2D相机节点');
-          }
-
-          // 2D相机组件
-          const camera2D = cameraNode!.getComponent(Camera);
-          if (!this.camera2D) {
-            reject(`未正确配置摄像机组件`);
-          }
-
-          // 代理窗口尺寸变换事件
-          this.onScreenSizeChangedMock = misc.throttle(this.onScreenSizeChanged, this).bind(this);
-
-          // 注册基础事件
-          game.on(Game.EVENT_SHOW, this.onEnterFG, this);
-          game.on(Game.EVENT_HIDE, this.onEnterBG, this);
-          game.on(Game.EVENT_CLOSE, this.onEnded, this);
-          game.on(Game.EVENT_LOW_MEMORY, this.onLowMemory, this);
-          screen.on(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this.onScreenSizeChangedMock, this);
-          screen.on(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this.onScreenSizeChangedMock, this);
-          screen.on(PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED, this.onScreenOrientationChanged, this);
-          director.on(Director.EVENT_AFTER_UPDATE, this.onUpdate, this);
-
-          resolve();
-        },
-        this
-      );
+      const scene = director.getScene();
+      if (scene) {
+        this.setup(scene);
+      } else {
+        director.once(Director.EVENT_AFTER_SCENE_LAUNCH, this.setup, this);
+      }
     });
   }
 
@@ -100,19 +100,19 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     this._timeEnterFG = time.now();
     const diff = digit.keepBits((this._timeEnterFG - this._timeEnterBG) / 1000, 2);
     this.logger.d(`回到前台，耗时: ${diff} 秒`);
-    this._evt.app.emit(PRESET_EVENT_NAME.ENTER_FOREGROUND);
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.ENTER_FOREGROUND);
   }
 
   /** 进入后台  */
   private onEnterBG(): void {
     this._timeEnterBG = time.now();
     this.logger.d('进入后台');
-    this._evt.app.emit(PRESET_EVENT_NAME.ENTER_BACKGROUND);
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.ENTER_BACKGROUND);
   }
 
   /** 关闭应用 */
   private onEnded(): void {
-    this._timer?.stop();
+    this.of<ITimerPlugin>(PRESET_TOKEN.TIMER).stop();
     game.off(Game.EVENT_SHOW, this.onEnterFG, this);
     game.off(Game.EVENT_HIDE, this.onEnterBG, this);
     game.off(Game.EVENT_CLOSE, this.onEnded, this);
@@ -120,20 +120,20 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     screen.off(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this.onScreenSizeChangedMock, this);
     screen.off(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this.onScreenSizeChangedMock, this);
     screen.off(PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED, this.onScreenOrientationChanged, this);
-    this._evt.app.emit(PRESET_EVENT_NAME.EXIT);
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.EXIT);
   }
 
   /** 内存警告 */
   private onLowMemory(): void {
     this.logger.d('应用内存不足');
-    this._evt.app.emit(PRESET_EVENT_NAME.LOW_MEMORY);
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.LOW_MEMORY);
   }
 
   /** 窗口尺寸变化 */
   private onScreenSizeChanged(): void {
     const size = view.getVisibleSize();
     this.logger.d('应用窗口尺寸变化', size.toString());
-    this._evt.app.emit(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, size);
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, size);
   }
 
   /** 窗口尺寸变化代理 */
@@ -142,13 +142,16 @@ export class AppPlugin extends Plugin implements IAppPlugin {
   /** 屏幕朝向变化 */
   private onScreenOrientationChanged(orientation: number): void {
     this.logger.d('应用设备朝向变化', orientation);
-    this._evt.app.emit(PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED, orientation);
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(
+      PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED,
+      orientation
+    );
   }
 
   /**
    * 系统定时器更新
    */
   private onUpdate() {
-    this._timer.update(game.deltaTime);
+    this.of<ITimerPlugin>(PRESET_TOKEN.TIMER).update(game.deltaTime);
   }
 }
