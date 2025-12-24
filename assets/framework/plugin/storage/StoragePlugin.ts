@@ -1,5 +1,4 @@
 import { PRESET_TOKEN } from 'fast/config/Token';
-import { fast } from 'fast/Fast';
 import { Plugin } from 'fast/foundation/Plugin';
 import { Dict } from 'fast/Types';
 import { json, lzs, platform } from 'fast/util';
@@ -21,7 +20,7 @@ export class StoragePlugin extends Plugin implements IStoragePlugin {
   constructor() {
     super();
 
-    const argParser = fast.acquire<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER);
+    const argParser = this.of<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER);
     const isBrowser = platform.browser;
     this.modem = {
       generateKey(token: string) {

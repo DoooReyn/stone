@@ -1,12 +1,58 @@
 import { Constructor } from 'cc';
 
+import { IObjectEntry } from './IObjectEntry';
 import { IRecyclableOptions } from './IRecycleable';
 import { ObjectEntry } from './ObjectEntry';
 
 /**
+ * 对象池接口
+ */
+export interface IObjectPool<T extends IObjectEntry> {
+  /** 标识 */
+  readonly token: string;
+  /** 过期时间 */
+  readonly expires: number;
+  /** 扩容数量 */
+  readonly expands: number;
+  /** 容量限制 */
+  readonly capacity: number;
+  /** 当前数量 */
+  readonly size: number;
+
+  /**
+   * 填充池子
+   * @param n 目标数量
+   */
+  fill(n: number): void;
+
+  /**
+   * 获取对象实例
+   * @param args 初始化参数
+   * @returns 对象实例
+   */
+  acquire(...args: any[]): T;
+
+  /**
+   * 回收对象实例
+   * @param instance 要回收的对象实例
+   */
+  recycle(instance: T): void;
+
+  /**
+   * 清理过期未使用的对象
+   */
+  clearUnused(): void;
+
+  /**
+   * 清空池子中的所有对象
+   */
+  clear(): void;
+}
+
+/**
  * 对象池
  */
-export class ObjectPool<T extends ObjectEntry> {
+export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
   /** 条目列表 */
   private readonly _container: T[];
 
@@ -81,8 +127,8 @@ export class ObjectPool<T extends ObjectEntry> {
    */
   recycle(instance: T): void {
     if (instance && instance.recycle()) {
-      const capacity = this.capacity;
-      const size = this.size;
+      const { capacity } = this;
+      const { size } = this;
       if (capacity <= 0 || size < capacity) {
         // 延迟回收，防止同一时间被回收又被取出使用可能引起不必要的麻烦
         setTimeout(() => this._container.push(instance), 0);
@@ -94,10 +140,10 @@ export class ObjectPool<T extends ObjectEntry> {
    * 清理过期未使用的对象
    */
   clearUnused(): void {
-    const expires = this.expires;
+    const { expires } = this;
     if (expires <= 0) return;
 
-    const expands = this.options.expands;
+    const { expands } = this.options;
     if (this.size <= expands) return;
 
     for (let i = this.size - 1 - expands; i >= 0; i--) {

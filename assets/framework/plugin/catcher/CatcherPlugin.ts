@@ -1,5 +1,4 @@
 import { PRESET_TOKEN } from 'fast/config/Token';
-import { fast } from 'fast/Fast';
 import { Plugin } from 'fast/foundation/Plugin';
 
 import { IGlobalPlugin } from '../global/IGlobalPlugin';
@@ -22,7 +21,7 @@ export class Catcher extends Plugin implements ICatcherPlugin {
     super();
 
     const self = this;
-    const gg = fast.acquire<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
+    const gg = this.of<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
     if (gg.has('addEventListener')) {
       const addEventListener = gg.get<Function>('addEventListener')!;
       addEventListener('unhandledrejection', function (event: PromiseRejectionEvent) {

@@ -18,6 +18,10 @@ class Fast {
   /** 插件容器 */
   private readonly _container: Map<string, IPlugin> = new Map();
 
+  constructor() {
+    Plugin.Of = this.acquire.bind(this);
+  }
+
   /** 日志 */
   public get logger() {
     return logcat.acquire(this.infomation.name);

@@ -27,6 +27,12 @@ export class Plugin {
    */
   public static readonly Token: string;
 
+  public static Of: <T extends IPlugin>(token: string) => T;
+
+  public of<T extends IPlugin>(token: string) {
+    return Plugin.Of<T>(token);
+  }
+
   /** 标识 */
   public get token() {
     return (this.constructor as typeof Plugin).Token;

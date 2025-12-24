@@ -7,7 +7,8 @@ import { Pair } from 'fast/Types';
 import { IObjectEntry } from './IObjectEntry';
 import { IObjectPoolPlugin } from './IObjectPoolPlugin';
 import { IRecyclableOptions } from './IRecycleable';
-import { ObjectPool } from './ObjectPool';
+import { ObjectEntry } from './ObjectEntry';
+import { IObjectPool, ObjectPool } from './ObjectPool';
 
 /**
  * 对象池容器插件
@@ -16,14 +17,14 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
   public static readonly Token = PRESET_TOKEN.OBJECT_POOL;
 
   /** 池子容器 */
-  private _container: Map<string, Pair<ObjectPool<IObjectEntry>, Constructor<IObjectEntry>>> = new Map();
+  private _container: Map<string, Pair<IObjectPool<IObjectEntry>, Constructor<IObjectEntry>>> = new Map();
 
   /**
    * 注册对象池
    * @param cls 对象构造函数
    * @param options 池子配置
    */
-  register(cls: Constructor<IObjectEntry>, options: IRecyclableOptions): void {
+  register(cls: Constructor<ObjectEntry>, options: IRecyclableOptions): void {
     const token = options.token;
 
     if (this._container.has(token)) {
@@ -79,7 +80,7 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * @param cls 对象构造函数或池子标记
    * @returns 对象池实例
    */
-  poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): ObjectPool<T> {
+  poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): IObjectPool<T> {
     let token = '';
 
     if (typeof cls === 'string') {
@@ -97,7 +98,7 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
       throw new FastError(this.token, `对象池⁅${token}⁆未注册`);
     }
 
-    return this._container.get(token)![0] as ObjectPool<T>;
+    return this._container.get(token)![0] as IObjectPool<T>;
   }
 
   /**

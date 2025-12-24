@@ -4,9 +4,14 @@ export * from './Init';
 export * from './Types';
 
 // config
+export * from './config/AppArgs';
+export * from './config/Event';
 export * from './config/Global';
+export * from './config/Gui';
 export * from './config/ID';
 export * from './config/ObjectPool';
+export * from './config/Storage';
+export * from './config/Timer';
 export * from './config/Token';
 
 // foundation
@@ -24,6 +29,8 @@ export * from './foundation/Selector';
 export * from './foundation/Trigger';
 
 // plugin
+export * from './plugin/app/IAppPlugin';
+export * from './plugin/app/AppPlugin';
 export * from './plugin/arg-parser/ArgParser';
 export * from './plugin/arg-parser/IAppArgs';
 export * from './plugin/arg-parser/IArgParser';

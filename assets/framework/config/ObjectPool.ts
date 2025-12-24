@@ -1,14 +1,23 @@
 import { IRecyclableOptions } from '../plugin/pool/IRecycleable';
 
 /**
+ * 框架内置对象池回收配置接口
+ */
+export interface IObjectPoolPreset {
+  /** 模型对象池配置 */
+  MODEL: IRecyclableOptions;
+  /** 触发器对象池配置 */
+  TRIGGER: IRecyclableOptions;
+  /** 选项对象池配置 */
+  OPTION: IRecyclableOptions;
+  /** 计数器对象池配置 */
+  COUNTER: IRecyclableOptions;
+}
+
+/**
  * 框架内置对象池回收配置
  */
-export const PRESET_OBJECT_POOL: {
-  MODEL: IRecyclableOptions;
-  TRIGGER: IRecyclableOptions;
-  OPTION: IRecyclableOptions;
-  COUNTER: IRecyclableOptions;
-} = {
+export const PRESET_OBJECT_POOL: IObjectPoolPreset = {
   MODEL: {
     token: 'Model',
     capacity: 0,

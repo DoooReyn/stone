@@ -1,6 +1,7 @@
 /** 框架内置标识 */
 export const PRESET_TOKEN = {
   FAST: 'Fast',
+  APP: 'App',
   ARG_PARSER: 'ArgParser',
   ASCENDING_ID: 'AscendingId',
   CATCHER: 'Catcher',

@@ -1,6 +1,5 @@
 import { PRESET_APP_ARGS } from 'fast/config/AppArgs';
 import { PRESET_TOKEN } from 'fast/config/Token';
-import { fast } from 'fast/Fast';
 import { Plugin } from 'fast/foundation/Plugin';
 import { Dict } from 'fast/Types';
 import { dict } from 'fast/util';
@@ -23,7 +22,7 @@ export class ArgParserPlugin extends Plugin implements IArgParserPlugin {
   }
 
   parse(args?: Dict) {
-    const gg = fast.acquire<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
+    const gg = this.of<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
     if (gg?.has('location')) {
       const url = gg.get<Location>('location')?.href ?? '';
       const query = url.split('?');

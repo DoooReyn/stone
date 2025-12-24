@@ -3,7 +3,7 @@ import { IPlugin } from 'fast/foundation/Plugin';
 
 import { IObjectEntry } from './IObjectEntry';
 import { IRecyclableOptions } from './IRecycleable';
-import { ObjectPool } from './ObjectPool';
+import { IObjectPool } from './ObjectPool';
 
 /**
  * 对象池插件接口
@@ -34,7 +34,7 @@ export interface IObjectPoolPlugin extends IPlugin {
    * @param cls 对象构造函数或池子标记
    * @returns 对象池实例
    */
-  poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): ObjectPool<T>;
+  poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): IObjectPool<T>;
 
   /**
    * 从对象池获取实例

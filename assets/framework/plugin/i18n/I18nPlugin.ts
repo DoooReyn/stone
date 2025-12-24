@@ -2,7 +2,6 @@ import { sys } from 'cc';
 import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_STORAGE } from 'fast/config/Storage';
 import { PRESET_TOKEN } from 'fast/config/Token';
-import { fast } from 'fast/Fast';
 import { Plugin } from 'fast/foundation/Plugin';
 import { literal } from 'fast/util';
 
@@ -31,14 +30,14 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
   }
   set language(lang: Language) {
     this._current = lang;
-    fast
-      .acquire<IStoragePlugin>(PRESET_TOKEN.STORAGE)
-      .itemOf<IStorageEntryLanguage>(PRESET_STORAGE.LANGUAGE)!.data!.language = lang;
-    fast.acquire<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.LANGUAGE_CHANGED, this._current);
+    this.of<IStoragePlugin>(PRESET_TOKEN.STORAGE).itemOf<IStorageEntryLanguage>(
+      PRESET_STORAGE.LANGUAGE
+    )!.data!.language = lang;
+    this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.LANGUAGE_CHANGED, this._current);
   }
 
   async initialize() {
-    const languages = fast.acquire<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER).args.languages;
+    const languages = this.of<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER).args.languages;
     // 添加支持的语言
     for (let i = 0; i < languages.length; i++) {
       this._supported.add(languages[i]);
@@ -48,7 +47,7 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
     // 1. 如果本地已经有记录，则使用本地缓存的语言
     // 2. 如果没有本地记录，则使用当前系统的语言
     // 3. 如果系统语言不在支持列表中，则使用传入的语言
-    const storage = fast.acquire<IStoragePlugin>(PRESET_TOKEN.STORAGE);
+    const storage = this.of<IStoragePlugin>(PRESET_TOKEN.STORAGE);
     // 先查询语言缓存
     const cache = storage.itemOf<IStorageEntryLanguage>(PRESET_STORAGE.LANGUAGE);
     // 再注册语言存储项
