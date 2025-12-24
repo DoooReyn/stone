@@ -34,6 +34,15 @@ export async function boot() {
     stone.fast.logger.d(`插件 ⁅${plugin.Token}⁆ 已就绪`);
   }
 
+  // 在发布模式下统一提升日志等级
+  if (stone.fast.acquire<stone.IArgParserPlugin>(stone.PRESET_TOKEN.ARG_PARSER).isProd) {
+    stone.logcat.each((logger) => {
+      if (logger.level <= stone.LogLevel.DEBUG) {
+        logger.level = stone.LogLevel.WARN;
+      }
+    });
+  }
+
   // 注册对象池
   const objectPool = stone.fast.acquire<stone.IObjectPoolPlugin>(stone.PRESET_TOKEN.OBJECT_POOL);
   objectPool.register(stone.Trigger, stone.PRESET_OBJECT_POOL.TRIGGER);

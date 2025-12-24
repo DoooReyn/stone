@@ -54,4 +54,12 @@ export class KVPair<T> {
   public has(token: string): boolean {
     return this._container.has(token);
   }
+
+  /**
+   * 遍历
+   * @param visit 访问方法
+   */
+  public each(visit: (value: T, key: string, map: Map<string, T>) => void) {
+    this._container.forEach(visit);
+  }
 }
