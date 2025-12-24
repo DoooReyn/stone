@@ -41,7 +41,7 @@ export class ArgParserPlugin extends Plugin implements IArgParserPlugin {
       this.args = { ...this.args, ...args };
     }
 
-    this.logger.d('应用参数', this.args);
+    this.logger.i('应用参数', this.args);
   }
 
   isEnv(env: IAppArgs['env']) {

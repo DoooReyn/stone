@@ -71,7 +71,7 @@ export class Logger {
       const key = LogLevel[level] as keyof typeof LogLevel;
       const flag = FLAGS[key];
       const color = COLORS[key];
-      const prefix = `${flag} ${now.toLocaleTimeString()} ${this.token}`;
+      const prefix = `${flag} ${now.toLocaleTimeString()}.${now.getMilliseconds()} ${this.token}`;
       const out: { token: string; content: any; timestamp: number; stack?: string } = {
         token: this.token,
         content: args,

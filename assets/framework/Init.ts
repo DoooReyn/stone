@@ -25,9 +25,9 @@ export async function boot() {
 
   // 初始化插件（按顺序）
   for (const plugin of plugins) {
-    // await stone.misc.timeAsync(plugin.Token, stone.fast.acquire(plugin.Token).initialize());
-    stone.fast.logger.d(`插件 ⁅${plugin.Token}⁆ 已就绪`);
+    stone.fast.logger.d(`插件 ⁅${plugin.Token}⁆ 准备中`);
     await stone.fast.acquire(plugin.Token).initialize();
+    stone.fast.logger.d(`插件 ⁅${plugin.Token}⁆ 已就绪`);
   }
 
   // 注册对象池

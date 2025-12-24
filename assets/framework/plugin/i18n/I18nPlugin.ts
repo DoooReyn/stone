@@ -57,17 +57,17 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
     if (cache) {
       // 使用缓存语言
       this.language = cache.data!.language;
-      this.logger.d(`使用缓存语言 ${this.language}`);
+      this.logger.i(`使用缓存语言 ${this.language}`);
     } else {
       const lang = sys.language;
       if (this._supported.has(lang)) {
         // 使用系统语言
         this.language = lang;
-        this.logger.d(`使用系统语言 ${this.language}`);
+        this.logger.i(`使用系统语言 ${this.language}`);
       } else {
         // 使用传入语言
         this.language = languages[0];
-        this.logger.d(`使用传入语言 ${this.language}`);
+        this.logger.i(`使用传入语言 ${this.language}`);
       }
     }
   }
