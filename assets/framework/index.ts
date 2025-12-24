@@ -34,8 +34,6 @@ export * from './plugin/app/AppPlugin';
 export * from './plugin/arg-parser/ArgParser';
 export * from './plugin/arg-parser/IAppArgs';
 export * from './plugin/arg-parser/IArgParser';
-export * from './plugin/ascending-id/AscendingIdPlugin';
-export * from './plugin/ascending-id/IAscendingIdPlugin';
 export * from './plugin/catcher/ICatcherPlugin';
 export * from './plugin/catcher/CatcherPlugin';
 export * from './plugin/event-bus/EventBusPlugin';

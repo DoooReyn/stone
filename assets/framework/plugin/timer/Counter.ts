@@ -1,8 +1,6 @@
 import { PRESET_ID } from 'fast/config/ID';
-import { PRESET_TOKEN } from 'fast/config/Token';
-import { fast } from 'fast/Fast';
-import { IAscendingIdPlugin } from 'fast/plugin/ascending-id/IAscendingIdPlugin';
 import { ObjectEntry } from 'fast/plugin/pool/ObjectEntry';
+import { asc } from 'fast/util';
 
 import { Triggers } from '../../foundation/Trigger';
 
@@ -64,7 +62,7 @@ export class Counter extends ObjectEntry {
   }
 
   protected onInitialize(interval: number = 0, total: number = 1): void {
-    this._cid = fast.acquire<IAscendingIdPlugin>(PRESET_TOKEN.ASCENDING_ID).next(PRESET_ID.TIMER);
+    this._cid = asc.next(PRESET_ID.TIMER);
     this.$interval = interval;
     this.$total = total;
     this.$accumulated = 0;

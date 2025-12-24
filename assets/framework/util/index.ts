@@ -1,3 +1,4 @@
+export * as asc from './AscendingId';
 export * as be from './Be';
 export * as color from './Color';
 export * as dict from './Dict';

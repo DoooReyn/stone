@@ -5,7 +5,6 @@ export async function boot() {
   // - 按照依赖关系进行排序，无依赖的应该放在最前面
   // - 可以根据需要酌情删减
   const plugins = [
-    stone.AscendingIdPlugin,
     stone.GlobalPlugin,
     stone.ObjectPoolPlugin,
     stone.NodePoolPlugin,

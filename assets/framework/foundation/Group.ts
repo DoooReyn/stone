@@ -1,7 +1,5 @@
 import { PRESET_ID } from 'fast/config/ID';
-import { PRESET_TOKEN } from 'fast/config/Token';
-import { fast } from 'fast/Fast';
-import { IAscendingIdPlugin } from 'fast/plugin/ascending-id/IAscendingIdPlugin';
+import { asc } from 'fast/util';
 
 /**
  * 分组辅助工具
@@ -17,7 +15,7 @@ export class Group<T extends object = any> {
   public filter: undefined | ((d: T) => boolean);
 
   constructor() {
-    this.id = 'group_' + fast.acquire<IAscendingIdPlugin>(PRESET_TOKEN.ASCENDING_ID).next(PRESET_ID.GROUP);
+    this.id = 'group_' + asc.next(PRESET_ID.GROUP);
   }
 
   /**
