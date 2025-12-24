@@ -29,11 +29,11 @@ class Fast {
    */
   public register(plugin: typeof Plugin) {
     if (this._container.has(plugin.Token)) {
-      throw new FastError(this.infomation.name, `插件⁅${plugin.Token}⁆重复注册`);
+      throw new FastError(this.infomation.name, `插件 ⁅${plugin.Token}⁆ 重复注册`);
     }
 
     this._container.set(plugin.Token, new plugin());
-    this.logger.d(`插件⁅${plugin.Token}⁆已注册`);
+    this.logger.d(`插件 ⁅${plugin.Token}⁆ 已注册`);
   }
 
   /**
@@ -44,7 +44,7 @@ class Fast {
     if (this._container.has(name)) {
       this._container.delete(name);
       this._container.get(name)!.dispose();
-      this.logger.d(`插件⁅${name}⁆已注销`);
+      this.logger.d(`插件 ⁅${name}⁆ 已注销`);
     }
   }
 
@@ -57,7 +57,7 @@ class Fast {
     const token = typeof alias !== 'string' ? (alias as unknown as typeof Plugin).Token : alias;
 
     if (!this._container.has(token)) {
-      throw new FastError(this.infomation.name, `插件⁅${token}⁆未注册`);
+      throw new FastError(this.infomation.name, `插件 ⁅${token}⁆ 未注册`);
     }
 
     return this._container.get(token) as T;

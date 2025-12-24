@@ -1,4 +1,5 @@
 import { misc, sys, Texture2D } from 'cc';
+import { fast } from 'fast/Fast';
 import { AnyFn } from 'fast/Types';
 
 import { runAsync, runSync } from './Might';
@@ -107,9 +108,9 @@ function setAntiAliasing(tex: Texture2D, enabled: boolean): void {
  * @param operation 耗时操作
  */
 function timeSync(flag: string, operation: AnyFn) {
-  console.time(flag);
+  const start = Date.now();
   runSync(operation);
-  console.timeEnd(flag);
+  fast.logger.d(`${flag} 耗时 ${Date.now() - start} ms`);
 }
 
 /**
@@ -118,18 +119,32 @@ function timeSync(flag: string, operation: AnyFn) {
  * @param operation 耗时操作
  */
 async function timeAsync(flag: string, operation: Promise<any>) {
-  console.time(flag);
+  const start = Date.now();
   await runAsync(operation);
-  console.timeEnd(flag);
+  fast.logger.d(`${flag} 耗时 ${Date.now() - start} ms`);
 }
 
 /**
  * 模拟耗时操作
- * @param ms 操作时间
+ * @param delay 操作时间
  */
-function simulateLongTask(ms: number) {
+function simulateLongTask(delay: number) {
   const start = performance.now();
-  while (performance.now() - start < ms) {}
+  while (performance.now() - start < delay) {}
+}
+
+/**
+ * 模拟耗时操作成功率
+ * @param probability 成功率
+ * @param delay 操作时间
+ * @returns
+ */
+function simulateProbability(probability: number, delay = 1000) {
+  return new Promise<boolean>((resolve) => {
+    setTimeout(function () {
+      resolve(Math.random() < probability);
+    }, delay);
+  });
 }
 
 export { CTX, idle, debounce, throttle, ban, nextTick, setAntiAliasing, timeAsync, timeSync, simulateLongTask };

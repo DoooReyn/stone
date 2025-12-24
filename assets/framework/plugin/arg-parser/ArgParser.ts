@@ -18,7 +18,11 @@ export class ArgParserPlugin extends Plugin implements IArgParserPlugin {
   /** 参数 */
   public args: IAppArgs = dict.deepCopy(PRESET_APP_ARGS) as IAppArgs;
 
-  parse(args: Dict) {
+  async initialize() {
+    this.parse();
+  }
+
+  parse(args?: Dict) {
     const gg = fast.acquire<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
     if (gg?.has('location')) {
       const url = gg.get<Location>('location')?.href ?? '';

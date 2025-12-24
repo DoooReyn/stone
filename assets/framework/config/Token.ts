@@ -6,6 +6,7 @@ export const PRESET_TOKEN = {
   CATCHER: 'Catcher',
   EVENT_BUS: 'EventBus',
   GLOBAL: 'Global',
+  I18N: 'I18n',
   NODE_POOL: 'NodePool',
   OBJECT_POOL: 'ObjectPool',
   STORAGE: 'Storage',

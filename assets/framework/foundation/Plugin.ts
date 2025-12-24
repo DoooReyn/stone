@@ -99,7 +99,7 @@ export interface IPlugin {
   /** 日志 */
   get logger(): Logger;
   /** 初始化 */
-  initialize(): Promise<void>;
+  initialize(...args: any[]): Promise<void>;
   /** 销毁 */
   dispose(): Promise<void>;
 }

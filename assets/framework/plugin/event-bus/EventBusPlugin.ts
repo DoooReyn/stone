@@ -1,4 +1,4 @@
-import { PRESET_EVENT } from 'fast/config/Event';
+import { PRESET_EVENT_CHANNEL } from 'fast/config/Event';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { Plugin } from 'fast/foundation/Plugin';
 
@@ -17,19 +17,19 @@ export class EventBusPlugin extends Plugin implements IEventBusPlugin {
   private _container: Map<string, IEventChannel> = new Map();
 
   get shared() {
-    return this.acquire(PRESET_EVENT.SHARED);
+    return this.acquire(PRESET_EVENT_CHANNEL.SHARED);
   }
 
   get app() {
-    return this.acquire(PRESET_EVENT.APP);
+    return this.acquire(PRESET_EVENT_CHANNEL.APP);
   }
 
   get gui() {
-    return this.acquire(PRESET_EVENT.GUI);
+    return this.acquire(PRESET_EVENT_CHANNEL.GUI);
   }
 
   get red() {
-    return this.acquire(PRESET_EVENT.RED);
+    return this.acquire(PRESET_EVENT_CHANNEL.RED);
   }
 
   acquire(channel: string): IEventChannel {

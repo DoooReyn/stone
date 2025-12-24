@@ -13,7 +13,7 @@ export interface IArgParserPlugin extends IPlugin {
    * 解析参数
    * @param args 输入参数
    */
-  parse(args: Dict): void;
+  parse(args?: Dict): void;
   /**
    * 是否指定环境
    * @param env 环境

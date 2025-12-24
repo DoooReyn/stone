@@ -11,6 +11,7 @@ export async function boot() {
     stone.TimerPlugin,
     stone.ArgParserPlugin,
     stone.StoragePlugin,
+    stone.I18nPlugin,
   ];
 
   // 注册插件
@@ -20,6 +21,8 @@ export async function boot() {
 
   // 初始化插件（按顺序）
   for (const plugin of plugins) {
+    // await stone.misc.timeAsync(plugin.Token, stone.fast.acquire(plugin.Token).initialize());
+    stone.fast.logger.d(`插件 ⁅${plugin.Token}⁆ 已就绪`);
     await stone.fast.acquire(plugin.Token).initialize();
   }
 

@@ -37,9 +37,9 @@ export class GlobalPlugin extends Plugin {
    */
   set<T>(varname: string, value: T): void {
     if (this.has(varname)) {
-      this.logger.w(`全局变量⁅${varname}⁆已覆盖`);
+      this.logger.w(`全局变量 ⁅${varname}⁆ 已覆盖`);
     } else {
-      this.logger.d(`全局变量⁅${varname}⁆已添加`);
+      this.logger.d(`全局变量 ⁅${varname}⁆ 已添加`);
     }
     this._env[varname] = value;
   }
@@ -51,7 +51,7 @@ export class GlobalPlugin extends Plugin {
   unset(varname: string): void {
     if (this.has(varname)) {
       delete this._env[varname];
-      this.logger.d(`全局变量⁅${varname}⁆已删除`);
+      this.logger.d(`全局变量 ⁅${varname}⁆ 已删除`);
     }
   }
 }
