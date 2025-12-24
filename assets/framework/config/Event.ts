@@ -28,4 +28,6 @@ export const PRESET_EVENT_NAME = {
   SCREEN_FULL_CHANGED: 'fullscreen-change' as ScreenEvent,
   /** 应用设备朝向变化 */
   SCREEN_ORIENTATION_CHANGED: 'orientation-change' as ScreenEvent,
+  /** 红点状态切换 */
+  RED_STATE_CHANGED: 'red:state-changed',
 };

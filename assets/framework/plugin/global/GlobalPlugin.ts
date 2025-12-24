@@ -39,7 +39,7 @@ export class GlobalPlugin extends Plugin {
     if (this.has(varname)) {
       this.logger.w(`全局变量 ⁅${varname}⁆ 已覆盖`);
     } else {
-      this.logger.d(`全局变量 ⁅${varname}⁆ 已添加`);
+      this.logger.i(`全局变量 ⁅${varname}⁆ 已添加`);
     }
     this._env[varname] = value;
   }

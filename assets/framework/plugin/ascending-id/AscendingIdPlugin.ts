@@ -4,7 +4,7 @@ import { Plugin } from 'fast/foundation/Plugin';
 /**
  * 递增ID生成器
  */
-export class AscendingId extends Plugin {
+export class AscendingIdPlugin extends Plugin {
   public static readonly Token: string = PRESET_TOKEN.ASCENDING_ID;
 
   /** 递增ID容器 */

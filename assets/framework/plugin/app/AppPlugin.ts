@@ -81,8 +81,16 @@ export class AppPlugin extends Plugin implements IAppPlugin {
       const scene = director.getScene();
       if (scene) {
         this.setup(scene);
+        resolve();
       } else {
-        director.once(Director.EVENT_AFTER_SCENE_LAUNCH, this.setup, this);
+        director.once(
+          Director.EVENT_AFTER_SCENE_LAUNCH,
+          (scene) => {
+            this.setup(scene);
+            resolve();
+          },
+          this
+        );
       }
     });
   }
