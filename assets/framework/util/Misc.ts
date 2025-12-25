@@ -68,9 +68,7 @@ function ban() {
       return false;
     };
     document.onkeydown = document.onkeyup = function (e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-        return false;
-      }
+      return !!(e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I'));
     };
     (() => {
       const a = ['c', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r'].join('');
