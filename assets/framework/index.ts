@@ -69,6 +69,8 @@ export * from './plugin/timer/Counter';
 export * from './plugin/timer/Tick';
 export * from './plugin/timer/ITimerPlugin';
 export * from './plugin/timer/TimerPlugin';
+export * from './plugin/transition/ITransitionPlugin';
+export * from './plugin/transition/TransitionPlugin';
 
 // util
 export * from './util';

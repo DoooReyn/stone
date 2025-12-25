@@ -32,4 +32,6 @@ export const PRESET_TOKEN = {
   TABLE_QUERY: 'TableQuery',
   /** 定时器 */
   TIMER: 'Timer',
+  /** 节点过渡动画 */
+  TRANSITION: 'Transition',
 } as const;
