@@ -1,5 +1,8 @@
 import * as stone from './index';
 
+/**
+ * 启动框架
+ */
 export async function boot() {
   // 插件列表
   // - 按照依赖关系进行排序，无依赖的应该放在最前面
