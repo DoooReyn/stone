@@ -24,6 +24,12 @@ export const PRESET_TOKEN = {
   PROFILER: 'Profiler',
   /** 红点 */
   RED: 'Red',
+  /** ASTC 资源 */
+  RES_ASTC: 'ASTC',
+  /** 资源缓存 */
+  RES_CACHE: 'ResCache',
+  /** 资源加载 */
+  RES_LOADER: 'ResLoader',
   /** 敏感词过滤器 */
   SENSITIVE: 'Sensitive',
   /** 本地存储 */

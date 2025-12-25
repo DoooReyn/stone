@@ -20,6 +20,10 @@ export async function boot() {
     stone.I18nPlugin,
     stone.RedPlugin,
 
+    stone.ResAstcPlugin,
+    stone.ResCachePlugin,
+    stone.ResLoaderPlugin,
+
     stone.ProfilerPlugin,
     stone.AppPlugin,
   ];
