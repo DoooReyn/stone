@@ -9,11 +9,14 @@ export type AnyFn = (...args: any[]) => any;
 /** 任意异步函数 */
 export type AnyPromise = (...args: any[]) => Promise<any>;
 
-/** 字典类型 */
-export type Dict = Record<string | symbol, any>;
-
 /** 字典键类型 */
 export type Key = string | symbol;
+
+/** 字典类型 */
+export type Dict = Record<Key, any>;
+
+/** 固定数据的字典类型 */
+export type DictOf<V = any> = Record<Key, V>;
 
 /** 全局变量 */
 export type Global = Dict & (typeof Window | typeof globalThis);

@@ -63,6 +63,8 @@ export * from './plugin/sensitive/SensitivePlugin';
 export * from './plugin/storage/IStoragePlugin';
 export * from './plugin/storage/StorageEntry';
 export * from './plugin/storage/StoragePlugin';
+export * from './plugin/table-query/ITableQueryPlugin';
+export * from './plugin/table-query/TableQueryPlugin';
 export * from './plugin/timer/Counter';
 export * from './plugin/timer/Tick';
 export * from './plugin/timer/ITimerPlugin';

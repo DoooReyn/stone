@@ -28,6 +28,8 @@ export const PRESET_TOKEN = {
   SENSITIVE: 'Sensitive',
   /** 本地存储 */
   STORAGE: 'Storage',
+  /** 配置表查询器 */
+  TABLE_QUERY: 'TableQuery',
   /** 定时器 */
   TIMER: 'Timer',
 } as const;

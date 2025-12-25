@@ -11,6 +11,7 @@ export async function boot() {
     stone.EventBusPlugin,
     stone.TimerPlugin,
     stone.SensitivePlugin,
+    stone.TableQueryPlugin,
 
     stone.Catcher,
     stone.ArgParserPlugin,
