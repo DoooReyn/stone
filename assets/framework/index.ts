@@ -5,14 +5,17 @@ export * from './Types';
 
 // config
 export * from './config/AppArgs';
+export * from './config/Color';
 export * from './config/Event';
 export * from './config/Global';
 export * from './config/Gui';
 export * from './config/ID';
 export * from './config/ObjectPool';
+export * from './config/Res';
 export * from './config/Storage';
 export * from './config/Timer';
 export * from './config/Token';
+export * from './config/Transition';
 
 // foundation
 export * from './foundation/DeepProxy';
