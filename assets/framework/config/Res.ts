@@ -1,5 +1,7 @@
 /** 框架内置资源相关配置 */
 export const PRESET_RES = {
+  /** 懒清理间隔时间（秒） */
+  LAZY_CLEANUP_S: 10,
   /** 资源默认过期时间（毫秒） */
   ASSET_EXPIRES_MS: 120_000,
   /**

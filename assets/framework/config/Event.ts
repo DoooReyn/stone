@@ -12,6 +12,8 @@ export const PRESET_EVENT_CHANNEL = {
 
 /** 框架内置事件名称 */
 export const PRESET_EVENT_NAME = {
+  // ---------------- APP ----------------
+
   /** 应用语种变化 */
   LANGUAGE_CHANGED: 'app:language-changed',
   /** 应用进入前台 */
@@ -28,6 +30,20 @@ export const PRESET_EVENT_NAME = {
   SCREEN_FULL_CHANGED: 'fullscreen-change' as ScreenEvent,
   /** 应用设备朝向变化 */
   SCREEN_ORIENTATION_CHANGED: 'orientation-change' as ScreenEvent,
+
+  // ---------------- RED ----------------
+
   /** 红点状态切换 */
   RED_STATE_CHANGED: 'red:state-changed',
+
+  // ---------------- GUI ----------------
+
+  /** 应用屏幕点击 */
+  SCREEN_TAPPED: 'gui:screen-tapped',
+  /** 红点变化 */
+  RED_DOT_CHANGED: 'gui:red-dot-changed@',
+  /** 弹窗层遮罩点击事件 */
+  POPUP_MASK_CLICKED: 'gui:popup-mask-clicked',
+  /** 弹窗层遮罩点击事件 */
+  ALERT_MASK_CLICKED: 'gui:alert-mask-clicked',
 };
