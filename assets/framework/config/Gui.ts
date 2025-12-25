@@ -1,3 +1,4 @@
+/** 框架内置 GUI 参数 */
 export const PRESET_GUI = {
   /** 启动场景根节点名称 */
   ROOT: 'root',
