@@ -26,6 +26,7 @@ export async function boot() {
 
     stone.ProfilerPlugin,
     stone.AppPlugin,
+    stone.AudioPlayerPlugin,
   ];
 
   // 注册插件

@@ -2,4 +2,5 @@
 export const PRESET_ID = {
   TIMER: 'timer',
   GROUP: 'group',
+  AUDIO: 'audio',
 } as const;

@@ -31,6 +31,11 @@ export * from './foundation/Trigger';
 // plugin
 export * from './plugin/app/IAppPlugin';
 export * from './plugin/app/AppPlugin';
+export * from './plugin/audio-player/AudioEntry';
+export * from './plugin/audio-player/AudioPlayerPlugin';
+export * from './plugin/audio-player/IAudioPlayerPlugin';
+export * from './plugin/audio-player/MusicPlayer';
+export * from './plugin/audio-player/SoundPlayer';
 export * from './plugin/arg-parser/ArgParser';
 export * from './plugin/arg-parser/IAppArgs';
 export * from './plugin/arg-parser/IArgParser';

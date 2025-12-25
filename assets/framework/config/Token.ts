@@ -8,6 +8,8 @@ export const PRESET_TOKEN = {
   ARG_PARSER: 'ArgParser',
   /** 递增编号生成器 */
   ASCENDING_ID: 'AscendingId',
+  /** 音频播放器 */
+  AUDIO_PLAYER: 'AudioPlayer',
   /** 异常捕获 */
   CATCHER: 'Catcher',
   /** 事件总线 */
