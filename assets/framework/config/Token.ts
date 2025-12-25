@@ -42,4 +42,6 @@ export const PRESET_TOKEN = {
   TIMER: 'Timer',
   /** 节点过渡动画 */
   TRANSITION: 'Transition',
+  /** 富文本图集 */
+  RICH_TEXT_ATLAS: 'RichTextAtlas',
 } as const;

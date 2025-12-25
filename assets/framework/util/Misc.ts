@@ -108,7 +108,7 @@ function setAntiAliasing(tex: Texture2D, enabled: boolean): void {
 function addTimeStop(flag: string) {
   const start = Date.now();
   return function stop() {
-    fast.logger.d(`${flag} 耗时 ${Date.now() - start} ms`);
+    fast.logger.d(`${flag}耗时 ${Date.now() - start} ms`);
   };
 }
 

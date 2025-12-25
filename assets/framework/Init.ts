@@ -30,6 +30,7 @@ export async function boot() {
     stone.ProfilerPlugin,
     stone.AppPlugin,
     stone.AudioPlayerPlugin,
+    stone.RichTextAtlasPlugin,
   ];
 
   // 注册插件

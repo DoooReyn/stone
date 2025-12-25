@@ -24,4 +24,6 @@ export const PRESET_RES = {
     capacity: 16,
     expires: 30_000,
   },
+  /** 默认富文本图集名称 */
+  RICH_TEXT_ATLAS: 'richtext-default',
 };
