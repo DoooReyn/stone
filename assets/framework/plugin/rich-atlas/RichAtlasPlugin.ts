@@ -92,7 +92,7 @@ export class RichTextAtlasPlugin extends Plugin implements IRichTextAtlasPlugin 
 
     this.configureAtlas(PRESET_RES.RICH_TEXT_ATLAS, RichTextAtlasLevel.XLarge);
     this._template = new RichTextTemplate();
-    this.of<IAppPlugin>(PRESET_TOKEN.APP).root.addChild(this._template);
+    this.of<IAppPlugin>(PRESET_TOKEN.APP).root.parent!.insertChild(this._template, 2);
   }
 
   configureAtlas(atlasKey: string, level: RichTextAtlasLevel): void {

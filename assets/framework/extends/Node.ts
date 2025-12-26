@@ -179,73 +179,73 @@ declare module 'cc' {
 if (!EDITOR_NOT_IN_PREVIEW) {
   js.mixin(Node.prototype, {
     get uiGraphics() {
-      return this.getComponent(Graphics);
+      return this.getComponent('cc.Graphics');
     },
     get uiLabel() {
-      return this.getComponent(Label);
+      return this.getComponent('cc.Label');
     },
     get uiRichText() {
-      return this.getComponent(RichText);
+      return this.getComponent('cc.RichText');
     },
     get uiSprite() {
-      return this.getComponent(Sprite);
+      return this.getComponent('cc.Sprite');
     },
     get uiButton() {
-      return this.getComponent(Button);
+      return this.getComponent('cc.Button');
     },
     get uiCanvas() {
-      return this.getComponent(Canvas);
+      return this.getComponent('cc.Canvas');
     },
     get uiEditBox() {
-      return this.getComponent(EditBox);
+      return this.getComponent('cc.EditBox');
     },
     get uiLayout() {
-      return this.getComponent(Layout);
+      return this.getComponent('cc.Layout');
     },
     get uiPageView() {
-      return this.getComponent(PageView);
+      return this.getComponent('cc.PageView');
     },
     get uiProgressBar() {
-      return this.getComponent(ProgressBar);
+      return this.getComponent('cc.ProgressBar');
     },
     get uiScrollView() {
-      return this.getComponent(ScrollView);
+      return this.getComponent('cc.ScrollView');
     },
     get uiSlider() {
-      return this.getComponent(Slider);
+      return this.getComponent('cc.Slider');
     },
     get uiToggle() {
-      return this.getComponent(Toggle);
+      return this.getComponent('cc.Toggle');
     },
     get uiWidget() {
-      return this.getComponent(Widget);
+      return this.getComponent('cc.Widget');
     },
     get uiOpacity() {
-      return this.getComponent(UIOpacity);
+      return this.getComponent('cc.UIOpacity');
     },
     get uiTransform() {
-      return this.getComponent(UITransform);
+      return this.getComponent('cc.UITransform');
     },
     get uiMask() {
-      return this.getComponent(Mask);
+      return this.getComponent('cc.Mask');
     },
     get uiAudio() {
-      return this.getComponent(AudioSource);
+      return this.getComponent('cc.AudioSource');
     },
     get uiSpine() {
-      return this.getComponent(sp.Skeleton);
+      return this.getComponent('sp.Skeleton');
     },
     get uiCamera() {
-      return this.getComponent(Camera);
+      return this.getComponent('cc.Camera');
     },
     get uiTiledMap() {
-      return this.getComponent(TiledMap);
+      return this.getComponent('cc.TiledMap');
     },
     get uiWebView() {
-      return this.getComponent(WebView);
+      return this.getComponent('cc.WebView');
     },
     get uiVideoPlayer() {
-      return this.getComponent(VideoPlayer);
+      return this.getComponent('cc.VideoPlayer');
     },
     get x() {
       return this.position.x;

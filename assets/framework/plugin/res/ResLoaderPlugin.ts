@@ -100,6 +100,8 @@ class ResLoadTask<T extends Asset> implements IResLoadTask<T> {
 class ResLocal implements IResLocal {
   constructor(public readonly loader: ResLoaderPlugin) {}
 
+  private _parsed: Map<string, boolean> = new Map();
+
   parsePath(path: string): [string, string] {
     const arr = path.split('@');
     if (arr.length == 1) {
@@ -179,12 +181,19 @@ class ResLocal implements IResLocal {
 
   has(path: string) {
     return new Promise<boolean>(async (resolve) => {
+      if (this._parsed.has(path)) {
+        return resolve(this._parsed.get(path)!);
+      }
+
       const [ab, raw] = this.parsePath(path);
       const bun = await this.loadAB(ab);
       if (bun) {
         const info = bun.getInfoWithPath(raw);
-        resolve(info == null ? false : true);
+        const exists = info == null ? false : true;
+        this._parsed.set(path, exists);
+        resolve(exists);
       } else {
+        this._parsed.set(path, false);
         resolve(false);
       }
     });
@@ -192,6 +201,9 @@ class ResLocal implements IResLocal {
 
   preload<T extends Asset>(type: Constructor<T>, path: string) {
     return new Promise<boolean>(async (resolve) => {
+      const exists = await this.has(path);
+      if (!exists) return resolve(false);
+
       const [ab, raw] = this.parsePath(path);
       const bun = await this.loadAB(ab);
       if (bun) {
@@ -214,6 +226,9 @@ class ResLocal implements IResLocal {
 
   load<T extends Asset>(type: Constructor<T>, path: string) {
     return new Promise<T | null>(async (resolve) => {
+      const exists = await this.has(path);
+      if (!exists) return resolve(null);
+
       const [ab, raw] = this.parsePath(path);
       const bun = await this.loadAB(ab);
       if (bun) {
