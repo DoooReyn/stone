@@ -9,8 +9,10 @@ export const PRESET_GUI = {
   /** 默认字体 */
   TEXT_FONT: {
     family: 'l:resources@font/default',
-    size: 20,
     color: '#FFFFFF',
+    size: 20,
+    lineHeight: 24,
+    autoWrap: false,
   },
   TEXT_DECOR: {
     bold: false,
@@ -27,4 +29,13 @@ export const PRESET_GUI = {
     y: -2,
     blur: 2,
   },
+  /** 默认对齐方式 */
+  TEXT_ALIGNMENT: {
+    h: 0,
+    v: 1,
+  },
+  /** 默认溢出处理 */
+  TEXT_OVERFLOW: 0,
+  /** 默认缓存模式 */
+  TEXT_CACHE_MODE: 0,
 } as const;
