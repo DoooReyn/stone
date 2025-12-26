@@ -30,8 +30,8 @@ export class AudioPlayerPlugin extends Plugin implements IAudioPlayerPlugin {
 
     this.music = new MusicPlayer('music');
     this.sound = new SoundPlayer('sound');
-    root.insertChild(this.music, 1);
-    root.insertChild(this.sound, 2);
+    root.parent!.insertChild(this.music, 0);
+    root.parent!.insertChild(this.sound, 1);
 
     const eventBus = this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS);
     eventBus.app.on(PRESET_EVENT_NAME.ENTER_FOREGROUND, this.resume, this);

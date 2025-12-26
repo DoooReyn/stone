@@ -1,6 +1,6 @@
 import { sys } from 'cc';
 import { VoidFn } from 'fast/Types';
-import { literal } from 'fast/util';
+import { fmt } from 'fast/util/Literal';
 
 import { KVPair } from './KVPair';
 
@@ -119,7 +119,7 @@ export class Logger {
    */
   private _fmt(level: LogLevel, template: string, ...args: any[]) {
     if (this.level <= level) {
-      this._output(level, literal.fmt(template, ...args));
+      this._output(level, fmt(template, ...args));
     }
   }
 
