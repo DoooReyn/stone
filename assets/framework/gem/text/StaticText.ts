@@ -4,6 +4,7 @@ import { PRESET_TOKEN } from 'fast/config/Token';
 import { fast } from 'fast/Fast';
 import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
 import { be, color } from 'fast/util';
+import { unset } from 'fast/util/Dict';
 
 import { Gem } from '../Gem';
 
@@ -76,16 +77,16 @@ export class Text extends Gem {
   @property({ tooltip: '使用默认字体' })
   public readonly useDefaultFont: boolean = true;
 
-  get label() {
+  protected get renderer() {
     return this.getComponent(Label)!;
   }
 
   get text() {
-    return this.label.string;
+    return this.renderer.string;
   }
 
   set text(text: string) {
-    this.label.string = text;
+    this.renderer.string = text;
   }
 
   /**
@@ -97,16 +98,16 @@ export class Text extends Gem {
       const loader = fast.acquire<IResLoaderPlugin>(PRESET_TOKEN.RES_LOADER);
       loader.loadFont(family).then((font) => {
         if (font) {
-          this.label.useSystemFont = false;
-          this.label.font = font;
+          this.renderer.useSystemFont = false;
+          this.renderer.font = font;
         } else {
-          this.label.useSystemFont = true;
-          this.label.fontFamily = 'Arial';
+          this.renderer.useSystemFont = true;
+          this.renderer.fontFamily = 'Arial';
         }
       });
     } else {
-      this.label.useSystemFont = true;
-      this.label.fontFamily = family;
+      this.renderer.useSystemFont = true;
+      this.renderer.fontFamily = family;
     }
   }
 
@@ -128,65 +129,275 @@ export class Text extends Gem {
   setStyle(style: Partial<ITextStyle>, onlySpecified: boolean = true) {
     // 应用字体
     const font = { ...PRESET_GUI.TEXT_FONT, ...style.font };
-    if (this.shouldApply(style.font?.family, onlySpecified)) this.applyFontFamily(font.family);
-    if (this.shouldApply(style.font?.size, onlySpecified)) this.label.fontSize = font.size;
-    if (this.shouldApply(style.font?.lineHeight, onlySpecified)) this.label.lineHeight = font.lineHeight;
-    if (this.shouldApply(style.font?.autoWrap, onlySpecified)) this.label.enableWrapText = font.autoWrap;
-    if (this.shouldApply(style.font?.color, onlySpecified)) this.label.color = color.from(font.color);
+    if (this.shouldApply(style.font?.family, onlySpecified)) {
+      this.applyFontFamily(font.family);
+    }
+    if (this.shouldApply(style.font?.size, onlySpecified)) {
+      this.renderer.fontSize = font.size;
+    }
+    if (this.shouldApply(style.font?.lineHeight, onlySpecified)) {
+      this.renderer.lineHeight = font.lineHeight;
+    }
+    if (this.shouldApply(style.font?.autoWrap, onlySpecified)) {
+      this.renderer.enableWrapText = font.autoWrap;
+    }
+    if (this.shouldApply(style.font?.color, onlySpecified)) {
+      this.renderer.color = color.from(font.color);
+    }
 
     // 应用修饰
     const decor = { ...PRESET_GUI.TEXT_DECOR, ...style.decor };
-    if (this.shouldApply(style.decor?.bold, onlySpecified)) this.label.isBold = decor.bold;
-    if (this.shouldApply(style.decor?.italic, onlySpecified)) this.label.isItalic = decor.italic;
-    if (this.shouldApply(style.decor?.underline, onlySpecified)) this.label.isUnderline = decor.underline;
+    if (this.shouldApply(style.decor?.bold, onlySpecified)) {
+      this.renderer.isBold = decor.bold;
+    }
+    if (this.shouldApply(style.decor?.italic, onlySpecified)) {
+      this.renderer.isItalic = decor.italic;
+    }
+    if (this.shouldApply(style.decor?.underline, onlySpecified)) {
+      this.renderer.isUnderline = decor.underline;
+    }
 
     // 应用描边
     const outline = { ...PRESET_GUI.TEXT_OUTLINE, ...style.outline };
     if (this.shouldApply(style.outline?.width, onlySpecified) && outline.width > 0) {
-      this.label.enableOutline = true;
-      this.label.outlineWidth = outline.width;
+      this.renderer.enableOutline = true;
+      this.renderer.outlineWidth = outline.width;
       if (this.shouldApply(style.outline?.color, onlySpecified)) {
-        this.label.outlineColor = color.from(outline.color);
+        this.renderer.outlineColor = color.from(outline.color);
       }
     } else {
-      this.label.enableOutline = false;
+      if (this.shouldApply(style.outline, onlySpecified)) {
+        this.renderer.enableOutline = false;
+      }
     }
 
     // 应用阴影
     const shadow = { ...PRESET_GUI.TEXT_SHADOW, ...style.shadow };
     if (this.shouldApply(style.shadow?.blur, onlySpecified) && shadow.blur > 0) {
-      this.label.enableShadow = true;
-      this.label.shadowBlur = shadow.blur;
+      this.renderer.enableShadow = true;
+      this.renderer.shadowBlur = shadow.blur;
       if (this.shouldApply(style.shadow?.color, onlySpecified)) {
-        this.label.shadowColor = color.from(shadow.color);
+        this.renderer.shadowColor = color.from(shadow.color);
       }
       if (this.shouldApply(style.shadow?.x, onlySpecified) && this.shouldApply(style.shadow?.y, onlySpecified)) {
-        this.label.shadowOffset = v2(shadow.x, shadow.y);
+        this.renderer.shadowOffset = v2(shadow.x, shadow.y);
       }
     } else {
-      this.label.enableShadow = false;
+      if (this.shouldApply(style.shadow, onlySpecified)) {
+        this.renderer.enableShadow = false;
+      }
     }
 
     // 应用对齐
     const alignment = { ...PRESET_GUI.TEXT_ALIGNMENT, ...style.alignment };
-    if (this.shouldApply(style.alignment?.h, onlySpecified)) this.label.horizontalAlign = alignment.h;
-    if (this.shouldApply(style.alignment?.v, onlySpecified)) this.label.verticalAlign = alignment.v;
+    if (this.shouldApply(style.alignment?.h, onlySpecified)) {
+      this.renderer.horizontalAlign = alignment.h;
+    }
+    if (this.shouldApply(style.alignment?.v, onlySpecified)) {
+      this.renderer.verticalAlign = alignment.v;
+    }
 
     // 应用溢出处理
-    if (this.shouldApply(style.overflow, onlySpecified))
-      this.label.overflow = style.overflow ?? PRESET_GUI.TEXT_OVERFLOW;
+    if (this.shouldApply(style.overflow, onlySpecified)) {
+      this.renderer.overflow = style.overflow ?? PRESET_GUI.TEXT_OVERFLOW;
+    }
 
     // 应用缓存模式
-    if (this.shouldApply(style.cacheMode, onlySpecified))
-      this.label.cacheMode = style.cacheMode ?? PRESET_GUI.TEXT_CACHE_MODE;
+    if (this.shouldApply(style.cacheMode, onlySpecified)) {
+      this.renderer.cacheMode = style.cacheMode ?? PRESET_GUI.TEXT_CACHE_MODE;
+    }
   }
+
+  /** 字体 */
+  public readonly font: {
+    get(): {
+      family: string | undefined;
+      color: string;
+      size: number;
+      lineHeight: number;
+      autoWrap: boolean;
+    };
+    set(font: ITextStyle['font'], onlySpecified?: boolean): void;
+  } = (function (ref: Text) {
+    return {
+      get() {
+        return {
+          family: ref.renderer.useSystemFont ? ref.renderer.fontFamily : ref.renderer.font?.name,
+          color: ref.renderer.color.toHEX(),
+          size: ref.renderer.fontSize,
+          lineHeight: ref.renderer.lineHeight,
+          autoWrap: ref.renderer.enableWrapText,
+        };
+      },
+      set(font: ITextStyle['font'], onlySpecified: boolean = true) {
+        ref.setStyle({ font }, onlySpecified);
+      },
+    };
+  })(this);
+
+  /** 修饰 */
+  public readonly decor: {
+    get(): { bold: boolean; italic: boolean; underline: boolean };
+    set(decor: ITextStyle['decor'], onlySpecified?: boolean): void;
+  } = (function (ref: Text) {
+    return {
+      get() {
+        return {
+          bold: ref.renderer.isBold,
+          italic: ref.renderer.isItalic,
+          underline: ref.renderer.isUnderline,
+        };
+      },
+      set(decor: ITextStyle['decor'], onlySpecified: boolean = true) {
+        ref.setStyle({ decor }, onlySpecified);
+      },
+      unset() {
+        ref.setStyle({ decor: { bold: false, italic: false, underline: false } });
+      },
+    };
+  })(this);
+
+  /** 描边 */
+  public readonly outline: {
+    get(): { enabled: boolean; width: number; color: string };
+    set(outline: Partial<ITextStyle['outline']>, onlySpecified?: boolean): void;
+    unset(): void;
+  } = (function (ref: Text) {
+    return {
+      get() {
+        return {
+          enabled: ref.renderer.enableOutline,
+          width: ref.renderer.outlineWidth,
+          color: ref.renderer.outlineColor.toHEX(),
+        };
+      },
+      set(outline: Partial<ITextStyle['outline']>, onlySpecified: boolean = true) {
+        ref.setStyle({ outline }, onlySpecified);
+      },
+      unset() {
+        ref.renderer.enableOutline = false;
+      },
+    };
+  })(this);
+
+  /** 阴影 */
+  public readonly shadow: {
+    get(): { enabled: boolean; blur: number; x: number; y: number; color: string };
+    set(shadow: Partial<ITextStyle['shadow']>, onlySpecified?: boolean): void;
+    unset(): void;
+  } = (function (ref: Text) {
+    return {
+      get() {
+        return {
+          enabled: ref.renderer.enableShadow,
+          blur: ref.renderer.shadowBlur,
+          x: ref.renderer.shadowOffset.x,
+          y: ref.renderer.shadowOffset.y,
+          color: ref.renderer.shadowColor.toHEX(),
+        };
+      },
+      set(shadow: Partial<ITextStyle['shadow']>, onlySpecified: boolean = true) {
+        ref.setStyle({ shadow }, onlySpecified);
+      },
+      unset() {
+        ref.renderer.enableShadow = false;
+      },
+    };
+  })(this);
+
+  /** 对齐 */
+  public readonly alignment: {
+    get(): { h: HorizontalTextAlignment; v: VerticalTextAlignment };
+    set(alignment: ITextStyle['alignment'], onlySpecified?: boolean): void;
+  } = (function (ref: Text) {
+    return {
+      get() {
+        return {
+          h: ref.renderer.horizontalAlign,
+          v: ref.renderer.verticalAlign,
+        };
+      },
+      set(alignment: ITextStyle['alignment'], onlySpecified: boolean = true) {
+        ref.setStyle({ alignment }, onlySpecified);
+      },
+      quick(mode: 'cc' | 'lt' | 'lb' | 'lc' | 'rt' | 'rb' | 'rc') {
+        const alignment: ITextStyle['alignment'] = {};
+
+        switch (mode) {
+          case 'cc':
+            alignment.h = HorizontalTextAlignment.CENTER;
+            alignment.v = VerticalTextAlignment.CENTER;
+            break;
+          case 'lt':
+            alignment.h = HorizontalTextAlignment.LEFT;
+            alignment.v = VerticalTextAlignment.TOP;
+            break;
+          case 'lb':
+            alignment.h = HorizontalTextAlignment.LEFT;
+            alignment.v = VerticalTextAlignment.BOTTOM;
+            break;
+          case 'lc':
+            alignment.h = HorizontalTextAlignment.LEFT;
+            alignment.v = VerticalTextAlignment.CENTER;
+            break;
+          case 'rt':
+            alignment.h = HorizontalTextAlignment.RIGHT;
+            alignment.v = VerticalTextAlignment.TOP;
+            break;
+          case 'rb':
+            alignment.h = HorizontalTextAlignment.RIGHT;
+            alignment.v = VerticalTextAlignment.BOTTOM;
+            break;
+          case 'rc':
+            alignment.h = HorizontalTextAlignment.RIGHT;
+            alignment.v = VerticalTextAlignment.CENTER;
+            break;
+        }
+
+        ref.setStyle({ alignment });
+      },
+      unset() {
+        this.quick('cc');
+      },
+    };
+  })(this);
+
+  /** 溢出 */
+  public readonly overflow = (function (ref: Text) {
+    return {
+      get() {
+        return ref.renderer.overflow;
+      },
+      set(overflow: Overflow) {
+        ref.setStyle({ overflow });
+      },
+      unset() {
+        ref.renderer.overflow = Overflow.NONE;
+      },
+    };
+  })(this);
+
+  /** 缓存 */
+  public readonly cacheMode = (function (ref: Text) {
+    return {
+      get() {
+        return ref.renderer.cacheMode;
+      },
+      set(cacheMode: CacheMode) {
+        ref.setStyle({ cacheMode });
+      },
+      unset() {
+        ref.renderer.cacheMode = CacheMode.NONE;
+      },
+    };
+  })(this);
 
   /**
    * 强制更新渲染数据
    * @notes 用于异步加载字体后刷新显示，避免字体切换后文本不显示
    */
   flush() {
-    this.label.updateRenderData(true);
+    this.renderer.updateRenderData(true);
   }
 
   protected didCreate(): void {
