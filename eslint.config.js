@@ -11,11 +11,11 @@ export default [
       parserOptions: {
         ecmaVersion: 2020,
         sourceType: 'module',
-        project: './tsconfig.json'
-      }
+        project: './tsconfig.json',
+      },
     },
     plugins: {
-      '@typescript-eslint': tseslint
+      '@typescript-eslint': tseslint,
     },
     rules: {
       // 允许使用any类型（由于Cocos Creator项目可能需要）
@@ -56,20 +56,18 @@ export default [
       'array-bracket-spacing': ['error', 'never'],
       'comma-dangle': ['error', 'always-multiline'],
       'function-paren-newline': ['error', 'multiline-arguments'],
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/explicit-member-accessibility': 'error',
+      'no-multi-spaces': 'error',
+      'no-trailing-spaces': 'error',
       // === Airbnb规则：安全性考虑
       'no-eval': 'error',
       'no-new-func': 'error',
       'no-implied-eval': 'error',
-      'no-script-url': 'error'
-    }
+      'no-script-url': 'error',
+    },
   },
   {
-    ignores: [
-      'node_modules/',
-      'temp/',
-      'build/',
-      'dist/',
-      '**/*.meta'
-    ]
-  }
+    ignores: ['node_modules/', 'temp/', 'build/', 'dist/', '**/*.meta'],
+  },
 ];
