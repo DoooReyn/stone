@@ -74,17 +74,15 @@ export interface ITextStyle {
 @menu('Gem/Text')
 @requireComponent(Label)
 export class Text extends Gem {
-  @property({ tooltip: '使用默认字体' })
-  public readonly useDefaultFont: boolean = true;
-
+  /** 标签组件 */
   protected get $text() {
     return this.getComponent(Label)!;
   }
 
+  /** 文本内容 */
   get text() {
     return this.$text.string;
   }
-
   set text(text: string) {
     this.$text.string = text;
   }
