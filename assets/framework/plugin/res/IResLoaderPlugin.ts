@@ -19,7 +19,7 @@ import {
   TextAsset,
   TiledMapAsset,
   TTFFont,
-  VideoClip
+  VideoClip,
 } from 'cc';
 import { IPlugin } from 'fast/foundation/Plugin';
 import { IMemoryImageSource } from 'fast/Types';
@@ -33,8 +33,8 @@ import { IMemoryImageSource } from 'fast/Types';
  * 2. 远程 r:<url>
  *
  * @example
- * [SpriteFrame, "l:img-hero"]  // 使用默认 bundle (shared)
- * [SpriteFrame, "l:shared@img-hero"]
+ * [SpriteFrame, 'l:img-hero']  // 使用默认 bundle (shared)
+ * [SpriteFrame, 'l:shared@img-hero']
  */
 export type ResPreloadItem = [Constructor<Asset>, string];
 
@@ -47,9 +47,9 @@ export type ResPreloadItem = [Constructor<Asset>, string];
  * 2. 远程 r:<url>
  *
  * @example
- * [SpriteFrame, { path: "l:img-hero" }] // 使用默认 bundle (shared)
- * [SpriteFrame, { path: "l:resources@img-hero" }] // 指定 bundle
- * [SpriteFrame, { path: "r:img-hero.png" }] // 使用远程资源
+ * [SpriteFrame, { path: 'l:img-hero' }] // 使用默认 bundle (shared)
+ * [SpriteFrame, { path: 'l:resources@img-hero' }] // 指定 bundle
+ * [SpriteFrame, { path: 'r:img-hero.png' }] // 使用远程资源
  */
 export type ResLoadItem = [Constructor<Asset>, IResLoadOptions];
 
@@ -625,15 +625,15 @@ export interface IResLoaderPlugin extends IPlugin {
    * ```typescript
    * // 使用默认 bundle (shared)
    * await ioc.loader.preload([
-   *   [SpriteFrame, "l:img-hero"],
-   *   [AudioClip, "l:aud-bgm"],
+   *   [SpriteFrame, 'l:img-hero'],
+   *   [AudioClip, 'l:aud-bgm'],
    * ]);
    *
    * // 指定不同的 bundle
    * await ioc.loader.preload([
-   *   [SpriteFrame, "l:resources@img-logo"],
-   *   [SpriteFrame, "l:img-hero"],
-   *   [AudioClip, "l:shared@aud-bgm"],
+   *   [SpriteFrame, 'l:resources@img-logo'],
+   *   [SpriteFrame, 'l:img-hero'],
+   *   [AudioClip, 'l:shared@aud-bgm'],
    * ]);
    * ```
    */

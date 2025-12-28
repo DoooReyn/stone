@@ -16,9 +16,9 @@ import { native, sys } from 'cc';
  * Android 示例：
  * ```java
  * JsbBridgeWrapper jbw = JsbBridgeWrapper.getInstance();
- * jbw.addScriptEventListener("requestLabelContent", arg ->{
- *     System.out.print("@JAVA: here is the argument transport in" + arg);
- *     jbw.dispatchEventToScript("changeLabelContent","Charlotte");
+ * jbw.addScriptEventListener('requestLabelContent', arg ->{
+ *     System.out.print('@JAVA: here is the argument transport in' + arg);
+ *     jbw.dispatchEventToScript('changeLabelContent','Charlotte');
  * });
  * ```
  *
@@ -27,9 +27,9 @@ import { native, sys } from 'cc';
  * JsbBridgeWrapper* m = [JsbBridgeWrapper sharedInstance];
  * OnScriptEventListener requestLabelContent = ^void(NSString* arg){
  *     JsbBridgeWrapper* m = [JsbBridgeWrapper sharedInstance];
- *     [m dispatchEventToScript:@"changeLabelContent" arg:@"Charlotte"];
+ *     [m dispatchEventToScript:@'changeLabelContent' arg:@'Charlotte'];
  * };
- * [m addScriptEventListener:@"requestLabelContent" listener:requestLabelContent];
+ * [m addScriptEventListener:@'requestLabelContent' listener:requestLabelContent];
  * ```
  *
  * @param event - 事件名称
@@ -68,8 +68,4 @@ function dispatchNativeEvent(event: string, arg?: string | { [key: string]: any 
   }
 }
 
-export {
-  registerNativeListener,
-  unregisterNativeListener,
-  dispatchNativeEvent,
-};
+export { registerNativeListener, unregisterNativeListener, dispatchNativeEvent };

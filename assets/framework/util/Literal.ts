@@ -48,7 +48,7 @@ function isLiteral(str: string) {
  * 截断字符串
  * @param str 输入字符串
  * @param maxLength 截断长度
- * @param ellipsis 省略号（默认"..."）
+ * @param ellipsis 省略号（默认'...'）
  * @returns 截断后的字符串
  */
 function truncate(str: string, maxLength: number, ellipsis: string = '...') {

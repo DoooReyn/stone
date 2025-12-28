@@ -9,7 +9,7 @@ import { IPlugin, Plugin } from './foundation/Plugin';
  */
 class Fast {
   /** 框架信息 */
-  public readonly infomation = {
+  public readonly information = {
     name: 'Fast',
     version: '1.0.0',
     author: 'github.com/DoooReyn',
@@ -24,7 +24,7 @@ class Fast {
 
   /** 日志 */
   public get logger() {
-    return logcat.acquire(this.infomation.name);
+    return logcat.acquire(this.information.name);
   }
 
   /**
@@ -33,7 +33,7 @@ class Fast {
    */
   public register(plugin: typeof Plugin) {
     if (this._container.has(plugin.Token)) {
-      throw new FastError(this.infomation.name, `插件 ⁅${plugin.Token}⁆ 重复注册`);
+      throw new FastError(this.information.name, `插件 ⁅${plugin.Token}⁆ 重复注册`);
     }
 
     this._container.set(plugin.Token, new plugin());
@@ -61,7 +61,7 @@ class Fast {
     const token = typeof alias !== 'string' ? (alias as unknown as typeof Plugin).Token : alias;
 
     if (!this._container.has(token)) {
-      throw new FastError(this.infomation.name, `插件 ⁅${token}⁆ 未注册`);
+      throw new FastError(this.information.name, `插件 ⁅${token}⁆ 未注册`);
     }
 
     return this._container.get(token) as T;

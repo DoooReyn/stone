@@ -77,16 +77,16 @@ export class Text extends Gem {
   @property({ tooltip: '使用默认字体' })
   public readonly useDefaultFont: boolean = true;
 
-  protected get renderer() {
+  protected get $text() {
     return this.getComponent(Label)!;
   }
 
   get text() {
-    return this.renderer.string;
+    return this.$text.string;
   }
 
   set text(text: string) {
-    this.renderer.string = text;
+    this.$text.string = text;
   }
 
   /**
@@ -98,16 +98,16 @@ export class Text extends Gem {
       const loader = fast.acquire<IResLoaderPlugin>(PRESET_TOKEN.RES_LOADER);
       loader.loadFont(family).then((font) => {
         if (font) {
-          this.renderer.useSystemFont = false;
-          this.renderer.font = font;
+          this.$text.useSystemFont = false;
+          this.$text.font = font;
         } else {
-          this.renderer.useSystemFont = true;
-          this.renderer.fontFamily = 'Arial';
+          this.$text.useSystemFont = true;
+          this.$text.fontFamily = 'Arial';
         }
       });
     } else {
-      this.renderer.useSystemFont = true;
-      this.renderer.fontFamily = family;
+      this.$text.useSystemFont = true;
+      this.$text.fontFamily = family;
     }
   }
 
@@ -133,78 +133,78 @@ export class Text extends Gem {
       this.applyFontFamily(font.family);
     }
     if (this.shouldApply(style.font?.size, onlySpecified)) {
-      this.renderer.fontSize = font.size;
+      this.$text.fontSize = font.size;
     }
     if (this.shouldApply(style.font?.lineHeight, onlySpecified)) {
-      this.renderer.lineHeight = font.lineHeight;
+      this.$text.lineHeight = font.lineHeight;
     }
     if (this.shouldApply(style.font?.autoWrap, onlySpecified)) {
-      this.renderer.enableWrapText = font.autoWrap;
+      this.$text.enableWrapText = font.autoWrap;
     }
     if (this.shouldApply(style.font?.color, onlySpecified)) {
-      this.renderer.color = color.from(font.color);
+      this.$text.color = color.from(font.color);
     }
 
     // 应用修饰
     const decor = { ...PRESET_GUI.TEXT_DECOR, ...style.decor };
     if (this.shouldApply(style.decor?.bold, onlySpecified)) {
-      this.renderer.isBold = decor.bold;
+      this.$text.isBold = decor.bold;
     }
     if (this.shouldApply(style.decor?.italic, onlySpecified)) {
-      this.renderer.isItalic = decor.italic;
+      this.$text.isItalic = decor.italic;
     }
     if (this.shouldApply(style.decor?.underline, onlySpecified)) {
-      this.renderer.isUnderline = decor.underline;
+      this.$text.isUnderline = decor.underline;
     }
 
     // 应用描边
     const outline = { ...PRESET_GUI.TEXT_OUTLINE, ...style.outline };
     if (this.shouldApply(style.outline?.width, onlySpecified) && outline.width > 0) {
-      this.renderer.enableOutline = true;
-      this.renderer.outlineWidth = outline.width;
+      this.$text.enableOutline = true;
+      this.$text.outlineWidth = outline.width;
       if (this.shouldApply(style.outline?.color, onlySpecified)) {
-        this.renderer.outlineColor = color.from(outline.color);
+        this.$text.outlineColor = color.from(outline.color);
       }
     } else {
       if (this.shouldApply(style.outline, onlySpecified)) {
-        this.renderer.enableOutline = false;
+        this.$text.enableOutline = false;
       }
     }
 
     // 应用阴影
     const shadow = { ...PRESET_GUI.TEXT_SHADOW, ...style.shadow };
     if (this.shouldApply(style.shadow?.blur, onlySpecified) && shadow.blur > 0) {
-      this.renderer.enableShadow = true;
-      this.renderer.shadowBlur = shadow.blur;
+      this.$text.enableShadow = true;
+      this.$text.shadowBlur = shadow.blur;
       if (this.shouldApply(style.shadow?.color, onlySpecified)) {
-        this.renderer.shadowColor = color.from(shadow.color);
+        this.$text.shadowColor = color.from(shadow.color);
       }
       if (this.shouldApply(style.shadow?.x, onlySpecified) && this.shouldApply(style.shadow?.y, onlySpecified)) {
-        this.renderer.shadowOffset = v2(shadow.x, shadow.y);
+        this.$text.shadowOffset = v2(shadow.x, shadow.y);
       }
     } else {
       if (this.shouldApply(style.shadow, onlySpecified)) {
-        this.renderer.enableShadow = false;
+        this.$text.enableShadow = false;
       }
     }
 
     // 应用对齐
     const alignment = { ...PRESET_GUI.TEXT_ALIGNMENT, ...style.alignment };
     if (this.shouldApply(style.alignment?.h, onlySpecified)) {
-      this.renderer.horizontalAlign = alignment.h;
+      this.$text.horizontalAlign = alignment.h;
     }
     if (this.shouldApply(style.alignment?.v, onlySpecified)) {
-      this.renderer.verticalAlign = alignment.v;
+      this.$text.verticalAlign = alignment.v;
     }
 
     // 应用溢出处理
     if (this.shouldApply(style.overflow, onlySpecified)) {
-      this.renderer.overflow = style.overflow ?? PRESET_GUI.TEXT_OVERFLOW;
+      this.$text.overflow = style.overflow ?? PRESET_GUI.TEXT_OVERFLOW;
     }
 
     // 应用缓存模式
     if (this.shouldApply(style.cacheMode, onlySpecified)) {
-      this.renderer.cacheMode = style.cacheMode ?? PRESET_GUI.TEXT_CACHE_MODE;
+      this.$text.cacheMode = style.cacheMode ?? PRESET_GUI.TEXT_CACHE_MODE;
     }
   }
 
@@ -222,15 +222,18 @@ export class Text extends Gem {
     return {
       get() {
         return {
-          family: ref.renderer.useSystemFont ? ref.renderer.fontFamily : ref.renderer.font?.name,
-          color: ref.renderer.color.toHEX(),
-          size: ref.renderer.fontSize,
-          lineHeight: ref.renderer.lineHeight,
-          autoWrap: ref.renderer.enableWrapText,
+          family: ref.$text.useSystemFont ? ref.$text.fontFamily : ref.$text.font?.name,
+          color: ref.$text.color.toHEX(),
+          size: ref.$text.fontSize,
+          lineHeight: ref.$text.lineHeight,
+          autoWrap: ref.$text.enableWrapText,
         };
       },
       set(font: ITextStyle['font'], onlySpecified: boolean = true) {
         ref.setStyle({ font }, onlySpecified);
+      },
+      unset() {
+        ref.setStyle({ font: PRESET_GUI.TEXT_FONT });
       },
     };
   })(this);
@@ -239,13 +242,14 @@ export class Text extends Gem {
   public readonly decor: {
     get(): { bold: boolean; italic: boolean; underline: boolean };
     set(decor: ITextStyle['decor'], onlySpecified?: boolean): void;
+    unset(): void;
   } = (function (ref: Text) {
     return {
       get() {
         return {
-          bold: ref.renderer.isBold,
-          italic: ref.renderer.isItalic,
-          underline: ref.renderer.isUnderline,
+          bold: ref.$text.isBold,
+          italic: ref.$text.isItalic,
+          underline: ref.$text.isUnderline,
         };
       },
       set(decor: ITextStyle['decor'], onlySpecified: boolean = true) {
@@ -266,16 +270,16 @@ export class Text extends Gem {
     return {
       get() {
         return {
-          enabled: ref.renderer.enableOutline,
-          width: ref.renderer.outlineWidth,
-          color: ref.renderer.outlineColor.toHEX(),
+          enabled: ref.$text.enableOutline,
+          width: ref.$text.outlineWidth,
+          color: ref.$text.outlineColor.toHEX(),
         };
       },
       set(outline: Partial<ITextStyle['outline']>, onlySpecified: boolean = true) {
         ref.setStyle({ outline }, onlySpecified);
       },
       unset() {
-        ref.renderer.enableOutline = false;
+        ref.$text.enableOutline = false;
       },
     };
   })(this);
@@ -289,18 +293,18 @@ export class Text extends Gem {
     return {
       get() {
         return {
-          enabled: ref.renderer.enableShadow,
-          blur: ref.renderer.shadowBlur,
-          x: ref.renderer.shadowOffset.x,
-          y: ref.renderer.shadowOffset.y,
-          color: ref.renderer.shadowColor.toHEX(),
+          enabled: ref.$text.enableShadow,
+          blur: ref.$text.shadowBlur,
+          x: ref.$text.shadowOffset.x,
+          y: ref.$text.shadowOffset.y,
+          color: ref.$text.shadowColor.toHEX(),
         };
       },
       set(shadow: Partial<ITextStyle['shadow']>, onlySpecified: boolean = true) {
         ref.setStyle({ shadow }, onlySpecified);
       },
       unset() {
-        ref.renderer.enableShadow = false;
+        ref.$text.enableShadow = false;
       },
     };
   })(this);
@@ -309,12 +313,14 @@ export class Text extends Gem {
   public readonly alignment: {
     get(): { h: HorizontalTextAlignment; v: VerticalTextAlignment };
     set(alignment: ITextStyle['alignment'], onlySpecified?: boolean): void;
+    quick(mode: 'cc' | 'lt' | 'lb' | 'lc' | 'rt' | 'rb' | 'rc'): void;
+    unset(): void;
   } = (function (ref: Text) {
     return {
       get() {
         return {
-          h: ref.renderer.horizontalAlign,
-          v: ref.renderer.verticalAlign,
+          h: ref.$text.horizontalAlign,
+          v: ref.$text.verticalAlign,
         };
       },
       set(alignment: ITextStyle['alignment'], onlySpecified: boolean = true) {
@@ -363,31 +369,39 @@ export class Text extends Gem {
   })(this);
 
   /** 溢出 */
-  public readonly overflow = (function (ref: Text) {
+  public readonly overflow: {
+    get(): Overflow;
+    set(overflow: Overflow): void;
+    unset(): void;
+  } = (function (ref: Text) {
     return {
       get() {
-        return ref.renderer.overflow;
+        return ref.$text.overflow;
       },
       set(overflow: Overflow) {
         ref.setStyle({ overflow });
       },
       unset() {
-        ref.renderer.overflow = Overflow.NONE;
+        ref.$text.overflow = Overflow.NONE;
       },
     };
   })(this);
 
   /** 缓存 */
-  public readonly cacheMode = (function (ref: Text) {
+  public readonly cacheMode: {
+    get(): CacheMode;
+    set(cacheMode: CacheMode): void;
+    unset(): void;
+  } = (function (ref: Text) {
     return {
       get() {
-        return ref.renderer.cacheMode;
+        return ref.$text.cacheMode;
       },
       set(cacheMode: CacheMode) {
         ref.setStyle({ cacheMode });
       },
       unset() {
-        ref.renderer.cacheMode = CacheMode.NONE;
+        ref.$text.cacheMode = CacheMode.NONE;
       },
     };
   })(this);
@@ -397,7 +411,7 @@ export class Text extends Gem {
    * @notes 用于异步加载字体后刷新显示，避免字体切换后文本不显示
    */
   flush() {
-    this.renderer.updateRenderData(true);
+    this.$text.updateRenderData(true);
   }
 
   protected didCreate(): void {

@@ -40,14 +40,14 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     if (!root) {
       throw new FastError(this.token, `未正确配置根节点`);
     }
-    this.root = root!;
+    this.root = root;
 
     // 舞台
     const stage = this.root.getComponent(Canvas);
     if (!stage) {
       throw new FastError(this.token, '根节点未挂载画布组件');
     }
-    this.stage = stage!;
+    this.stage = stage;
 
     // 2D相机: PRESET.CAMERA_2D
     const cameraNode = this.root.getChildByName(PRESET_GUI.CAMERA_2D);
@@ -60,7 +60,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     if (!camera2D) {
       throw new FastError(this.token, `未正确配置摄像机组件`);
     }
-    this.camera2D = camera2D!;
+    this.camera2D = camera2D;
 
     // 代理窗口尺寸变换事件
     this.onScreenSizeChangedMock = misc.throttle(this.onScreenSizeChanged, this).bind(this);

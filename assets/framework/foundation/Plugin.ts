@@ -81,13 +81,18 @@ export class Plugin {
 
       this.$dependencies.forEach((token) => {
         const dep = Plugin.Of(token);
-        if (!dep) throw new FastError(PRESET_TOKEN.FAST, `插件 ⁅${token}⁆ 不存在或未注册`);
+        if (!dep) {
+          throw new FastError(PRESET_TOKEN.FAST, `插件 ⁅${token}⁆ 不存在或未注册`);
+        }
         this._dependencies[token] = dep;
       });
 
       const err = (await might.runAsync(this.onInitialize()))[1];
-      if (err) this.logger.e(`插件 ⁅${this.token}⁆ 初始化失败`, err);
-      else this._state = PluginState.Initialized;
+      if (err) {
+        this.logger.e(`插件 ⁅${this.token}⁆ 初始化失败`, err);
+      } else {
+        this._state = PluginState.Initialized;
+      }
     }
   }
 
@@ -99,8 +104,11 @@ export class Plugin {
     if (this._state === PluginState.Initialized || this._state === PluginState.Uninitialized) {
       this._state = PluginState.Disposing;
       const err = (await might.runAsync(this.onDispose()))[1];
-      if (err) this.logger.e(`插件⁅${this.token}⁆销毁失败`, err);
-      else this._state = PluginState.Disposed;
+      if (err) {
+        this.logger.e(`插件⁅${this.token}⁆销毁失败`, err);
+      } else {
+        this._state = PluginState.Disposed;
+      }
     }
   }
 

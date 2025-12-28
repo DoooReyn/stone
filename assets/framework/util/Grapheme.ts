@@ -323,7 +323,7 @@ function graphemeAt(str: string, index: number): string | undefined {
  * 截断字符串的字素
  * @param str - 字符串
  * @param length - 截断长度
- * @param ellipsis - 省略号，默认为 "..."
+ * @param ellipsis - 省略号，默认为 '...'
  * @returns 截断后的字符串
  */
 function truncateGrapheme(str: string, length: number, ellipsis: string = '...'): string {

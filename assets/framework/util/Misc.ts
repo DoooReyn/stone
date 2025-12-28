@@ -10,7 +10,9 @@ const CTX: object = {};
 /** 纹理过滤模式 */
 const { LINEAR, NEAREST } = Texture2D.Filter;
 
-/** 空转方法 */
+/**
+ * 空转方法
+ */
 function idle(...args: any[]) {}
 
 /**
@@ -61,7 +63,9 @@ function throttle(handle: Function, context: object = CTX, delay: number = 300) 
   };
 }
 
-/** 禁止调试 */
+/**
+ * 禁止调试
+ */
 function ban() {
   if (sys.isBrowser) {
     document.oncontextmenu = function () {

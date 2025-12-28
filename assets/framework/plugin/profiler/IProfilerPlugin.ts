@@ -31,7 +31,7 @@ export interface IProfilerPlugin extends IPlugin {
    * 添加调试项到面板
    * @param key 调试项唯一标识
    * @param title 显示标题
-   * @param getter 值获取函数，返回值可以包含"\n"换行符，会自动转换为HTML换行
+   * @param getter 值获取函数，返回值可以包含'\n'换行符，会自动转换为HTML换行
    * @returns 创建的 HTML 元素
    */
   addDebugItem(key: string, title: string, getter: () => string | number | undefined | null): HTMLElement | undefined;
@@ -71,7 +71,7 @@ declare global {
      * Add a new debug item to the panel with a getter function
      * @param key - Unique identifier for the debug item
      * @param title - Display title for the debug item
-     * @param getter - Function that returns the current value for the debug item. Return value can contain "\n" which will be converted to HTML line breaks
+     * @param getter - Function that returns the current value for the debug item. Return value can contain '\n' which will be converted to HTML line breaks
      * @returns The created HTML element
      */
     addItem(key: string, title: string, getter: () => string | number | undefined | null): HTMLElement;
