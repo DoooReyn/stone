@@ -8,34 +8,27 @@ export const PRESET_GUI = {
   CLICK_INTERVAL_MS: 200,
   /** 默认字体 */
   TEXT_FONT: {
+    text: '',
     family: 'l:resources@font/default',
     color: '#FFFFFF',
     size: 20,
-    lineHeight: 24,
-    autoWrap: false,
-  },
-  TEXT_DECOR: {
+    multiline: false,
     bold: false,
     italic: false,
     underline: false,
+    outline: {
+      color: '#FFFFFF',
+      width: 2,
+    },
+    shadow: {
+      color: '#FFFFFF',
+      x: 2,
+      y: -2,
+      blur: 2,
+    },
+    alignHor: 1,
+    alignVer: 1,
+    overflow: 0,
+    cacheMode: 0,
   },
-  TEXT_OUTLINE: {
-    color: '#FFFFFF',
-    width: 2,
-  },
-  TEXT_SHADOW: {
-    color: '#FFFFFF',
-    x: 2,
-    y: -2,
-    blur: 2,
-  },
-  /** 默认对齐方式 */
-  TEXT_ALIGNMENT: {
-    h: 0,
-    v: 1,
-  },
-  /** 默认溢出处理 */
-  TEXT_OVERFLOW: 0,
-  /** 默认缓存模式 */
-  TEXT_CACHE_MODE: 0,
 } as const;

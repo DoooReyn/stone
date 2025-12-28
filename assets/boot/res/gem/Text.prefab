@@ -76,7 +76,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
+      "width": 60,
       "height": 30.240000000000002
     },
     "_anchorPoint": {
@@ -112,7 +112,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "说点什么吧",
+    "_string": "嗯哼？",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
@@ -170,7 +170,6 @@
     "__prefab": {
       "__id__": 7
     },
-    "useDefaultFont": true,
     "_id": ""
   },
   {
