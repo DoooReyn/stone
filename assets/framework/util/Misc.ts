@@ -1,4 +1,5 @@
 import { misc, sys, v2, Label, Texture2D } from 'cc';
+import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { fast } from 'fast/Fast';
 import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
@@ -263,16 +264,16 @@ function setTextStyle(text: Label, style: Partial<ITextStyle>) {
         if (font) {
           text.useSystemFont = false;
           text.font = font;
-          text.node.emit('font-changed', family);
+          text.node.emit(PRESET_EVENT_NAME.FONT_CHANGED, family);
         } else {
           text.useSystemFont = true;
-          text.node.emit('font-changed', text.fontFamily);
+          text.node.emit(PRESET_EVENT_NAME.FONT_CHANGED, text.fontFamily);
         }
       });
     } else {
       text.useSystemFont = true;
       text.fontFamily = family;
-      text.node.emit('font-changed', text.fontFamily);
+      text.node.emit(PRESET_EVENT_NAME.FONT_CHANGED, text.fontFamily);
     }
   }
 

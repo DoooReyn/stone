@@ -16,6 +16,8 @@ export const PRESET_TOKEN = {
   EVENT_BUS: 'EventBus',
   /** 全局对象 */
   GLOBAL: 'Global',
+  /** Gui */
+  GUI: 'Gui',
   /** 国际化 */
   I18N: 'I18n',
   /** 节点池 */

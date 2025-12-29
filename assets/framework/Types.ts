@@ -1,4 +1,4 @@
-import { __private, CacheMode, HorizontalTextAlignment, Overflow, VerticalTextAlignment } from 'cc';
+import { __private, CacheMode, Enum, HorizontalTextAlignment, Overflow, VerticalTextAlignment } from 'cc';
 
 /** 无返回值函数类型 */
 export type VoidFn = (...args: any[]) => void;
@@ -92,3 +92,36 @@ export interface ITextStyle {
   /** 缓存模式 */
   cacheMode: CacheMode;
 }
+
+/**
+ * 加载状态
+ */
+export enum LoadState {
+  /** 未加载 */
+  Init,
+  /** 加载中 */
+  Loading,
+  /** 加载成功 */
+  Ok,
+  /** 加载失败 */
+  Bad,
+}
+
+/**
+ * 适配模式
+ */
+export enum ImageFitMode {
+  /** 不适配，显示区域=图片尺寸，以图片尺寸为准 */
+  None,
+  /** 按区域适配，显示区域=图片尺寸，以显示区域为准 */
+  Area,
+  /** 按宽度适配，高度进行等比适配 */
+  Width,
+  /** 按高度适配，宽度进行等比适配 */
+  Height,
+}
+
+/**
+ * 适配模式
+ */
+export const CCImageFitMode = Enum(ImageFitMode);

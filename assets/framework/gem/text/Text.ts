@@ -1,4 +1,5 @@
 import { _decorator, Label } from 'cc';
+import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_GUI } from 'fast/config/Gui';
 import { ITextStyle } from 'fast/Types';
 import { misc } from 'fast/util';
@@ -73,11 +74,11 @@ export class Text extends Gem {
   }
 
   protected didAwake(): void {
-    this.$text.node.on('font-changed', this.onFontChanged, this);
+    this.$text.node.on(PRESET_EVENT_NAME.FONT_CHANGED, this.onFontChanged, this);
   }
 
   protected didSuspend(): void {
-    this.$text.node.off('font-changed', this.onFontChanged, this);
+    this.$text.node.off(PRESET_EVENT_NAME.FONT_CHANGED, this.onFontChanged, this);
   }
 
   protected didLaunch(): void {
