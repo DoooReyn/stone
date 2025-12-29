@@ -1,7 +1,11 @@
-import { misc, sys, Texture2D } from 'cc';
+import { misc, sys, v2, Label, Texture2D } from 'cc';
+import { PRESET_TOKEN } from 'fast/config/Token';
 import { fast } from 'fast/Fast';
-import { AnyFn } from 'fast/Types';
+import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
+import { AnyFn, Dict, ITextStyle } from 'fast/Types';
 
+import { notUndefined } from './Be';
+import { from } from './Color';
 import { runAsync, runSync } from './Might';
 
 /** 内置上下文 */
@@ -161,6 +165,174 @@ function simulateProbability(probability: number, delay = 1000) {
   });
 }
 
+/**
+ * 获取文本样式
+ * @param text 标签组件
+ * @param style 样式
+ * @returns
+ */
+function getTextStyle<S extends keyof ITextStyle>(text: Label, style: S): ITextStyle[S] {
+  let attr = undefined;
+  switch (style) {
+    case 'text':
+      attr = text.string;
+      break;
+    case 'family':
+      attr = text.useSystemFont ? text.fontFamily : text.font?.name || '';
+      break;
+    case 'color':
+      attr = text.color.toHEX();
+      break;
+    case 'size':
+      attr = text.fontSize;
+      break;
+    case 'multiline':
+      attr = text.enableWrapText;
+      break;
+    case 'bold':
+      attr = text.isBold;
+      break;
+    case 'italic':
+      attr = text.isItalic;
+      break;
+    case 'underline':
+      attr = text.isUnderline;
+      break;
+    case 'outline':
+      if (!text.enableOutline) {
+        attr = { color: '', width: 0 };
+      } else {
+        attr = { color: text.outlineColor.toHEX(), width: text.outlineWidth };
+      }
+      break;
+    case 'shadow':
+      if (!text.enableShadow) {
+        attr = { color: '', x: 0, y: 0, blur: 0 };
+      } else {
+        attr = {
+          color: text.shadowColor.toHEX(),
+          x: text.shadowOffset.x,
+          y: text.shadowOffset.y,
+          blur: text.shadowBlur,
+        };
+      }
+      break;
+    case 'alignHor':
+      attr = text.horizontalAlign;
+      break;
+    case 'alignVer':
+      attr = text.verticalAlign;
+      break;
+    case 'overflow':
+      attr = text.overflow;
+      break;
+    case 'cacheMode':
+      attr = text.cacheMode;
+      break;
+  }
+
+  return attr as ITextStyle[S];
+}
+
+/**
+ * 批量获取文本样式
+ * @param styles 样式
+ * @returns
+ */
+function getTextStyleBatch<S extends keyof ITextStyle>(text: Label, ...styles: S[]) {
+  const attrs: Dict = {};
+  const set = new Set(...styles);
+  set.forEach((k: string) => {
+    attrs[k] = getTextStyle(text, k as S);
+  });
+  return attrs;
+}
+
+/**
+ * 设置文本样式
+ * @param text 标签组件
+ * @param style 文本样式
+ */
+function setTextStyle(text: Label, style: Partial<ITextStyle>) {
+  if (notUndefined(style.family)) {
+    // 应用字体，支持系统字体和资源加载字体
+    const family = style.family!;
+    if (family.startsWith('l:')) {
+      const loader = fast.acquire<IResLoaderPlugin>(PRESET_TOKEN.RES_LOADER);
+      loader.loadFont(family).then((font) => {
+        if (font) {
+          text.useSystemFont = false;
+          text.font = font;
+          text.node.emit('font-changed', family);
+        } else {
+          text.useSystemFont = true;
+          text.node.emit('font-changed', text.fontFamily);
+        }
+      });
+    } else {
+      text.useSystemFont = true;
+      text.fontFamily = family;
+      text.node.emit('font-changed', text.fontFamily);
+    }
+  }
+
+  if (notUndefined(style.size)) {
+    text.fontSize = style.size!;
+    text.lineHeight = text.fontSize * 1.5;
+  }
+
+  if (notUndefined(style.multiline)) {
+    // 自动行高
+    text.enableWrapText = true;
+    text.lineHeight = text.fontSize * 1.5;
+  }
+
+  if (notUndefined(style.color)) {
+    text.color = from(style.color!);
+  }
+
+  if (notUndefined(style.bold)) {
+    text.isBold = style.bold!;
+  }
+
+  if (notUndefined(style.italic)) {
+    text.isItalic = style.italic!;
+  }
+
+  if (notUndefined(style.underline)) {
+    text.isUnderline = style.underline!;
+  }
+
+  if (notUndefined(style.outline)) {
+    text.enableOutline = true;
+    text.outlineWidth = style.outline!.width;
+    text.outlineColor = from(style.outline!.color);
+  }
+
+  if (notUndefined(style.shadow)) {
+    text.enableShadow = true;
+    text.shadowBlur = style.shadow!.blur;
+    text.shadowColor = from(style.shadow!.color);
+    text.shadowOffset = v2(style.shadow!.x, style.shadow!.y);
+  }
+
+  if (notUndefined(style.alignHor)) {
+    text.horizontalAlign = style.alignHor!;
+  }
+
+  if (notUndefined(style.alignVer)) {
+    text.verticalAlign = style.alignVer!;
+  }
+
+  if (notUndefined(style.overflow)) {
+    text.overflow = style.overflow!;
+  }
+
+  if (notUndefined(style.cacheMode)) {
+    text.cacheMode = style.cacheMode!;
+  }
+}
+
 export {
   CTX,
   idle,
@@ -173,4 +345,7 @@ export {
   timeAsync,
   timeSync,
   simulateLongTask,
+  getTextStyle,
+  getTextStyleBatch,
+  setTextStyle,
 };

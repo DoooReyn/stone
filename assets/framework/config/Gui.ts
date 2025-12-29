@@ -9,7 +9,7 @@ export const PRESET_GUI = {
   /** 默认字体 */
   TEXT_FONT: {
     text: '',
-    family: 'l:resources@font/default',
+    family: '霞鹜臻楷 GB',
     color: '#FFFFFF',
     size: 20,
     multiline: false,

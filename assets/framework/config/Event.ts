@@ -46,4 +46,6 @@ export const PRESET_EVENT_NAME = {
   POPUP_MASK_CLICKED: 'gui:popup-mask-clicked',
   /** 弹窗层遮罩点击事件 */
   ALERT_MASK_CLICKED: 'gui:alert-mask-clicked',
+  /** 字体切换事件 */
+  FONT_CHANGED: 'gui:font-changed',
 };
