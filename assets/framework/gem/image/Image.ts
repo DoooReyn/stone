@@ -4,21 +4,88 @@ import { fast } from 'fast/Fast';
 import { FastError } from 'fast/foundation/Error';
 import { IResCachePlugin } from 'fast/plugin/res/IResCachePlugin';
 import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
-import { CCImageFitMode, ImageFitMode, LoadState } from 'fast/Types';
+import { CCImageFitMode, ImageFitMode, IImageAttr, LoadState } from 'fast/Types';
+import { be } from 'fast/util';
 
 import { Gem } from '../Gem';
 
 const { ccclass, menu, property, requireComponent } = _decorator;
 
 /**
- * 图像
+ * 图像组件
+ * @notes 封装 cc.Sprite
  */
 @ccclass('ImageView')
 @menu('Gem/ImageView')
 @requireComponent(Sprite)
 export class ImageView extends Gem {
-  /** 内容 */
-  protected $image: Sprite;
+  // ------------------------------- 静态成员区 -------------------------------
+
+  /**
+   * 获取图像属性
+   * @param image 图像
+   * @param key 属性名称
+   * @returns
+   */
+  public static GetImageAttr<S extends keyof IImageAttr>(image: Sprite, key: S) {
+    let attr = undefined;
+    switch (key) {
+      case 'viewMode':
+        attr = image.type;
+        break;
+      case 'sizeMode':
+        attr = image.sizeMode;
+        break;
+      case 'fillMode':
+        attr = image.fillType;
+        break;
+      case 'fillStart':
+        attr = image.fillStart;
+        break;
+      case 'fillCenter':
+        attr = image.fillCenter;
+        break;
+      case 'fillRange':
+        attr = image.fillRange;
+        break;
+      case 'gray':
+        attr = image.grayscale;
+        break;
+    }
+    return attr as IImageAttr[S];
+  }
+
+  /**
+   * 设置图像属性
+   * @param view 图像
+   * @param attrs 图像属性
+   */
+  public static SetImageAttr(view: Sprite, attrs: Partial<IImageAttr>) {
+    if (be.notUndefined(attrs.viewMode)) {
+      view.type = attrs.viewMode;
+    }
+    if (be.notUndefined(attrs.sizeMode)) {
+      view.sizeMode = attrs.sizeMode;
+    }
+    if (be.notUndefined(attrs.fillMode)) {
+      view.fillType = attrs.fillMode;
+    }
+    if (be.notUndefined(attrs.fillStart)) {
+      view.fillStart = attrs.fillStart;
+    }
+    if (be.notUndefined(attrs.fillCenter)) {
+      view.fillCenter.set(attrs.fillCenter);
+    }
+    if (be.notUndefined(attrs.fillRange)) {
+      view.fillRange = attrs.fillRange;
+    }
+    if (be.notUndefined(attrs.gray)) {
+      view.grayscale = attrs.gray;
+    }
+    view.markForUpdateRenderData(true);
+  }
+
+  // ------------------------------- 属性声明区 -------------------------------
 
   /** 适配模式 */
   @property({ type: CCImageFitMode, displayName: '适配模式' })
@@ -27,6 +94,9 @@ export class ImageView extends Gem {
   /** 资源地址 */
   @property({ displayName: '资源地址', tooltip: '支持本地和远程' })
   protected $url: string = '';
+
+  /** 内容 */
+  protected $image: Sprite;
 
   /** 显示区域 */
   protected $viewArea: Size = new Size();
@@ -39,6 +109,8 @@ export class ImageView extends Gem {
 
   /** 临时的资源地址，用于回退 */
   private _tempUrl: string = '';
+
+  // ------------------------------- 公开访问区 -------------------------------
 
   /** 适配模式 */
   get fitMode() {
@@ -95,6 +167,25 @@ export class ImageView extends Gem {
     this._loadState = LoadState.Init;
     this.$image.spriteFrame = null;
   }
+
+  /**
+   * 获取图像属性
+   * @param key 属性名称
+   * @returns
+   */
+  get<S extends keyof IImageAttr>(key: S) {
+    return ImageView.GetImageAttr(this.$image, key);
+  }
+
+  /**
+   * 设置图像属性
+   * @param attrs 图像属性
+   */
+  set(attrs: Partial<IImageAttr>) {
+    ImageView.SetImageAttr(this.$image, attrs);
+  }
+
+  // ------------------------------- 受限访问区 -------------------------------
 
   /**
    * 加载内容

@@ -1,17 +1,83 @@
 import { _decorator, CCInteger, EditBox, Overflow, VerticalTextAlignment } from 'cc';
 import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_GUI } from 'fast/config/Gui';
-import { ITextStyle } from 'fast/Types';
-import { misc } from 'fast/util';
+import { ITextAttr, ITextFieldAttr } from 'fast/Types';
+import { be } from 'fast/util';
 
 import { Gem } from '../Gem';
+import { Text } from './Text';
 
 const { ccclass, property, menu, requireComponent } = _decorator;
 
+/**
+ * 输入框组件
+ * @notes 封装 cc.EditBox
+ */
 @ccclass('TextField')
 @menu('Gem/TextField')
 @requireComponent(EditBox)
 export class TextField extends Gem {
+  // ------------------------------- 静态成员区 -------------------------------
+
+  /**
+   * 获取输入框属性
+   * @param field 输入框组件
+   * @param key 属性名称
+   * @returns 输入框属性
+   */
+  public static GetTextFieldAttr<S extends keyof ITextFieldAttr>(field: EditBox, key: S) {
+    let attr = undefined;
+    switch (key) {
+      case 'text':
+        attr = field.string;
+        break;
+      case 'tip':
+        attr = field.placeholder;
+        break;
+      case 'inputMode':
+        attr = field.inputMode;
+        break;
+      case 'inputFlag':
+        attr = field.inputFlag;
+        break;
+      case 'returnMode':
+        attr = field.returnType;
+        break;
+      case 'maxLength':
+        attr = field.maxLength;
+        break;
+    }
+    return attr as ITextFieldAttr[S];
+  }
+
+  /**
+   * 设置输入框属性
+   * @param field 输入框组件
+   * @param attrs 输入框属性
+   */
+  public static SetTextFieldAttr(field: EditBox, attrs: Partial<ITextFieldAttr>) {
+    if (be.notUndefined(attrs.text)) {
+      field.string = attrs.text;
+    }
+    if (be.notUndefined(attrs.tip)) {
+      field.placeholder = attrs.tip;
+    }
+    if (be.notUndefined(attrs.inputMode)) {
+      field.inputMode = attrs.inputMode;
+    }
+    if (be.notUndefined(attrs.inputFlag)) {
+      field.inputFlag = attrs.inputFlag;
+    }
+    if (be.notUndefined(attrs.returnMode)) {
+      field.returnType = attrs.returnMode;
+    }
+    if (be.notUndefined(attrs.maxLength)) {
+      field.maxLength = attrs.maxLength;
+    }
+  }
+
+  // ------------------------------- 属性声明区 -------------------------------
+
   /** 左边距 */
   @property({ displayName: '左边距', type: CCInteger, min: 0, step: 1 })
   protected $padding: number = 2;
@@ -23,6 +89,11 @@ export class TextField extends Gem {
   /** 内容字体 */
   @property({ displayName: '内容字体', tooltip: '置空时使用内置资源' })
   protected $txtFont: string = '';
+
+  /** 输入框组件 */
+  protected $editBox: EditBox;
+
+  // ------------------------------- 公开访问区 -------------------------------
 
   /** 左边距 */
   get padding() {
@@ -36,29 +107,29 @@ export class TextField extends Gem {
   }
 
   /**
-   * 设置占位样式
-   * @param style 样式
+   * 设置占位属性
+   * @param attrs 属性
    */
-  setPhdStyle(style: Partial<ITextStyle>) {
+  setPhdAttr(attrs: Partial<ITextAttr>) {
     const text = this.$editBox.placeholderLabel;
     if (text) {
-      misc.setTextStyle(text, style);
-      if (style.text) {
-        this.$editBox.placeholder = style.text;
+      Text.SetTextAttr(text, attrs);
+      if (attrs.text) {
+        this.$editBox.placeholder = attrs.text;
       }
     }
   }
 
   /**
-   * 设置内容样式
-   * @param style 样式
+   * 设置内容属性
+   * @param attrs 属性
    */
-  setTxtStyle(style: Partial<ITextStyle>) {
+  setTxtAttr(attrs: Partial<ITextAttr>) {
     const text = this.$editBox.textLabel;
     if (text) {
-      misc.setTextStyle(text, style);
-      if (style.text) {
-        this.$editBox.string = style.text;
+      Text.SetTextAttr(text, attrs);
+      if (attrs.text) {
+        this.$editBox.string = attrs.text;
       }
     }
   }
@@ -73,8 +144,24 @@ export class TextField extends Gem {
     return this.$phdFont;
   }
 
-  /** 输入框组件 */
-  protected $editBox: EditBox;
+  /**
+   * 获取输入框属性
+   * @param key 属性名称
+   * @returns 输入框属性
+   */
+  get<S extends keyof ITextFieldAttr>(key: S) {
+    return TextField.GetTextFieldAttr(this.$editBox, key);
+  }
+
+  /**
+   * 设置输入框属性
+   * @param attrs 输入框属性
+   */
+  set(attrs: Partial<ITextFieldAttr>) {
+    TextField.SetTextFieldAttr(this.$editBox, attrs);
+  }
+
+  // ------------------------------- 受限访问区 -------------------------------
 
   protected didCreate(): void {
     this.$editBox = this.getComponent(EditBox)!;
@@ -113,13 +200,13 @@ export class TextField extends Gem {
     const startX = -this.node.w / 2;
 
     if (txt) {
-      this.setTxtStyle({ family: this.$txtFont, overflow: Overflow.SHRINK, multiline: false });
+      this.setTxtAttr({ family: this.$txtFont, overflow: Overflow.SHRINK, multiline: false });
       txt.node.x = startX + this.$padding;
       txt.verticalAlign = VerticalTextAlignment.CENTER;
     }
 
     if (phd) {
-      this.setPhdStyle({ family: this.$phdFont, overflow: Overflow.SHRINK, multiline: false });
+      this.setPhdAttr({ family: this.$phdFont, overflow: Overflow.SHRINK, multiline: false });
       phd.node.x = startX + this.$padding;
       phd.verticalAlign = VerticalTextAlignment.CENTER;
     }

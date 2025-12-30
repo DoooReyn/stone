@@ -1,4 +1,4 @@
-import { __private, CacheMode, Enum, HorizontalTextAlignment, Overflow, VerticalTextAlignment } from 'cc';
+import { __private, CacheMode, Enum, HorizontalTextAlignment, Overflow, Vec2, VerticalTextAlignment } from 'cc';
 
 /** 无返回值函数类型 */
 export type VoidFn = (...args: any[]) => void;
@@ -45,10 +45,8 @@ export type OnPropertyChanged = (path: string, value: any) => void;
 /** 订阅结构 */
 export type Subscription = Pair<OnPropertyChanged, any>;
 
-/**
- * 文本样式
- */
-export interface ITextStyle {
+/** 文本属性 */
+export interface ITextAttr {
   /** 文本内容 */
   text: string;
   /** 字体族，系统字体直接使用名称，资源字体使用 'l:' 前缀 */
@@ -91,6 +89,34 @@ export interface ITextStyle {
   overflow: Overflow;
   /** 缓存模式 */
   cacheMode: CacheMode;
+}
+
+/** 图像属性 */
+export interface IImageAttr {
+  /** 显示模式 */
+  viewMode: __private._cocos_2d_components_sprite__SpriteType;
+  /** 尺寸模式 */
+  sizeMode: __private._cocos_2d_components_sprite__SizeMode;
+  /** 填充模式 */
+  fillMode: __private._cocos_2d_components_sprite__FillType;
+  /** 填充起点 */
+  fillStart: number;
+  /** 填充范围 */
+  fillRange: number;
+  /** 填充中心 */
+  fillCenter: Vec2;
+  /** 灰度模式 */
+  gray: boolean;
+}
+
+/** 输入框属性 */
+export interface ITextFieldAttr {
+  text: string;
+  tip: string;
+  maxLength: number;
+  returnMode: __private._cocos_ui_editbox_types__KeyboardReturnType;
+  inputMode: __private._cocos_ui_editbox_types__InputMode;
+  inputFlag: __private._cocos_ui_editbox_types__InputFlag;
 }
 
 /**
