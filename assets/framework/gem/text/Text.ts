@@ -16,7 +16,7 @@ const { ccclass, menu, property, requireComponent } = _decorator;
  * 文本组件
  * @notes 封装 cc.Label
  */
-@ccclass('Text')
+@ccclass('Gem/Text')
 @menu('Gem/Text')
 @requireComponent(Label)
 export class Text extends Gem {
@@ -35,7 +35,7 @@ export class Text extends Gem {
         attr = text.string;
         break;
       case 'family':
-        attr = text.useSystemFont ? text.fontFamily : text.font?.name || '';
+        attr = text.useSystemFont ? text.fontFamily : text.font?.name || PRESET_GUI.TEXT_FONT.family;
         break;
       case 'color':
         attr = text.color.toHEX();

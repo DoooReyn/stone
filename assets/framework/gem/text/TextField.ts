@@ -13,7 +13,7 @@ const { ccclass, property, menu, requireComponent } = _decorator;
  * 输入框组件
  * @notes 封装 cc.EditBox
  */
-@ccclass('TextField')
+@ccclass('Gem/TextField')
 @menu('Gem/TextField')
 @requireComponent(EditBox)
 export class TextField extends Gem {

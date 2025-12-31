@@ -559,7 +559,7 @@ export interface IResLoaderPlugin extends IPlugin {
    * @param path 资源路径
    * @returns 字体资源实例
    */
-  loadFont(path: string): Promise<Font | null>;
+  loadFont(path: string): Promise<TTFFont | null>;
 
   /**
    * 加载文图字体

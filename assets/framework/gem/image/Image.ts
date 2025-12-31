@@ -15,7 +15,7 @@ const { ccclass, menu, property, requireComponent } = _decorator;
  * 图像组件
  * @notes 封装 cc.Sprite
  */
-@ccclass('ImageView')
+@ccclass('Gem/ImageView')
 @menu('Gem/ImageView')
 @requireComponent(Sprite)
 export class ImageView extends Gem {

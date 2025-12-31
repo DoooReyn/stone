@@ -12,7 +12,6 @@ import {
   BitmapFont,
   BufferAsset,
   Constructor,
-  Font,
   ImageAsset,
   JsonAsset,
   ParticleAsset,
@@ -24,7 +23,7 @@ import {
   TextAsset,
   TiledMapAsset,
   TTFFont,
-  VideoClip
+  VideoClip,
 } from 'cc';
 import { PRESET_RES } from 'fast/config/Res';
 import { PRESET_TOKEN } from 'fast/config/Token';
@@ -40,7 +39,7 @@ import {
   IResLocal,
   IResRemote,
   ResLoadItem,
-  ResPreloadItem
+  ResPreloadItem,
 } from './IResLoaderPlugin';
 
 /**
@@ -292,7 +291,7 @@ class ResLocal implements IResLocal {
   }
 
   loadFont(path: string) {
-    return this.load(Font, path);
+    return this.load(TTFFont, path);
   }
 
   loadBitmapFont(path: string) {
@@ -962,8 +961,8 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     return this.load(sp.SkeletonData, { path });
   }
 
-  loadFont(path: string): Promise<Font | null> {
-    return this.load(Font, { path });
+  loadFont(path: string): Promise<TTFFont | null> {
+    return this.load(TTFFont, { path });
   }
 
   loadBitmapFont(path: string): Promise<BitmapFont | null> {

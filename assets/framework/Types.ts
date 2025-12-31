@@ -1,4 +1,13 @@
-import { __private, CacheMode, Enum, HorizontalTextAlignment, Overflow, Vec2, VerticalTextAlignment } from 'cc';
+import {
+  __private,
+  CacheMode,
+  Enum,
+  HorizontalTextAlignment,
+  Overflow,
+  SpriteAtlas,
+  Vec2,
+  VerticalTextAlignment,
+} from 'cc';
 
 /** 无返回值函数类型 */
 export type VoidFn = (...args: any[]) => void;
@@ -117,6 +126,32 @@ export interface ITextFieldAttr {
   returnMode: __private._cocos_ui_editbox_types__KeyboardReturnType;
   inputMode: __private._cocos_ui_editbox_types__InputMode;
   inputFlag: __private._cocos_ui_editbox_types__InputFlag;
+}
+
+/** 富文本属性 */
+export interface ITextRichAttr {
+  /** 文本内容 */
+  text: string;
+  /** 字体族，系统字体直接使用名称，资源字体使用 'l:' 前缀 */
+  family: string;
+  /** 字号 */
+  size: number;
+  /** 颜色，十六进制格式 */
+  color: string;
+  /** 行高 */
+  lineHeight: number;
+  /** 水平对齐 */
+  alignHor: HorizontalTextAlignment;
+  /** 垂直对齐 */
+  alignVer: VerticalTextAlignment;
+  /** 缓存模式 */
+  cacheMode: CacheMode;
+  /** 图集 */
+  atlas: SpriteAtlas;
+  /** 最大宽度 */
+  maxWidth: number;
+  /** 防止触摸穿透 */
+  preventTouch: boolean;
 }
 
 /**
