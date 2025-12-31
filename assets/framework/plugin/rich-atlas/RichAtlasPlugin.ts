@@ -7,22 +7,18 @@ import { be } from 'fast/util';
 import { IAppPlugin } from '../app/IAppPlugin';
 import { IProfilerPlugin } from '../profiler/IProfilerPlugin';
 import { AutoAtlas } from './AutoAtlas';
-import {
-  IRichAtlasInfo,
-  IRichTextAtlas as IRichTextAtlasPlugin,
-  IRichTextStyle,
-  RichTextAtlasLevel
-} from './IRichAtlasPlugin';
+import { AutoAtlasLevel } from './IAutoAtlas';
+import { IHtxAtlasInfo, IHtxAtlasPlugin, IHtxStyle } from './IRichAtlasPlugin';
 
 /**
- * 富文本模板
+ * 超级富文本模板
  */
-class RichTextTemplate extends Node {
+class HtxTemplate extends Node {
   /** 文本组件 */
   private _renderer: Label;
 
   constructor() {
-    super('rich-text-template');
+    super('hyper-text-template');
     this.layer = 0;
     this._renderer = this.addComponent(Label);
   }
@@ -30,7 +26,7 @@ class RichTextTemplate extends Node {
   /**
    * 将文本和样式应用到渲染组件，并返回生成的图像资源
    */
-  apply(ch: string, glyphKey: string, style: IRichTextStyle) {
+  apply(ch: string, glyphKey: string, style: IHtxStyle) {
     const renderer = this._renderer;
     renderer.enabled = true;
     renderer.string = ch;
@@ -69,44 +65,44 @@ class RichTextTemplate extends Node {
 }
 
 /**
- * 富文本图集服务
+ * 超级富文本图集服务
  */
-export class RichTextAtlasPlugin extends Plugin implements IRichTextAtlasPlugin {
-  public static readonly Token: string = PRESET_TOKEN.RICH_TEXT_ATLAS;
+export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
+  public static readonly Token: string = PRESET_TOKEN.HYPER_TEXT_ATLAS;
   /** atlasKey -> 图集信息 */
-  private _atlases: Map<string, IRichAtlasInfo> = new Map();
+  private _atlases: Map<string, IHtxAtlasInfo> = new Map();
 
   /** atlasKey -> 图集等级（控制 AutoAtlas 尺寸） */
-  private _atlasLevels: Map<string, RichTextAtlasLevel> = new Map();
+  private _atlasLevels: Map<string, AutoAtlasLevel> = new Map();
 
   /** 用于生成 glyph 的临时节点 */
-  private _template: RichTextTemplate;
+  private _template: HtxTemplate;
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.PROFILER, PRESET_TOKEN.APP];
 
   async onInitialize() {
-    this.of<IProfilerPlugin>(PRESET_TOKEN.PROFILER).addDebugItem(PRESET_RES.RICH_TEXT_ATLAS, '富文本图集', () => {
+    this.of<IProfilerPlugin>(PRESET_TOKEN.PROFILER).addDebugItem(PRESET_RES.HYPER_TEXT_ATLAS, '超级富文本图集', () => {
       const usage = this.getUsage();
       return [`数量: ${usage.atlasCount}`, `占用内存: ${usage.totalMemoryBytes / 1024 / 1024} MB`].join('\n');
     });
 
-    this.configureAtlas(PRESET_RES.RICH_TEXT_ATLAS, RichTextAtlasLevel.XLarge);
-    this._template = new RichTextTemplate();
+    this.configureAtlas(PRESET_RES.HYPER_TEXT_ATLAS, AutoAtlasLevel.XLarge);
+    this._template = new HtxTemplate();
     this.of<IAppPlugin>(PRESET_TOKEN.APP).root.parent!.insertChild(this._template, 2);
   }
 
-  configureAtlas(atlasKey: string, level: RichTextAtlasLevel): void {
+  configureAtlas(atlasKey: string, level: AutoAtlasLevel): void {
     if (this._atlasLevels.has(atlasKey)) {
-      const oldLevel = RichTextAtlasLevel[this._atlasLevels.get(atlasKey)!];
-      this.logger.wf('富文本图集 ⁅{0} => {1}⁆ 已配置，请注意合理分配图集标识和等级', atlasKey, oldLevel);
+      const oldLevel = AutoAtlasLevel[this._atlasLevels.get(atlasKey)!];
+      this.logger.if('超级富文本图集 ⁅{0} => {1}⁆ 已配置，请注意合理分配图集标识和等级', atlasKey, oldLevel);
       return;
     }
     this._atlasLevels.set(atlasKey, level);
-    this.logger.if('富文本图集 ⁅{0} => {1}⁆ 已添加', atlasKey, RichTextAtlasLevel[level]);
+    this.logger.if('超级富文本图集 ⁅{0} => {1}⁆ 已添加', atlasKey, AutoAtlasLevel[level]);
   }
 
   destroy() {
-    this.of<IProfilerPlugin>(PRESET_TOKEN.PROFILER).removeDebugItem(PRESET_RES.RICH_TEXT_ATLAS);
+    this.of<IProfilerPlugin>(PRESET_TOKEN.PROFILER).removeDebugItem(PRESET_RES.HYPER_TEXT_ATLAS);
     this._template.destroy();
     this._template = null!;
     this.shrinkAll();
@@ -116,10 +112,10 @@ export class RichTextAtlasPlugin extends Plugin implements IRichTextAtlasPlugin 
    * 获取或创建图集信息
    * @param atlasKey 图集标识
    */
-  private _getOrCreateAtlas(atlasKey: string): IRichAtlasInfo {
+  private _getOrCreateAtlas(atlasKey: string): IHtxAtlasInfo {
     let info = this._atlases.get(atlasKey);
     if (!info) {
-      const level = this._atlasLevels.get(atlasKey) ?? RichTextAtlasLevel.Medium;
+      const level = this._atlasLevels.get(atlasKey) ?? AutoAtlasLevel.Medium;
       const size = level as number;
       const atlas = new AutoAtlas(atlasKey, {
         width: size,
@@ -169,7 +165,7 @@ export class RichTextAtlasPlugin extends Plugin implements IRichTextAtlasPlugin 
     }
   }
 
-  acquireGlyph(atlasKey: string, glyphKey: string, ch: string, style: IRichTextStyle): SpriteFrame | null {
+  acquireGlyph(atlasKey: string, glyphKey: string, ch: string, style: IHtxStyle): SpriteFrame | null {
     const info = this._getOrCreateAtlas(atlasKey);
 
     const cached = info.glyphs.get(glyphKey);
@@ -197,7 +193,7 @@ export class RichTextAtlasPlugin extends Plugin implements IRichTextAtlasPlugin 
     return frame;
   }
 
-  createGlyphImage(ch: string, glyphKey: string, style: IRichTextStyle): ImageAsset {
+  createGlyphImage(ch: string, glyphKey: string, style: IHtxStyle): ImageAsset {
     return this._template.apply(ch, glyphKey, style);
   }
 
@@ -243,7 +239,7 @@ export class RichTextAtlasPlugin extends Plugin implements IRichTextAtlasPlugin 
     let totalMemoryBytes = 0;
 
     this._atlases.forEach((info, key) => {
-      const level = this._atlasLevels.get(key) ?? RichTextAtlasLevel.Medium;
+      const level = this._atlasLevels.get(key) ?? AutoAtlasLevel.Medium;
       const size = level as number;
       const width = size;
       const height = size;

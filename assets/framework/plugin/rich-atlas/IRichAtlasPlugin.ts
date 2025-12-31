@@ -1,136 +1,20 @@
 import { Color, ImageAsset, SpriteFrame, Vec2 } from 'cc';
 import { IPlugin } from 'fast/foundation/Plugin';
 
-/**
- * 自动图集接口
- */
-export interface IAutoAtlas {
-  /** 图集标识 */
-  readonly token: string;
-  /**
-   * 查询图像
-   * @param uuid 标识
-   * @returns 是否存在图像
-   */
-  has(uuid: string): boolean;
-  /**
-   * 获取可用图像
-   * @param uuid 标识
-   * @returns 图像实例
-   */
-  acquire(uuid: string): SpriteFrame | null;
-  /**
-   * 添加图像
-   * @param uuid 标识
-   * @param image 图像
-   */
-  add(uuid: string, image: ImageAsset): void;
-  /**
-   * 删除所有纹理
-   * @warn 你必须很清楚自己在做什么
-   */
-  destroy(): void;
-}
+import { AutoAtlasLevel, IAutoAtlas, IAutoAtlasUsageSummary } from './IAutoAtlas';
 
 /**
- * 自动图集配置
+ * 超级富文本图集条目尺寸
  */
-export interface IAutoAtlasOptions {
-  width: number;
-  height: number;
-  smart: boolean;
-  border: number;
-  padding: number;
-}
-
-/**
- * 富文本图集条目尺寸
- */
-export interface IRichGlyphMetrics {
+export interface IHtxGlyphMetrics {
   width: number;
   height: number;
 }
 
 /**
- * 富文本图集等级
- * @description 控制 AutoAtlas 的纹理尺寸
+ * 超级富文本样式
  */
-export enum RichTextAtlasLevel {
-  /** 微型：128x128 */
-  Micro = 128,
-  /** 小型：256x256 */
-  Small = 256,
-  /** 中型：512x512（默认） */
-  Medium = 512,
-  /** 大型：1024x1024 */
-  Large = 1024,
-  /** 超大型：2048x2048 */
-  XLarge = 2048,
-}
-
-/**
- * 单个图集的占用信息
- */
-export interface IRichAtlasUsageItem {
-  /** 图集标识 */
-  atlasKey: string;
-  /** 图集纹理宽度（像素） */
-  width: number;
-  /** 图集纹理高度（像素） */
-  height: number;
-  /** 估算内存占用（字节，按 RGBA8888 4 字节/像素计算） */
-  memoryBytes: number;
-  /** 当前缓存的 glyph 数量 */
-  glyphCount: number;
-  /** 引用计数 */
-  refCount: number;
-}
-
-/**
- * 富文本图集整体占用信息
- */
-export interface IRichAtlasUsageSummary {
-  /** 当前有效图集数量 */
-  atlasCount: number;
-  /** 所有图集估算内存占用总和（字节） */
-  totalMemoryBytes: number;
-  /** 各图集的详细占用信息 */
-  atlases: IRichAtlasUsageItem[];
-}
-
-/**
- * 水平对齐方式
- */
-export enum HorizontalAlign {
-  LEFT,
-  CENTER,
-  RIGHT,
-}
-
-/**
- * 垂直对齐方式
- */
-export enum VerticalAlign {
-  TOP,
-  MIDDLE,
-  BOTTOM,
-}
-
-/**
- * 图集等级
- */
-export enum AtlasLevel {
-  Micro = RichTextAtlasLevel.Micro,
-  Small = RichTextAtlasLevel.Small,
-  Medium = RichTextAtlasLevel.Medium,
-  Large = RichTextAtlasLevel.Large,
-  XLarge = RichTextAtlasLevel.XLarge,
-}
-
-/**
- * 富文本样式
- */
-export interface IRichTextStyle {
+export interface IHtxStyle {
   fontFamily: string;
   fontSize: number;
   color: Color;
@@ -146,38 +30,38 @@ export interface IRichTextStyle {
 }
 
 /**
- * 富文本字符信息
+ * 超级富文本字符信息
  */
-export interface IRichGlyph {
+export interface IHtxGlyph {
   ch: string;
-  style: IRichTextStyle;
+  style: IHtxStyle;
 }
 
 /**
- * 布局后的 glyph
+ * 超级富文本布局后的 glyph
  */
-export interface ILaidOutGlyph extends IRichGlyph {
+export interface IHtxLayoutGlyph extends IHtxGlyph {
   x: number;
   y: number;
   glyphKey: string;
 }
 
 /**
- * 富文本图集信息
+ * 超级富文本图集信息
  */
-export interface IRichAtlasInfo {
+export interface IHtxAtlasInfo {
   /** 自动图集 */
   atlas: IAutoAtlas;
   /** glyphKey -> SpriteFrame */
-  glyphs: Map<string, IRichGlyphEntry>;
+  glyphs: Map<string, IHtxAtlasGlyphEntry>;
   /** 引用计数，来自各个 RichText 组件 */
   refCount: number;
 }
 
 /**
- * 富文本图集条目
+ * 超级富文本图集条目
  */
-export interface IRichGlyphEntry {
+export interface IHtxAtlasGlyphEntry {
   /** 引用的 SpriteFrame */
   frame: SpriteFrame;
   /** 最近一次被访问的时间戳，用于简单 LRU */
@@ -185,14 +69,14 @@ export interface IRichGlyphEntry {
 }
 
 /**
- * 富文本图集插件接口
+ * 超级富文本图集插件接口
  */
-export interface IRichTextAtlas extends IPlugin {
+export interface IHtxAtlasPlugin extends IPlugin {
   /**
    * 为指定图集标识配置等级（纹理尺寸）
    * - 同一个 atlasKey 多次配置时，以最后一次为准
    */
-  configureAtlas(atlasKey: string, level: RichTextAtlasLevel): void;
+  configureAtlas(atlasKey: string, level: AutoAtlasLevel): void;
 
   /**
    * 获取 glyph 的尺寸（如果已在图集中缓存）
@@ -200,7 +84,7 @@ export interface IRichTextAtlas extends IPlugin {
    * @param glyphKey glyph 样式标识（包含字体、字号、颜色、描边等）
    * @returns glyph 的尺寸，如果未缓存则返回 null
    */
-  measureGlyphMetrics(atlasKey: string, glyphKey: string): IRichGlyphMetrics | null;
+  measureGlyphMetrics(atlasKey: string, glyphKey: string): IHtxGlyphMetrics | null;
 
   /**
    * 增加图集引用计数
@@ -219,7 +103,7 @@ export interface IRichTextAtlas extends IPlugin {
    * @param ch 字符（可能是合并后的下划线片段）
    * @param style 样式
    */
-  acquireGlyph(atlasKey: string, glyphKey: string, ch: string, style: IRichTextStyle): SpriteFrame | null;
+  acquireGlyph(atlasKey: string, glyphKey: string, ch: string, style: IHtxStyle): SpriteFrame | null;
 
   /**
    * 创建 glyph 图片（底层实现使用 Label 渲染成图像）
@@ -227,7 +111,7 @@ export interface IRichTextAtlas extends IPlugin {
    * @param glyphKey glyph 样式标识
    * @param style 样式
    */
-  createGlyphImage(ch: string, glyphKey: string, style: IRichTextStyle): ImageAsset;
+  createGlyphImage(ch: string, glyphKey: string, style: IHtxStyle): ImageAsset;
 
   /**
    * 清理引用计数为 0 的图集（根据简单 LRU 策略）
@@ -242,5 +126,5 @@ export interface IRichTextAtlas extends IPlugin {
   /**
    * 查询当前所有图集的占用情况，包括图集数量和总内存占用
    */
-  getUsage(): IRichAtlasUsageSummary;
+  getUsage(): IAutoAtlasUsageSummary;
 }

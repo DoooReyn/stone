@@ -1,8 +1,9 @@
 import { gfx, warnID, ImageAsset, Rect, SpriteFrame, Texture2D } from 'cc';
 import { list } from 'fast/util';
-import { MaxRectsPacker } from 'maxrects-packer';
+// @ts-ignore maxrects-packer 实际上导出的是 defaults
+import mrp from 'maxrects-packer';
 
-import { IAutoAtlas, IAutoAtlasOptions } from './IRichAtlasPlugin';
+import { IAutoAtlas, IAutoAtlasOptions } from './IAutoAtlas';
 
 /**
  * 动态纹理
@@ -58,7 +59,7 @@ export class AutoAtlas implements IAutoAtlas {
   /** 图像与区域映射 */
   private _region: Map<string, [page: number, region: Rect]>;
   /** 图集打包器 */
-  private _packer: MaxRectsPacker;
+  private _packer: mrp.MaxRectsPacker;
   /** 配置 */
   private _options: IAutoAtlasOptions;
 
@@ -78,7 +79,7 @@ export class AutoAtlas implements IAutoAtlas {
     };
     this._pages = [];
     this._region = new Map();
-    this._packer = new MaxRectsPacker(options.width, options.height, options.padding, {
+    this._packer = new mrp.MaxRectsPacker(options.width, options.height, options.padding, {
       smart: options.smart,
       border: options.border,
       allowRotation: false,
