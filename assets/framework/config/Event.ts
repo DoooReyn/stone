@@ -48,4 +48,22 @@ export const PRESET_EVENT_NAME = {
   ALERT_MASK_CLICKED: 'gui:alert-mask-clicked',
   /** 字体切换事件 */
   FONT_CHANGED: 'gui:font-changed',
+  /** 按钮：点击开始 */
+  BTN_CLICK_START: 'gui:button-click-start',
+  /** 按钮：点击结束 */
+  BTN_CLICK_END: 'gui:button-click-end',
+  /** 按钮：点击取消 */
+  BTN_CLICK_CANCEL: 'gui:button-click-cancel',
+  /** 按钮：鼠标进入 */
+  BTN_HOVER_IN: 'gui:button-hover-in',
+  /** 按钮：鼠标移出 */
+  BTN_HOVER_OUT: 'gui:button-hover-out',
+  /** 按钮：长按开始 */
+  BTN_HOLD_START: 'gui:button-hold-start',
+  /** 按钮：长按结束 */
+  BTN_HOLD_END: 'gui:button-hold-end',
+  /** 按钮：长按触发 */
+  BTN_HOLD_COUNT: 'gui:button-hold-count',
+  /** 按钮：状态切换 */
+  BTN_STATE_CHANGED: 'gui:button-state-changed',
 };
