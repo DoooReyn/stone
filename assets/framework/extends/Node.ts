@@ -179,73 +179,73 @@ declare module 'cc' {
 if (!EDITOR_NOT_IN_PREVIEW) {
   js.mixin(Node.prototype, {
     get uiGraphics() {
-      return this.getComponent('cc.Graphics');
+      return this.acquire('cc.Graphics');
     },
     get uiLabel() {
-      return this.getComponent('cc.Label');
+      return this.acquire('cc.Label');
     },
     get uiRichText() {
-      return this.getComponent('cc.RichText');
+      return this.acquire('cc.RichText');
     },
     get uiSprite() {
-      return this.getComponent('cc.Sprite');
+      return this.acquire('cc.Sprite');
     },
     get uiButton() {
-      return this.getComponent('cc.Button');
+      return this.acquire('cc.Button');
     },
     get uiCanvas() {
-      return this.getComponent('cc.Canvas');
+      return this.acquire('cc.Canvas');
     },
     get uiEditBox() {
-      return this.getComponent('cc.EditBox');
+      return this.acquire('cc.EditBox');
     },
     get uiLayout() {
-      return this.getComponent('cc.Layout');
+      return this.acquire('cc.Layout');
     },
     get uiPageView() {
-      return this.getComponent('cc.PageView');
+      return this.acquire('cc.PageView');
     },
     get uiProgressBar() {
-      return this.getComponent('cc.ProgressBar');
+      return this.acquire('cc.ProgressBar');
     },
     get uiScrollView() {
-      return this.getComponent('cc.ScrollView');
+      return this.acquire('cc.ScrollView');
     },
     get uiSlider() {
-      return this.getComponent('cc.Slider');
+      return this.acquire('cc.Slider');
     },
     get uiToggle() {
-      return this.getComponent('cc.Toggle');
+      return this.acquire('cc.Toggle');
     },
     get uiWidget() {
-      return this.getComponent('cc.Widget');
+      return this.acquire('cc.Widget');
     },
     get uiOpacity() {
-      return this.getComponent('cc.UIOpacity');
+      return this.acquire('cc.UIOpacity');
     },
     get uiTransform() {
-      return this.getComponent('cc.UITransform');
+      return this.acquire('cc.UITransform');
     },
     get uiMask() {
-      return this.getComponent('cc.Mask');
+      return this.acquire('cc.Mask');
     },
     get uiAudio() {
-      return this.getComponent('cc.AudioSource');
+      return this.acquire('cc.AudioSource');
     },
     get uiSpine() {
-      return this.getComponent('sp.Skeleton');
+      return this.acquire('sp.Skeleton');
     },
     get uiCamera() {
-      return this.getComponent('cc.Camera');
+      return this.acquire('cc.Camera');
     },
     get uiTiledMap() {
-      return this.getComponent('cc.TiledMap');
+      return this.acquire('cc.TiledMap');
     },
     get uiWebView() {
-      return this.getComponent('cc.WebView');
+      return this.acquire('cc.WebView');
     },
     get uiVideoPlayer() {
-      return this.getComponent('cc.VideoPlayer');
+      return this.acquire('cc.VideoPlayer');
     },
     get x() {
       return this.position.x;
@@ -293,51 +293,28 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       return this.getComponent(UITransform)?.width ?? 0;
     },
     set w(value: number) {
-      (this.getComponent(UITransform) || this.addComponent(UITransform)).width = value;
+      this.acquire(UITransform).width = value;
     },
     get h() {
       return this.getComponent(UITransform)?.height ?? 0;
     },
     set h(value: number) {
-      (this.getComponent(UITransform) || this.addComponent(UITransform)).height = value;
+      this.acquire(UITransform).height = value;
     },
     get size() {
-      let uiTransform = this.getComponent(UITransform)!;
+      let uiTransform = this.acquire(UITransform)!;
       return new Size(uiTransform.width, uiTransform.height);
     },
     set size(value: Size) {
-      let uiTransform = this.getComponent(UITransform) || this.addComponent(UITransform);
+      let uiTransform = this.acquire(UITransform);
       uiTransform.width = value.width;
       uiTransform.height = value.height;
     },
     get opacity() {
-      let op = this.getComponent(UIOpacity);
-      if (op != null) {
-        return op.opacity;
-      }
-      let render = this.getComponent(UIRenderer);
-      if (render) {
-        return render.color.a;
-      }
-      return 255;
+      return this.acquire(UIOpacity).opacity;
     },
     set opacity(value: number) {
-      let op = this.getComponent(UIOpacity);
-      if (op != null) {
-        op.opacity = value;
-        return;
-      }
-      let render = this.getComponent(UIRenderer);
-      if (render) {
-        if (!this.$__color__) {
-          this.$__color__ = new Color(render.color.r, render.color.g, render.color.b, value);
-        } else {
-          this.$__color__.a = value;
-        }
-        render.color = this.$__color__;
-      } else {
-        this.addComponent(UIOpacity).opacity = value;
-      }
+      this.acquire(UIOpacity).opacity = value;
     },
     get color() {
       return this.getComponent(UIRenderer)?.color;
@@ -365,23 +342,22 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       this.scale = v3(this.scale.x, this.scale.y, value);
     },
     get pivot() {
-      let anchor = this.getComponent(UITransform)!.anchorPoint;
-      return new Vec2(anchor.x, anchor.y);
+      return this.acquire(UITransform)!.anchorPoint;
     },
     set pivot(value: Vec2) {
-      (this.getComponent(UITransform) || this.addComponent(UITransform)).anchorPoint = value;
+      this.acquire(UITransform).anchorPoint = value;
     },
     get pivotX() {
-      return this.getComponent(UITransform)?.anchorX ?? 0.5;
+      return this.acquire(UITransform)?.anchorX ?? 0.5;
     },
     set pivotX(value: number) {
-      (this.getComponent(UITransform) || this.addComponent(UITransform)).anchorX = value;
+      this.acquire(UITransform).anchorX = value;
     },
     get pivotY() {
-      return this.getComponent(UITransform)?.anchorY ?? 0.5;
+      return this.acquire(UITransform)?.anchorY ?? 0.5;
     },
     set pivotY(value: number) {
-      (this.getComponent(UITransform) || this.addComponent(UITransform)).anchorY = value;
+      this.acquire(UITransform).anchorY = value;
     },
     get angleX() {
       return this.eulerAngles.x;
@@ -402,12 +378,12 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       this.setRotationFromEuler(this.eulerAngles.x, this.eulerAngles.y, value);
     },
     setSize(width: number, height: number) {
-      let uiTransform = this.getComponent(UITransform) || this.addComponent(UITransform);
+      let uiTransform = this.acquire(UITransform);
       uiTransform.width = width;
       uiTransform.height = height;
     },
     setPivot(x: number, y: number) {
-      let uiTransform = this.getComponent(UITransform) || this.addComponent(UITransform);
+      let uiTransform = this.acquire(UITransform);
       uiTransform.setAnchorPoint(x, y);
     },
     setZoom(x: number, y?: number, z?: number) {

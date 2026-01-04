@@ -66,4 +66,20 @@ export const PRESET_EVENT_NAME = {
   BTN_HOLD_COUNT: 'gui:button-hold-count',
   /** 按钮：状态切换 */
   BTN_STATE_CHANGED: 'gui:button-state-changed',
+  /** 拖放：拖拽开始 */
+  DRAG_START: 'gui:drag-start',
+  /** 拖放：拖拽中 */
+  DRAGING: 'gui:draging',
+  /** 拖放：允许置放 */
+  DRAG_ENTER: 'gui:drag-enter',
+  /** 拖放：不允许置放 */
+  DRAG_EXIT: 'gui:drag-exit',
+  /** 拖放：拖拽取消 */
+  DRAG_CANCEL: 'gui:drag-cancel',
+  /** 拖放：拖拽结束 */
+  DRAG_END: 'gui:drag-end',
+  /** 拖放：置放成功 */
+  DRAG_DROP_INSIDE: 'gui:drag-drop-inside',
+  /** 拖放：置放失败 */
+  DRAG_DROP_OUTSIDE: 'gui:drag-drop-outside',
 };
