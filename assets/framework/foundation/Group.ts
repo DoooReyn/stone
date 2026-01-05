@@ -1,3 +1,4 @@
+import { isValid, Component, Node } from 'cc';
 import { PRESET_ID } from 'fast/config/ID';
 import { asc } from 'fast/util';
 
@@ -80,5 +81,27 @@ export class Group<T extends object = any> {
    */
   public get size() {
     return this.$list.length;
+  }
+}
+
+/**
+ * 节点分组辅助工具
+ */
+export class NodeGroup extends Group<Node> {
+  constructor() {
+    super();
+    this.filter = isValid;
+  }
+}
+
+/**
+ * 组件分组辅助工具
+ */
+export class ComponentGroup<T extends Component> extends Group<T> {
+  constructor() {
+    super();
+    this.filter = (v: T) => {
+      return v && v.isValid;
+    };
   }
 }

@@ -24,7 +24,6 @@ export * from './foundation/Group';
 export * from './foundation/KVPair';
 export * from './foundation/Logcat';
 export * from './foundation/Model';
-export * from './foundation/NodeGroup';
 export * from './foundation/Noise';
 export * from './foundation/Option';
 export * from './foundation/Plugin';

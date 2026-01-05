@@ -179,73 +179,73 @@ declare module 'cc' {
 if (!EDITOR_NOT_IN_PREVIEW) {
   js.mixin(Node.prototype, {
     get uiGraphics() {
-      return this.acquire('cc.Graphics');
+      return this.getComponent('cc.Graphics');
     },
     get uiLabel() {
-      return this.acquire('cc.Label');
+      return this.getComponent('cc.Label');
     },
     get uiRichText() {
-      return this.acquire('cc.RichText');
+      return this.getComponent('cc.RichText');
     },
     get uiSprite() {
-      return this.acquire('cc.Sprite');
+      return this.getComponent('cc.Sprite');
     },
     get uiButton() {
-      return this.acquire('cc.Button');
+      return this.getComponent('cc.Button');
     },
     get uiCanvas() {
-      return this.acquire('cc.Canvas');
+      return this.getComponent('cc.Canvas');
     },
     get uiEditBox() {
-      return this.acquire('cc.EditBox');
+      return this.getComponent('cc.EditBox');
     },
     get uiLayout() {
-      return this.acquire('cc.Layout');
+      return this.getComponent('cc.Layout');
     },
     get uiPageView() {
-      return this.acquire('cc.PageView');
+      return this.getComponent('cc.PageView');
     },
     get uiProgressBar() {
-      return this.acquire('cc.ProgressBar');
+      return this.getComponent('cc.ProgressBar');
     },
     get uiScrollView() {
-      return this.acquire('cc.ScrollView');
+      return this.getComponent('cc.ScrollView');
     },
     get uiSlider() {
-      return this.acquire('cc.Slider');
+      return this.getComponent('cc.Slider');
     },
     get uiToggle() {
-      return this.acquire('cc.Toggle');
+      return this.getComponent('cc.Toggle');
     },
     get uiWidget() {
-      return this.acquire('cc.Widget');
+      return this.getComponent('cc.Widget');
     },
     get uiOpacity() {
-      return this.acquire('cc.UIOpacity');
+      return this.getComponent('cc.UIOpacity');
     },
     get uiTransform() {
-      return this.acquire('cc.UITransform');
+      return this.getComponent('cc.UITransform');
     },
     get uiMask() {
-      return this.acquire('cc.Mask');
+      return this.getComponent('cc.Mask');
     },
     get uiAudio() {
-      return this.acquire('cc.AudioSource');
+      return this.getComponent('cc.AudioSource');
     },
     get uiSpine() {
-      return this.acquire('sp.Skeleton');
+      return this.getComponent('sp.Skeleton');
     },
     get uiCamera() {
-      return this.acquire('cc.Camera');
+      return this.getComponent('cc.Camera');
     },
     get uiTiledMap() {
-      return this.acquire('cc.TiledMap');
+      return this.getComponent('cc.TiledMap');
     },
     get uiWebView() {
-      return this.acquire('cc.WebView');
+      return this.getComponent('cc.WebView');
     },
     get uiVideoPlayer() {
-      return this.acquire('cc.VideoPlayer');
+      return this.getComponent('cc.VideoPlayer');
     },
     get x() {
       return this.position.x;
@@ -302,16 +302,16 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       this.acquire(UITransform).height = value;
     },
     get size() {
-      let uiTransform = this.acquire(UITransform)!;
-      return new Size(uiTransform.width, uiTransform.height);
+      const uiTransform = this.getComponent(UITransform)!;
+      return uiTransform ? uiTransform.contentSize : new Size(0, 0);
     },
     set size(value: Size) {
-      let uiTransform = this.acquire(UITransform);
+      const uiTransform = this.acquire(UITransform);
       uiTransform.width = value.width;
       uiTransform.height = value.height;
     },
     get opacity() {
-      return this.acquire(UIOpacity).opacity;
+      return this.getComponent(UIOpacity)?.opacity ?? 255;
     },
     set opacity(value: number) {
       this.acquire(UIOpacity).opacity = value;
@@ -342,19 +342,19 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       this.scale = v3(this.scale.x, this.scale.y, value);
     },
     get pivot() {
-      return this.acquire(UITransform)!.anchorPoint;
+      return this.getComponent(UITransform)?.anchorPoint ?? new Vec2(0.5, 0.5);
     },
     set pivot(value: Vec2) {
       this.acquire(UITransform).anchorPoint = value;
     },
     get pivotX() {
-      return this.acquire(UITransform)?.anchorX ?? 0.5;
+      return this.getComponent(UITransform)?.anchorX ?? 0.5;
     },
     set pivotX(value: number) {
       this.acquire(UITransform).anchorX = value;
     },
     get pivotY() {
-      return this.acquire(UITransform)?.anchorY ?? 0.5;
+      return this.getComponent(UITransform)?.anchorY ?? 0.5;
     },
     set pivotY(value: number) {
       this.acquire(UITransform).anchorY = value;

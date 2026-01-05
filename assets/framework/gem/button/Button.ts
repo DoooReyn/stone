@@ -22,7 +22,6 @@ export enum ButtonState {
 
 /**
  * 普通按钮组件
- * @notes 封装 cc.Button
  * @notes 仅适用于拥有“正常”、“按下”、“禁用”三种状态的普通按钮
  */
 @ccclass('Gem/Button')
