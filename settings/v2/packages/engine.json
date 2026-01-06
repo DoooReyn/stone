@@ -104,7 +104,7 @@
             "_value": false
           },
           "profiler": {
-            "_value": true
+            "_value": false
           },
           "occlusion-query": {
             "_value": false
@@ -202,7 +202,6 @@
           "gfx-webgl2",
           "graphics",
           "mask",
-          "profiler",
           "rich-text",
           "sorting-2d",
           "spine-3.8",

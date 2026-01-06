@@ -67,7 +67,7 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
   /** 初始化调试信息 */
   private initDebugPanel() {
     if (this.debuggerAllowed) {
-      profiler.hideStats();
+      profiler?.hideStats();
       const dam = DynamicAtlasManager.instance;
       debugPanel.addItem('device', '设备信息', () => director.root!.device.renderer);
       debugPanel.addItem('triangles', '三角面数', () => `${director.root!.device.numTris}`);
