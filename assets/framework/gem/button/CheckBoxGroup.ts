@@ -271,8 +271,10 @@ export class CheckBoxGroup extends Gem {
   protected didTick(): void {
     if (this._dirty) {
       if (CheckBoxGroup.LogEnabled) {
-        this.logger.d(CheckBoxGroup.Fmt(this._dirtyEntries, '条目变化'));
-        this.logger.d(CheckBoxGroup.Fmt(this._container, '条目状态'));
+        this.logger.d(
+          '条目变化\n',
+          this._dirtyEntries.map((e) => e.gName + ':' + (e.checked ? '选中' : '未选中')).join('\n ')
+        );
       }
       this._dirty = false;
       this._dirtyEntries.length = 0;
