@@ -11,7 +11,7 @@ import {
   TTFFont,
   UITransform,
   Vec2,
-  VerticalTextAlignment,
+  VerticalTextAlignment
 } from 'cc';
 import { EDITOR } from 'cc/env';
 import { PRESET_COLOR } from 'fast/config/Color';
@@ -24,7 +24,7 @@ import { AutoAtlasLevel } from 'fast/plugin/rich-atlas/IAutoAtlas';
 import { IHtxAtlasPlugin, IHtxGlyph, IHtxLayoutGlyph, IHtxStyle } from 'fast/plugin/rich-atlas/IRichAtlasPlugin';
 import { color, grapheme } from 'fast/util';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 
 const { ccclass, property, menu } = _decorator;
 

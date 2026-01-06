@@ -1,6 +1,6 @@
 import { _decorator, EventTouch, Node } from 'cc';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 import { RatioGroup } from './RatioGroup';
 
 const { ccclass, menu, property } = _decorator;

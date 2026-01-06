@@ -1,7 +1,7 @@
 import { _decorator, EventTouch, Node } from 'cc';
 
-import { Gem } from '../Gem';
 import { CheckBoxGroup } from './CheckBoxGroup';
+import { Gem } from './Gem';
 
 const { ccclass, menu, property } = _decorator;
 

@@ -4,7 +4,7 @@ import { PRESET_GUI } from 'fast/config/Gui';
 import { ITextAttr, ITextFieldAttr } from 'fast/Types';
 import { be } from 'fast/util';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 import { Text } from './Text';
 
 const { ccclass, property, menu, requireComponent } = _decorator;

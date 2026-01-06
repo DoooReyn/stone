@@ -3,7 +3,7 @@ import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { FastError } from 'fast/foundation/Error';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 
 const { ccclass, menu, property } = _decorator;
 

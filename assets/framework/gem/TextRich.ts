@@ -7,7 +7,7 @@ import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
 import { ITextRichAttr } from 'fast/Types';
 import { be, color, digit } from 'fast/util';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 
 const { ccclass, requireComponent, menu, property } = _decorator;
 

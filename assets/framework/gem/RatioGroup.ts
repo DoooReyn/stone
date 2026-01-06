@@ -1,6 +1,6 @@
 import { _decorator } from 'cc';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 import { Ratio } from './Ratio';
 
 const { ccclass, menu } = _decorator;

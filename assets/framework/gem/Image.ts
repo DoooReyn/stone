@@ -7,7 +7,7 @@ import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
 import { CCImageFitMode, ImageFitMode, IImageAttr, LoadState } from 'fast/Types';
 import { be } from 'fast/util';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 
 const { ccclass, menu, property, requireComponent } = _decorator;
 
@@ -15,10 +15,10 @@ const { ccclass, menu, property, requireComponent } = _decorator;
  * 图像组件
  * @notes 封装 cc.Sprite
  */
-@ccclass('Gem/ImageView')
-@menu('Gem/ImageView')
+@ccclass('Gem/Image')
+@menu('Gem/Image')
 @requireComponent(Sprite)
-export class ImageView extends Gem {
+export class Image extends Gem {
   // ------------------------------- 静态成员区 -------------------------------
 
   /**
@@ -174,7 +174,7 @@ export class ImageView extends Gem {
    * @returns
    */
   get<S extends keyof IImageAttr>(key: S) {
-    return ImageView.GetImageAttr(this.$image, key);
+    return Image.GetImageAttr(this.$image, key);
   }
 
   /**
@@ -182,7 +182,7 @@ export class ImageView extends Gem {
    * @param attrs 图像属性
    */
   set(attrs: Partial<IImageAttr>) {
-    ImageView.SetImageAttr(this.$image, attrs);
+    Image.SetImageAttr(this.$image, attrs);
   }
 
   // ------------------------------- 受限访问区 -------------------------------

@@ -1,6 +1,6 @@
 import { _decorator, Enum, Sprite, Vec2 } from 'cc';
 
-import { ImageView } from './Image';
+import { Image } from './Image';
 
 const { ccclass, menu, property } = _decorator;
 
@@ -32,7 +32,7 @@ enum BarDirection {
  */
 @ccclass('Gem/Bar')
 @menu('Gem/Bar')
-export class Bar extends ImageView {
+export class Bar extends Image {
   // ------------------------------- 静态成员区 -------------------------------
 
   /** 中心点 */

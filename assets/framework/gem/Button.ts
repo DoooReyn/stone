@@ -4,7 +4,7 @@ import { PRESET_GUI } from 'fast/config/Gui';
 import { fast } from 'fast/Fast';
 import { platform } from 'fast/util';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 
 const { ccclass, menu, property } = _decorator;
 

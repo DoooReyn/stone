@@ -1,7 +1,7 @@
 import { _decorator } from 'cc';
 
-import { Gem } from '../Gem';
 import { CheckBox } from './CheckBox';
+import { Gem } from './Gem';
 
 const { ccclass, menu } = _decorator;
 

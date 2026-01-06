@@ -8,7 +8,7 @@ import { ITextAttr } from 'fast/Types';
 import { be, color } from 'fast/util';
 import { notUndefined } from 'fast/util/Be';
 
-import { Gem } from '../Gem';
+import { Gem } from './Gem';
 
 const { ccclass, menu, property, requireComponent } = _decorator;
 
