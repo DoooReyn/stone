@@ -30,6 +30,20 @@ export * from './foundation/Plugin';
 export * from './foundation/Selector';
 export * from './foundation/Trigger';
 
+// gem
+export * from './gem/Gem';
+export * from './gem/button/Button';
+export * from './gem/button/CheckBox';
+export * from './gem/button/CheckBoxGroup';
+export * from './gem/button/DragDrop';
+export * from './gem/button/Ratio';
+export * from './gem/button/RatioGroup';
+export * from './gem/image/Image';
+export * from './gem/text/Text';
+export * from './gem/text/TextField';
+export * from './gem/text/TextHyper';
+export * from './gem/text/TextRich';
+
 // plugin
 export * from './plugin/app/IAppPlugin';
 export * from './plugin/app/AppPlugin';
