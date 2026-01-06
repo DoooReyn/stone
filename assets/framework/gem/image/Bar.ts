@@ -10,7 +10,7 @@ enum BarType {
   Horizontal,
   /** 垂直（正向：从下到上） */
   Vertical,
-  /** 圆圈（正向：顺时针） */
+  /** 圆形（正向：顺时针） */
   Circle,
 }
 
@@ -150,7 +150,7 @@ export class Bar extends ImageView {
   }
 
   /**
-   * 更新圆圈进度
+   * 更新圆形进度
    */
   protected updateCircle() {
     const bar = this.$image;
