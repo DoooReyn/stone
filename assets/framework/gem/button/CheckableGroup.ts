@@ -97,7 +97,7 @@ export class CheckableGroup extends Gem {
    */
   select(entry: Checkable) {
     if (this.has(entry)) {
-      entry.checked = true;
+      this._select(entry);
     }
   }
 
@@ -106,8 +106,7 @@ export class CheckableGroup extends Gem {
    * @param index 索引
    */
   selectIndex(index: number) {
-    const entry = this._container[index];
-    if (entry) entry.checked = true;
+    this._select(this._container[index]);
   }
 
   /**
@@ -126,20 +125,22 @@ export class CheckableGroup extends Gem {
    * @param solo 是否仅选中限定条目（除此之外全不选）
    */
   selectRange(ranges: Checkable[], solo: boolean = false) {
+    // 去除无效条目
+    for (let i = 0; i > ranges.length; i++) {
+      if (!this.has(ranges[i])) {
+        ranges.splice(i, 1);
+        i--;
+      }
+    }
+
     if (solo) {
       // 仅选中限定条目
-      for (let i = 0; i > ranges.length; i++) {
-        if (!this.has(ranges[i])) {
-          ranges.splice(i, 1);
-          i--;
-        }
-      }
       this._container.forEach((e) => {
-        e.checked = ranges.includes(e);
+        ranges.includes(e) ? this._select(e) : this._unselect(e);
       });
     } else {
       // 选中限定条目
-      ranges.forEach((e) => this.select(e));
+      ranges.forEach((e) => this._select(e));
     }
   }
 
@@ -147,16 +148,14 @@ export class CheckableGroup extends Gem {
    * 全选
    */
   selectAll() {
-    this._container.forEach((e) => (e.checked = true));
+    this._container.forEach(this._select, this);
   }
 
   /**
    * 反选
    */
   selectInvert() {
-    this._container.forEach((e) => {
-      e.checked = !e.checked;
-    });
+    this._container.forEach(this._next, this);
   }
 
   /**
@@ -165,7 +164,7 @@ export class CheckableGroup extends Gem {
    */
   unselect(entry: Checkable) {
     if (this.has(entry)) {
-      entry.checked = false;
+      this._unselect(entry);
     }
   }
 
@@ -174,8 +173,7 @@ export class CheckableGroup extends Gem {
    * @param index
    */
   unselectIndex(index: number) {
-    const entry = this._container[index];
-    if (entry) entry.checked = false;
+    this._unselect(this._container[index]);
   }
 
   /**
@@ -194,19 +192,21 @@ export class CheckableGroup extends Gem {
    * @param solo 是否仅不选限定条目（除此之外全选）
    */
   unselectRange(ranges: Checkable[], solo: boolean = false) {
+    // 去除无效条目
+    for (let i = 0; i > ranges.length; i++) {
+      if (!this.has(ranges[i])) {
+        ranges.splice(i, 1);
+        i--;
+      }
+    }
+
     if (solo) {
       // 仅不选限定条目
-      for (let i = 0; i > ranges.length; i++) {
-        if (!this.has(ranges[i])) {
-          ranges.splice(i, 1);
-          i--;
-        }
-      }
       this._container.forEach((e) => {
-        e.checked = !ranges.includes(e);
+        ranges.includes(e) ? this._unselect(e) : this._select(e);
       });
     } else {
-      ranges.forEach((e) => this.unselect(e));
+      ranges.forEach(this._unselect, this);
     }
   }
 
@@ -214,7 +214,7 @@ export class CheckableGroup extends Gem {
    * 全不选
    */
   unselectAll() {
-    this._container.forEach((e) => (e.checked = false));
+    this._container.forEach(this._unselect, this);
   }
 
   /**
@@ -222,11 +222,52 @@ export class CheckableGroup extends Gem {
    * @param entry 变化条目
    */
   flush(entry: Checkable) {
+    entry.checked = !entry.checked;
     this._dirty = true;
     this._dirtyEntries.push(entry);
   }
 
+  /** 选中的条目列表 */
+  get selected() {
+    return this._container.filter((e) => e.checked);
+  }
+
+  /** 选中的索引条目列表 */
+  get selectedIndexes() {
+    return this._container.map((e, i) => (e.checked ? i : -1)).filter((i) => i > -1);
+  }
+
   // ------------------------------- 受限访问区 -------------------------------
+
+  /**
+   * 选中条目
+   * @param entry 条目
+   */
+  private _select(entry: Checkable) {
+    if (entry && !entry.checked) {
+      this.flush(entry);
+    }
+  }
+
+  /**
+   * 不选条目
+   * @param entry 条目
+   */
+  private _unselect(entry: Checkable) {
+    if (entry && entry.checked) {
+      this.flush(entry);
+    }
+  }
+
+  /**
+   * 切换条目状态
+   * @param entry 条目
+   */
+  private _next(entry: Checkable) {
+    if (entry) {
+      this.flush(entry);
+    }
+  }
 
   protected didTick(): void {
     if (this._dirty) {

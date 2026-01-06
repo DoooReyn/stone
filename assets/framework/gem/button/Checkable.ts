@@ -13,9 +13,6 @@ const { ccclass, menu, property } = _decorator;
 export class Checkable extends Gem {
   // ------------------------------- 属性声明区 -------------------------------
 
-  /** 脏标记 */
-  private _dirty: boolean = false;
-
   /** 复选容器 */
   @property({ displayName: '容器', type: CheckableGroup })
   protected $group: CheckableGroup;
@@ -35,8 +32,16 @@ export class Checkable extends Gem {
   }
   set checked(enabled: boolean) {
     if (this.$checked !== enabled) {
-      this._dirty = true;
       this.$checked = enabled;
+      this.flush();
+    }
+  }
+
+  // ------------------------------- 公开访问区 -------------------------------
+
+  public flush() {
+    if (this.$mark) {
+      this.$mark.active = this.$checked;
     }
   }
 
@@ -45,7 +50,7 @@ export class Checkable extends Gem {
   protected didAwake(): void {
     this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
     this.$group && this.$group.add(this);
-    this._dirty = true;
+    this.flush();
   }
 
   protected didSuspend(): void {
@@ -56,25 +61,8 @@ export class Checkable extends Gem {
   protected onTouchEnd(evt: EventTouch) {
     const loc = evt.getLocation();
     const hit = this.node.uiTransform.hitTest(loc);
-    if (hit) {
-      this.checked = !this.$checked;
-    }
-  }
-
-  protected flush() {
-    if (this.$mark) {
-      this.$mark.active = this.$checked;
-    }
-
-    if (this.$group) {
+    if (hit && this.$group) {
       this.$group.flush(this);
-    }
-  }
-
-  protected didTick(): void {
-    if (this._dirty) {
-      this._dirty = false;
-      this.flush();
     }
   }
 }
