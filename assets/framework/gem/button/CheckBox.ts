@@ -1,21 +1,21 @@
 import { _decorator, EventTouch, Node } from 'cc';
 
 import { Gem } from '../Gem';
-import { CheckableGroup } from './CheckableGroup';
+import { CheckBoxGroup } from './CheckBoxGroup';
 
 const { ccclass, menu, property } = _decorator;
 
 /**
  * 复选组件
  */
-@ccclass('Gem/Checkable')
-@menu('Gem/Checkable')
-export class Checkable extends Gem {
+@ccclass('Gem/CheckBox')
+@menu('Gem/CheckBox')
+export class CheckBox extends Gem {
   // ------------------------------- 属性声明区 -------------------------------
 
   /** 复选容器 */
-  @property({ displayName: '容器', type: CheckableGroup })
-  protected $group: CheckableGroup;
+  @property({ displayName: '容器', type: CheckBoxGroup })
+  protected $group: CheckBoxGroup;
 
   /** 选中标记 */
   @property({ displayName: '选中标记', type: Node })

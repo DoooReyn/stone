@@ -2,16 +2,16 @@ import { _decorator } from 'cc';
 import { fast } from 'fast/Fast';
 
 import { Gem } from '../Gem';
-import { Checkable } from './Checkable';
+import { CheckBox } from './CheckBox';
 
 const { ccclass, menu } = _decorator;
 
 /**
  * 复选容器
  */
-@ccclass('Gem/CheckableGroup')
-@menu('Gem/CheckableGroup')
-export class CheckableGroup extends Gem {
+@ccclass('Gem/CheckBoxGroup')
+@menu('Gem/CheckBoxGroup')
+export class CheckBoxGroup extends Gem {
   // ------------------------------- 静态成员区 -------------------------------
 
   /** 日志开关 */
@@ -23,7 +23,7 @@ export class CheckableGroup extends Gem {
    * @param tag 标记
    * @returns
    */
-  public static Fmt(entries: Checkable[], tag: string) {
+  public static Fmt(entries: CheckBox[], tag: string) {
     const list = entries.map((e) => e.gName + ':' + (e.checked ? '选中' : '未选中'));
     list.unshift(tag);
     return list.join('\n ');
@@ -35,10 +35,10 @@ export class CheckableGroup extends Gem {
   private _dirty: boolean = false;
 
   /** 脏条目记录 */
-  private _dirtyEntries: Checkable[] = [];
+  private _dirtyEntries: CheckBox[] = [];
 
   /** 复选条目容器 */
-  private _container: Checkable[] = [];
+  private _container: CheckBox[] = [];
 
   // ------------------------------- 公开访问区 -------------------------------
 
@@ -54,7 +54,7 @@ export class CheckableGroup extends Gem {
    * @param entry 条目
    * @returns
    */
-  has(entry: Checkable) {
+  has(entry: CheckBox) {
     return this.indexOf(entry) > -1;
   }
 
@@ -63,7 +63,7 @@ export class CheckableGroup extends Gem {
    * @param entry 条目
    * @returns
    */
-  indexOf(entry: Checkable) {
+  indexOf(entry: CheckBox) {
     return this._container.indexOf(entry);
   }
 
@@ -71,7 +71,7 @@ export class CheckableGroup extends Gem {
    * 新增条目
    * @param entry 条目
    */
-  add(entry: Checkable) {
+  add(entry: CheckBox) {
     !this.has(entry) && this._container.push(entry);
   }
 
@@ -79,7 +79,7 @@ export class CheckableGroup extends Gem {
    * 移除条目
    * @param entry 条目
    */
-  remove(entry: Checkable) {
+  remove(entry: CheckBox) {
     const index = this.indexOf(entry);
     if (index > -1) this._container.splice(index, 1);
   }
@@ -95,7 +95,7 @@ export class CheckableGroup extends Gem {
    * 选中条目
    * @param entry 当前条目
    */
-  select(entry: Checkable) {
+  select(entry: CheckBox) {
     if (this.has(entry)) {
       this._select(entry);
     }
@@ -124,7 +124,7 @@ export class CheckableGroup extends Gem {
    * @param ranges 条目列表
    * @param solo 是否仅选中限定条目（除此之外全不选）
    */
-  selectRange(ranges: Checkable[], solo: boolean = false) {
+  selectRange(ranges: CheckBox[], solo: boolean = false) {
     // 去除无效条目
     for (let i = 0; i > ranges.length; i++) {
       if (!this.has(ranges[i])) {
@@ -162,7 +162,7 @@ export class CheckableGroup extends Gem {
    * 不选条目
    * @param entry 当前条目
    */
-  unselect(entry: Checkable) {
+  unselect(entry: CheckBox) {
     if (this.has(entry)) {
       this._unselect(entry);
     }
@@ -191,7 +191,7 @@ export class CheckableGroup extends Gem {
    * @param ranges 条目列表
    * @param solo 是否仅不选限定条目（除此之外全选）
    */
-  unselectRange(ranges: Checkable[], solo: boolean = false) {
+  unselectRange(ranges: CheckBox[], solo: boolean = false) {
     // 去除无效条目
     for (let i = 0; i > ranges.length; i++) {
       if (!this.has(ranges[i])) {
@@ -221,7 +221,7 @@ export class CheckableGroup extends Gem {
    * 告知条目状态变化
    * @param entry 变化条目
    */
-  flush(entry: Checkable) {
+  flush(entry: CheckBox) {
     entry.checked = !entry.checked;
     this._dirty = true;
     this._dirtyEntries.push(entry);
@@ -243,7 +243,7 @@ export class CheckableGroup extends Gem {
    * 选中条目
    * @param entry 条目
    */
-  private _select(entry: Checkable) {
+  private _select(entry: CheckBox) {
     if (entry && !entry.checked) {
       this.flush(entry);
     }
@@ -253,7 +253,7 @@ export class CheckableGroup extends Gem {
    * 不选条目
    * @param entry 条目
    */
-  private _unselect(entry: Checkable) {
+  private _unselect(entry: CheckBox) {
     if (entry && entry.checked) {
       this.flush(entry);
     }
@@ -263,7 +263,7 @@ export class CheckableGroup extends Gem {
    * 切换条目状态
    * @param entry 条目
    */
-  private _next(entry: Checkable) {
+  private _next(entry: CheckBox) {
     if (entry) {
       this.flush(entry);
     }
@@ -271,9 +271,9 @@ export class CheckableGroup extends Gem {
 
   protected didTick(): void {
     if (this._dirty) {
-      if (CheckableGroup.LogEnabled) {
-        fast.logger.d(CheckableGroup.Fmt(this._dirtyEntries, '条目变化'));
-        fast.logger.d(CheckableGroup.Fmt(this._container, '条目状态'));
+      if (CheckBoxGroup.LogEnabled) {
+        fast.logger.d(CheckBoxGroup.Fmt(this._dirtyEntries, '条目变化'));
+        fast.logger.d(CheckBoxGroup.Fmt(this._container, '条目状态'));
       }
       this._dirty = false;
       this._dirtyEntries.length = 0;
