@@ -1,5 +1,4 @@
 import { _decorator } from 'cc';
-import { fast } from 'fast/Fast';
 
 import { Gem } from '../Gem';
 import { CheckBox } from './CheckBox';
@@ -272,8 +271,8 @@ export class CheckBoxGroup extends Gem {
   protected didTick(): void {
     if (this._dirty) {
       if (CheckBoxGroup.LogEnabled) {
-        fast.logger.d(CheckBoxGroup.Fmt(this._dirtyEntries, '条目变化'));
-        fast.logger.d(CheckBoxGroup.Fmt(this._container, '条目状态'));
+        this.logger.d(CheckBoxGroup.Fmt(this._dirtyEntries, '条目变化'));
+        this.logger.d(CheckBoxGroup.Fmt(this._container, '条目状态'));
       }
       this._dirty = false;
       this._dirtyEntries.length = 0;

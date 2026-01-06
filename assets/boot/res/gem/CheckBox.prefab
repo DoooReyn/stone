@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "Checkable",
+    "_name": "CheckBox",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Checkable",
+    "_name": "CheckBox",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -367,7 +367,7 @@
     "fileId": "90S/gLcaxJhYuOWhRy9j62"
   },
   {
-    "__type__": "a48fa4w5wtCxr5/kU4SfGl9",
+    "__type__": "44437VJx+JNiIM6vONk24TL",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -381,11 +381,12 @@
     "$mark": {
       "__id__": 8
     },
+    "$checked": false,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "feKLfwZ35Os6uIJ7na9icS"
+    "fileId": "4emKxa9lZCV5KhHucCjhIF"
   },
   {
     "__type__": "cc.PrefabInfo",
