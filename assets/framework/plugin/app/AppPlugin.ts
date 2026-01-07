@@ -1,9 +1,10 @@
-import { director, game, screen, view, Camera, Canvas, Director, Game, Node, Scene } from 'cc';
+import { director, game, screen, view, Camera, Canvas, Director, EventTouch, Game, Node, Scene } from 'cc';
 import { PRESET_EVENT_NAME } from 'fast/config/Event';
 import { PRESET_GUI } from 'fast/config/Gui';
 import { PRESET_TOKEN } from 'fast/config/Token';
 import { FastError } from 'fast/foundation/Error';
 import { Plugin } from 'fast/foundation/Plugin';
+import { Triggers } from 'fast/foundation/Trigger';
 import { IEventBusPlugin } from 'fast/plugin/event-bus/IEventBusPlugin';
 import { ITimerPlugin } from 'fast/plugin/timer/ITimerPlugin';
 import { digit, misc, time } from 'fast/util';
@@ -20,6 +21,9 @@ export class AppPlugin extends Plugin implements IAppPlugin {
   stage: Canvas;
   root: Node;
   camera2D: Camera;
+
+  /** 屏幕点击触发器容器 */
+  public readonly onTapped: Triggers = new Triggers();
 
   /** 时间记录点：回调前台 */
   private _timeEnterFG: number = 0;
@@ -63,16 +67,17 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     this.camera2D = camera2D;
 
     // 代理窗口尺寸变换事件
-    this.onScreenSizeChangedMock = misc.throttle(this.onScreenSizeChanged, this).bind(this);
+    this._onScreenSizeChangedMock = misc.throttle(this.onScreenSizeChanged, this).bind(this);
 
     // 注册基础事件
     game.on(Game.EVENT_SHOW, this.onEnterFG, this);
     game.on(Game.EVENT_HIDE, this.onEnterBG, this);
     game.on(Game.EVENT_CLOSE, this.onEnded, this);
     game.on(Game.EVENT_LOW_MEMORY, this.onLowMemory, this);
-    screen.on(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this.onScreenSizeChangedMock, this);
-    screen.on(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this.onScreenSizeChangedMock, this);
+    screen.on(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this._onScreenSizeChangedMock, this);
+    screen.on(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this._onScreenSizeChangedMock, this);
     screen.on(PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED, this.onScreenOrientationChanged, this);
+    root.on(Node.EventType.TOUCH_END, this.onScreenTap, this);
     director.on(Director.EVENT_AFTER_UPDATE, this.onUpdate, this);
   }
 
@@ -125,9 +130,11 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     game.off(Game.EVENT_HIDE, this.onEnterBG, this);
     game.off(Game.EVENT_CLOSE, this.onEnded, this);
     game.off(Game.EVENT_LOW_MEMORY, this.onLowMemory, this);
-    screen.off(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this.onScreenSizeChangedMock, this);
-    screen.off(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this.onScreenSizeChangedMock, this);
+    screen.off(PRESET_EVENT_NAME.SCREEN_SIZE_CHANGED, this._onScreenSizeChangedMock, this);
+    screen.off(PRESET_EVENT_NAME.SCREEN_FULL_CHANGED, this._onScreenSizeChangedMock, this);
     screen.off(PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED, this.onScreenOrientationChanged, this);
+    this.root.on(Node.EventType.TOUCH_END, this.onScreenTap, this);
+    this.onTapped.clear();
     this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.EXIT);
   }
 
@@ -145,7 +152,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
   }
 
   /** 窗口尺寸变化代理 */
-  private onScreenSizeChangedMock: () => void;
+  private _onScreenSizeChangedMock: () => void;
 
   /** 屏幕朝向变化 */
   private onScreenOrientationChanged(orientation: number): void {
@@ -154,6 +161,12 @@ export class AppPlugin extends Plugin implements IAppPlugin {
       PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED,
       orientation
     );
+  }
+
+  /** 屏幕点击 */
+  private onScreenTap(evt: EventTouch) {
+    this.logger.d('应用屏幕点击', evt.getLocation().toString());
+    this.onTapped.runWith(evt);
   }
 
   /**

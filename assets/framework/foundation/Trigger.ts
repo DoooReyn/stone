@@ -78,7 +78,7 @@ export class Trigger extends ObjectEntry {
    */
   public runWith(...args: any[]) {
     if (this.isValid) {
-      const [, err] = might.runSync(this._handle!, this._ctx!, args.concat(this._args));
+      const [, err] = might.runSync(this._handle!, this._ctx!, ...args.concat(this._args));
       if (err) {
         fast.logger.e('触发器运行时错误', err);
       }
