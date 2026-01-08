@@ -7,7 +7,7 @@
     }
   },
   "script": {
-    "importMap": "F:\\cocos\\stone\\import-map.json"
+    "importMap": "project://import-map.json"
   },
   "custom_joint_texture_layouts": []
 }
