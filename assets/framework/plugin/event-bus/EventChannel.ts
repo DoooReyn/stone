@@ -16,13 +16,13 @@ export class EventChannel implements IEventChannel {
    * 构造函数
    * @param _channel 渠道名称
    */
-  constructor(private readonly _channel: string) {}
+  public constructor(private readonly _channel: string) {}
 
-  get channel(): string {
+  public get channel(): string {
     return this._channel;
   }
 
-  emit(event: string, ...data: any[]): void {
+  public emit(event: string, ...data: any[]): void {
     if (this._container.has(event)) {
       const listeners = this._container.get(event)!;
       list.each(
@@ -33,20 +33,20 @@ export class EventChannel implements IEventChannel {
             listeners.splice(i!, 1);
           }
         },
-        true
+        true,
       );
     }
   }
 
-  has(event: string): boolean {
+  public has(event: string): boolean {
     return this._container.has(event) && this._container.get(event)!.length > 0;
   }
 
-  on(
+  public on(
     listener: IEventListener | string,
     handle?: (...args: any[]) => void | Promise<void>,
     context?: any,
-    once?: boolean
+    once?: boolean,
   ): void {
     if (typeof listener === 'string') {
       if (!handle) {
@@ -67,7 +67,7 @@ export class EventChannel implements IEventChannel {
     }
   }
 
-  off(event?: string, ctx?: any): void {
+  public off(event?: string, ctx?: any): void {
     if (event !== undefined && ctx !== undefined) {
       // 同时指定事件名称和上下文时，取消特定监听器的订阅
       if (this._container.has(event)) {
@@ -88,7 +88,7 @@ export class EventChannel implements IEventChannel {
       }
     } else if (event == undefined && ctx != undefined) {
       // 仅指定上下文时，取消所有该上下文的订阅
-      for (let [evt, listeners] of this._container) {
+      for (const [evt, listeners] of this._container) {
         for (let i = listeners.length - 1; i >= 0; i--) {
           if (listeners[i].context === ctx) {
             listeners.splice(i, 1);
@@ -104,7 +104,7 @@ export class EventChannel implements IEventChannel {
     }
   }
 
-  clear(): void {
+  public clear(): void {
     this._container.clear();
   }
 }

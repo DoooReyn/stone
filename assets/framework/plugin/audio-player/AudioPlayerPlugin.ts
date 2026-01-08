@@ -15,15 +15,15 @@ import { SoundPlayer } from './SoundPlayer';
  * 音频播放服务
  */
 export class AudioPlayerPlugin extends Plugin implements IAudioPlayerPlugin {
-  static readonly Token: string = PRESET_TOKEN.AUDIO_PLAYER;
+  public static readonly Token: string = PRESET_TOKEN.AUDIO_PLAYER;
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.EVENT_BUS, PRESET_TOKEN.NODE_POOL, PRESET_TOKEN.APP];
 
-  music: MusicPlayer;
-  sound: SoundPlayer;
+  public music: MusicPlayer;
+  public sound: SoundPlayer;
 
-  async onInitialize() {
-    const root = this.of<IAppPlugin>(PRESET_TOKEN.APP).root;
+  public async onInitialize() {
+    const { root } = this.of<IAppPlugin>(PRESET_TOKEN.APP);
     const nodePool = this.of<INodePoolPlugin>(PRESET_TOKEN.NODE_POOL);
     nodePool.registerByConstructor(AudioEntry, PRESET_RES.MUSIC_ENTRY_OPTIONS);
     nodePool.registerByConstructor(AudioEntry, PRESET_RES.SOUND_ENTRY_OPTIONS);
@@ -46,17 +46,17 @@ export class AudioPlayerPlugin extends Plugin implements IAudioPlayerPlugin {
     this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.off(undefined, this);
   }
 
-  pause(): void {
+  public pause(): void {
     this.music.pause();
     this.sound.pause();
   }
 
-  resume(): void {
+  public resume(): void {
     this.music.resume();
     this.sound.resume();
   }
 
-  stop(): void {
+  public stop(): void {
     this.music.stop();
     this.sound.stop();
   }

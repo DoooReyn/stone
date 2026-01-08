@@ -9,13 +9,10 @@ const cache: Record<string, Color> = Object.create(null);
  * @returns 色值
  */
 function composite(channels: number[]) {
-  return (
-    '#' +
-    channels
-      .map((v) => v.toString(16).padStart(2, '0'))
-      .join('')
-      .toUpperCase()
-  );
+  return `#${channels
+    .map((v) => v.toString(16).padStart(2, '0'))
+    .join('')
+    .toUpperCase()}`;
 }
 
 /**
@@ -45,11 +42,8 @@ function from(r: Color | string | number[] | number, g?: number, b?: number, a?:
     if (a != undefined) channels[3] = a;
     return from(composite(channels));
   } else if (Array.isArray(r)) {
-    let [rr, gg, bb, aa] = r;
-    rr ??= 255;
-    gg ??= 255;
-    bb ??= 255;
-    const channels = [rr, gg, bb];
+    const [rr, gg, bb, aa] = r;
+    const channels = [rr ?? 255, gg ?? 255, bb ?? 255];
     if (aa != undefined) channels[3] = aa;
     return from(composite(channels));
   } else {

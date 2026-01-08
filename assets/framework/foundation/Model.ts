@@ -42,11 +42,11 @@ export class Model<D extends Dto> extends ObjectEntry {
     this._coarseSubscriptions.forEach((item) => item[0].call(item[1], path, value));
   }
 
-  get dto(): D | null {
+  public get dto(): D | null {
     return this.$dto;
   }
 
-  sync(dto: D) {
+  public sync(dto: D) {
     const self = this;
     this.$proxy = new DeepProxy(dto, {
       set: (target: any, prop: string | symbol, value: any, receiver: any) => {
@@ -61,14 +61,14 @@ export class Model<D extends Dto> extends ObjectEntry {
     this.$dto = this.$proxy.create();
   }
 
-  subscribeCompact(property: string, onPropertyChanged: OnPropertyChanged, context: any) {
+  public subscribeCompact(property: string, onPropertyChanged: OnPropertyChanged, context: any) {
     if (!this._compactSubscriptions.has(property)) {
       this._compactSubscriptions.set(property, new Set());
     }
     this._compactSubscriptions.get(property)!.add([onPropertyChanged, context]);
   }
 
-  unsubscribeCompact(property: string, onPropertyChanged: OnPropertyChanged, context: any): void {
+  public unsubscribeCompact(property: string, onPropertyChanged: OnPropertyChanged, context: any): void {
     const subscriptions = this._compactSubscriptions.get(property);
     if (subscriptions) {
       for (const subscription of subscriptions) {
@@ -80,7 +80,7 @@ export class Model<D extends Dto> extends ObjectEntry {
     }
   }
 
-  unsubscribeAllCompact(property?: string, context?: any): void {
+  public unsubscribeAllCompact(property?: string, context?: any): void {
     if (property) {
       const subscriptions = this._compactSubscriptions.get(property);
       if (subscriptions) {
@@ -113,15 +113,15 @@ export class Model<D extends Dto> extends ObjectEntry {
     }
   }
 
-  subscribeCoarse(onPropertyChanged: OnPropertyChanged, context: any) {
+  public subscribeCoarse(onPropertyChanged: OnPropertyChanged, context: any) {
     this._coarseSubscriptions.push([onPropertyChanged, context]);
   }
 
-  unsubscribeCoarse(onPropertyChanged: OnPropertyChanged, context: any) {
+  public unsubscribeCoarse(onPropertyChanged: OnPropertyChanged, context: any) {
     list.removeIf(this._coarseSubscriptions, (item) => item[0] === onPropertyChanged && item[1] === context, true);
   }
 
-  unsubscribeAllCoarse(context?: any) {
+  public unsubscribeAllCoarse(context?: any) {
     if (context) {
       list.removeIf(this._coarseSubscriptions, (item) => item[1] === context, true);
     } else {
@@ -129,7 +129,7 @@ export class Model<D extends Dto> extends ObjectEntry {
     }
   }
 
-  unsubscribeAll(context?: any) {
+  public unsubscribeAll(context?: any) {
     this.unsubscribeAllCompact(undefined, context);
     this.unsubscribeAllCoarse(context);
   }

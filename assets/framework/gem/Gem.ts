@@ -2,7 +2,7 @@ import { js, _decorator, Component } from 'cc';
 import { logcat, Logger } from 'fast/foundation/Logcat';
 import { next } from 'fast/util/AscendingId';
 
-const { ccclass, executeInEditMode } = _decorator;
+const { ccclass } = _decorator;
 
 /**
  * 元组件
@@ -39,22 +39,22 @@ const { ccclass, executeInEditMode } = _decorator;
 @ccclass('Gem')
 export class Gem extends Component {
   /** 组件类型 */
-  get gType() {
+  public get gType() {
     return ((this as unknown as { $typeName: string }).$typeName ??= js.getClassName(this));
   }
 
   /** 组件唯一编号 */
-  get gID() {
+  public get gID() {
     return ((this as unknown as { $gID: number }).$gID ??= next(this.gType));
   }
 
   /** 组件唯一标识 */
-  get gName() {
-    return ((this as unknown as { $gName: string }).$gName ??= this.gType + '.' + this.gID);
+  public get gName() {
+    return ((this as unknown as { $gName: string }).$gName ??= `${this.gType}.${this.gID}`);
   }
 
   /** 组件专属日志 */
-  get logger(): Logger {
+  public get logger(): Logger {
     return logcat.acquire(this.gType);
   }
 

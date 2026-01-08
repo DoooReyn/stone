@@ -16,7 +16,7 @@ export class Selector<R> {
    * 构造
    * @param type 选择模式
    */
-  constructor(public readonly type: SelectMode) {}
+  public constructor(public readonly type: SelectMode) {}
 
   /** 对象池 */
   private get _pool() {

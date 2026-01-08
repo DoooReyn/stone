@@ -17,7 +17,7 @@ class HtxTemplate extends Node {
   /** 文本组件 */
   private _renderer: Label;
 
-  constructor() {
+  public constructor() {
     super('hyper-text-template');
     this.layer = 0;
     this._renderer = this.addComponent(Label);
@@ -26,7 +26,7 @@ class HtxTemplate extends Node {
   /**
    * 将文本和样式应用到渲染组件，并返回生成的图像资源
    */
-  apply(ch: string, glyphKey: string, style: IHtxStyle) {
+  public apply(ch: string, glyphKey: string, style: IHtxStyle) {
     const renderer = this._renderer;
     renderer.enabled = true;
     renderer.string = ch;
@@ -57,7 +57,7 @@ class HtxTemplate extends Node {
   /**
    * 释放资源
    */
-  dismiss() {
+  public dismiss() {
     // @ts-ignore
     this._renderer?.destroyTtfSpriteFrame();
     this._renderer.enabled = false;
@@ -80,7 +80,7 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.PROFILER, PRESET_TOKEN.APP];
 
-  async onInitialize() {
+  public async onInitialize() {
     this.of<IProfilerPlugin>(PRESET_TOKEN.PROFILER).addDebugItem(PRESET_RES.HYPER_TEXT_ATLAS, '超级富文本图集', () => {
       const usage = this.getUsage();
       return [`数量: ${usage.atlasCount}`, `占用内存: ${usage.totalMemoryBytes / 1024 / 1024} MB`].join('\n');
@@ -91,7 +91,7 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     this.of<IAppPlugin>(PRESET_TOKEN.APP).root.parent!.insertChild(this._template, 2);
   }
 
-  configureAtlas(atlasKey: string, level: AutoAtlasLevel): void {
+  public configureAtlas(atlasKey: string, level: AutoAtlasLevel): void {
     if (this._atlasLevels.has(atlasKey)) {
       const oldLevel = AutoAtlasLevel[this._atlasLevels.get(atlasKey)!];
       this.logger.if('超级富文本图集 ⁅{0} => {1}⁆ 已配置，请注意合理分配图集标识和等级', atlasKey, oldLevel);
@@ -101,7 +101,7 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     this.logger.if('超级富文本图集 ⁅{0} => {1}⁆ 已添加', atlasKey, AutoAtlasLevel[level]);
   }
 
-  destroy() {
+  public destroy() {
     this.of<IProfilerPlugin>(PRESET_TOKEN.PROFILER).removeDebugItem(PRESET_RES.HYPER_TEXT_ATLAS);
     this._template.destroy();
     this._template = null!;
@@ -134,7 +134,7 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     return info;
   }
 
-  measureGlyphMetrics(atlasKey: string, glyphKey: string) {
+  public measureGlyphMetrics(atlasKey: string, glyphKey: string) {
     const info = this._getOrCreateAtlas(atlasKey);
 
     const cached = info.glyphs.get(glyphKey);
@@ -148,12 +148,12 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     return null;
   }
 
-  addRef(atlasKey: string): void {
+  public addRef(atlasKey: string): void {
     const info = this._getOrCreateAtlas(atlasKey);
     info.refCount++;
   }
 
-  decRef(atlasKey: string): void {
+  public decRef(atlasKey: string): void {
     const info = this._atlases.get(atlasKey);
     if (!info) {
       return;
@@ -165,7 +165,7 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     }
   }
 
-  acquireGlyph(atlasKey: string, glyphKey: string, ch: string, style: IHtxStyle): SpriteFrame | null {
+  public acquireGlyph(atlasKey: string, glyphKey: string, ch: string, style: IHtxStyle): SpriteFrame | null {
     const info = this._getOrCreateAtlas(atlasKey);
 
     const cached = info.glyphs.get(glyphKey);
@@ -193,11 +193,11 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     return frame;
   }
 
-  createGlyphImage(ch: string, glyphKey: string, style: IHtxStyle): ImageAsset {
+  public createGlyphImage(ch: string, glyphKey: string, style: IHtxStyle): ImageAsset {
     return this._template.apply(ch, glyphKey, style);
   }
 
-  clearUnused(): void {
+  public clearUnused(): void {
     const now = Date.now();
     const toDelete: string[] = [];
 
@@ -222,11 +222,11 @@ export class RichTextAtlasPlugin extends Plugin implements IHtxAtlasPlugin {
     toDelete.forEach((key) => this._atlases.delete(key));
   }
 
-  shrinkAll(): void {
+  public shrinkAll(): void {
     this.clearUnused();
   }
 
-  getUsage() {
+  public getUsage() {
     const atlases: {
       atlasKey: string;
       width: number;

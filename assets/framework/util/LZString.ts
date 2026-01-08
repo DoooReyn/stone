@@ -38,16 +38,16 @@ const LZString: LZStringInterface = {
     if (input == null) return '';
     const res = LZString._compress(input, 6, (a: number) => keyStrBase64.charAt(a));
     switch (res.length % 4) {
-      case 0:
-        return res;
-      case 1:
-        return `${res}===`;
-      case 2:
-        return `${res}==`;
-      case 3:
-        return `${res}=`;
-      default:
-        return res;
+    case 0:
+      return res;
+    case 1:
+      return `${res}===`;
+    case 2:
+      return `${res}==`;
+    case 3:
+      return `${res}=`;
+    default:
+      return res;
     }
   },
 
@@ -369,42 +369,42 @@ const LZString: LZStringInterface = {
     }
 
     switch (bits) {
-      case 0:
-        bits = 0;
-        maxpower = Math.pow(2, 8);
-        power = 1;
-        while (power != maxpower) {
-          resb = data.val & data.position;
-          data.position >>= 1;
-          if (data.position == 0) {
-            data.position = resetValue;
-            data.val = getNextValue(data.index++);
-          }
-          bits |= (resb > 0 ? 1 : 0) * power;
-          power <<= 1;
+    case 0:
+      bits = 0;
+      maxpower = Math.pow(2, 8);
+      power = 1;
+      while (power != maxpower) {
+        resb = data.val & data.position;
+        data.position >>= 1;
+        if (data.position == 0) {
+          data.position = resetValue;
+          data.val = getNextValue(data.index++);
         }
-        c = bits;
-        break;
-      case 1:
-        bits = 0;
-        maxpower = Math.pow(2, 16);
-        power = 1;
-        while (power != maxpower) {
-          resb = data.val & data.position;
-          data.position >>= 1;
-          if (data.position == 0) {
-            data.position = resetValue;
-            data.val = getNextValue(data.index++);
-          }
-          bits |= (resb > 0 ? 1 : 0) * power;
-          power <<= 1;
+        bits |= (resb > 0 ? 1 : 0) * power;
+        power <<= 1;
+      }
+      c = bits;
+      break;
+    case 1:
+      bits = 0;
+      maxpower = Math.pow(2, 16);
+      power = 1;
+      while (power != maxpower) {
+        resb = data.val & data.position;
+        data.position >>= 1;
+        if (data.position == 0) {
+          data.position = resetValue;
+          data.val = getNextValue(data.index++);
         }
-        c = bits;
-        break;
-      case 2:
-        return '';
-      default:
-        return null;
+        bits |= (resb > 0 ? 1 : 0) * power;
+        power <<= 1;
+      }
+      c = bits;
+      break;
+    case 2:
+      return '';
+    default:
+      return null;
     }
     dictionary[3] = f(c);
     w = f(c);
@@ -429,47 +429,47 @@ const LZString: LZStringInterface = {
       }
 
       switch (bits) {
-        case 0:
-          bits = 0;
-          maxpower = Math.pow(2, 8);
-          power = 1;
-          while (power != maxpower) {
-            resb = data.val & data.position;
-            data.position >>= 1;
-            if (data.position == 0) {
-              data.position = resetValue;
-              data.val = getNextValue(data.index++);
-            }
-            bits |= (resb > 0 ? 1 : 0) * power;
-            power <<= 1;
+      case 0:
+        bits = 0;
+        maxpower = Math.pow(2, 8);
+        power = 1;
+        while (power != maxpower) {
+          resb = data.val & data.position;
+          data.position >>= 1;
+          if (data.position == 0) {
+            data.position = resetValue;
+            data.val = getNextValue(data.index++);
           }
+          bits |= (resb > 0 ? 1 : 0) * power;
+          power <<= 1;
+        }
 
-          dictionary[dictSize++] = f(bits);
-          c = dictSize - 1;
-          enlargeIn--;
-          break;
-        case 1:
-          bits = 0;
-          maxpower = Math.pow(2, 16);
-          power = 1;
-          while (power != maxpower) {
-            resb = data.val & data.position;
-            data.position >>= 1;
-            if (data.position == 0) {
-              data.position = resetValue;
-              data.val = getNextValue(data.index++);
-            }
-            bits |= (resb > 0 ? 1 : 0) * power;
-            power <<= 1;
+        dictionary[dictSize++] = f(bits);
+        c = dictSize - 1;
+        enlargeIn--;
+        break;
+      case 1:
+        bits = 0;
+        maxpower = Math.pow(2, 16);
+        power = 1;
+        while (power != maxpower) {
+          resb = data.val & data.position;
+          data.position >>= 1;
+          if (data.position == 0) {
+            data.position = resetValue;
+            data.val = getNextValue(data.index++);
           }
-          dictionary[dictSize++] = f(bits);
-          c = dictSize - 1;
-          enlargeIn--;
-          break;
-        case 2:
-          return result.join('');
-        default:
-          break;
+          bits |= (resb > 0 ? 1 : 0) * power;
+          power <<= 1;
+        }
+        dictionary[dictSize++] = f(bits);
+        c = dictSize - 1;
+        enlargeIn--;
+        break;
+      case 2:
+        return result.join('');
+      default:
+        break;
       }
 
       if (enlargeIn == 0) {

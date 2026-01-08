@@ -116,18 +116,18 @@ function randomRange(min: number, max: number): number {
 function randomInteger(min: number, max: number, style: Range = Range.L1R0): number {
   let v: number = min;
   switch (style) {
-    case Range.L1R0:
-      v = Math.floor(randomRange(min, max));
-      break;
-    case Range.L0R1:
-      v = Math.ceil(randomRange(min, max));
-      break;
-    case Range.L1R1:
-      v = Math.floor(randomRange(min, max + 1));
-      break;
-    case Range.L0R0:
-      v = Math.floor(randomRange(min + 1, max));
-      break;
+  case Range.L1R0:
+    v = Math.floor(randomRange(min, max));
+    break;
+  case Range.L0R1:
+    v = Math.ceil(randomRange(min, max));
+    break;
+  case Range.L1R1:
+    v = Math.floor(randomRange(min, max + 1));
+    break;
+  case Range.L0R0:
+    v = Math.floor(randomRange(min + 1, max));
+    break;
   }
   return v;
 }
@@ -222,24 +222,24 @@ function randomInRect(x: number, y: number, w: number, h: number): { x: number; 
 function randomOnRect(x: number, y: number, w: number, h: number): { x: number; y: number } {
   const edge = randomInteger(0, 4);
   switch (edge) {
-    case 0:
-      // 左边
-      y += randomRange(0, h);
-      break;
-    case 1:
-      // 上边
-      x += randomRange(0, w);
-      y += h;
-      break;
-    case 2:
-      // 右边
-      x += w;
-      y += randomRange(0, h);
-      break;
-    case 3:
-      // 下边
-      x += randomRange(0, w);
-      break;
+  case 0:
+    // 左边
+    y += randomRange(0, h);
+    break;
+  case 1:
+    // 上边
+    x += randomRange(0, w);
+    y += h;
+    break;
+  case 2:
+    // 右边
+    x += w;
+    y += randomRange(0, h);
+    break;
+  case 3:
+    // 下边
+    x += randomRange(0, w);
+    break;
   }
   return { x, y };
 }

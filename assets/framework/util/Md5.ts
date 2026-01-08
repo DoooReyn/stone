@@ -191,7 +191,7 @@ function createMd5Hasher(): {
   appendStr: (str: string) => any;
   end: (raw?: boolean) => string | Int32Array;
   start: () => any;
-} {
+  } {
   let dataLength = 0;
   let bufferLength = 0;
   const state: Int32Array = new Int32Array(4);

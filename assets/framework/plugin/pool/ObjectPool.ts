@@ -61,33 +61,33 @@ export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
    * @param construct 对象池条目构造
    * @param options 对象池条目配置
    */
-  constructor(public readonly construct: Constructor<T>, public readonly options: IRecyclableOptions) {
+  public constructor(public readonly construct: Constructor<T>, public readonly options: IRecyclableOptions) {
     this._container = [];
     this.fill(this.options.expands);
   }
 
   /** 标识 */
-  get token() {
+  public get token() {
     return this.options.token;
   }
 
   /** 过期时间 */
-  get expires() {
+  public get expires() {
     return this.options.expires;
   }
 
   /** 扩容数量 */
-  get expands() {
+  public get expands() {
     return this.options.expands;
   }
 
   /** 容量限制 */
-  get capacity() {
+  public get capacity() {
     return this.options.capacity;
   }
 
   /** 当前数量 */
-  get size(): number {
+  public get size(): number {
     return this._container.length;
   }
 
@@ -95,7 +95,7 @@ export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
    * 填充池子
    * @param n 目标数量
    */
-  fill(n: number): void {
+  public fill(n: number): void {
     if (n == undefined || n <= 0 || this.size >= n) return;
 
     const need = n - this.size;
@@ -109,7 +109,7 @@ export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
    * @param args 初始化参数
    * @returns 对象实例
    */
-  acquire(...args: any[]): T {
+  public acquire(...args: any[]): T {
     const instance = this._container.shift() ?? new this.construct();
     instance.token = this.token;
     instance.initialize(...args);
@@ -125,7 +125,7 @@ export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
    * 回收对象实例
    * @param instance 要回收的对象实例
    */
-  recycle(instance: T): void {
+  public recycle(instance: T): void {
     if (instance && instance.recycle()) {
       const { capacity } = this;
       const { size } = this;
@@ -139,7 +139,7 @@ export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
   /**
    * 清理过期未使用的对象
    */
-  clearUnused(): void {
+  public clearUnused(): void {
     const { expires } = this;
     if (expires <= 0) return;
 
@@ -154,7 +154,7 @@ export class ObjectPool<T extends ObjectEntry> implements IObjectPool<T> {
   /**
    * 清空池子中的所有对象
    */
-  clear(): void {
+  public clear(): void {
     for (let i = this.size - 1; i >= 0; i--) {
       this._container[i].recycle();
       this._container.splice(i, 1);

@@ -130,10 +130,9 @@ export const ScrollNumber: ITransitionEntry = {
   create: (node: Node, args: ITransitionArgs) => {
     const { duration, start, end, prefix, suffix } = args;
 
-    const uiLabel = node.uiLabel;
+    const { uiLabel } = node;
     if (!uiLabel || !uiLabel.isValid) {
       throw new Error('必须挂载 Label 组件！');
-      return tween(node);
     }
 
     // 边界情况处理
@@ -167,7 +166,7 @@ export const ScrollNumber: ITransitionEntry = {
               oldNum = displayNum;
             }
           },
-        }
+        },
       )
       .call(() => {
         // 确保最终值准确
@@ -184,8 +183,8 @@ export const ScrollNumber: ITransitionEntry = {
  */
 function createShakeTransition(node: Node, args: ITransitionArgs) {
   const time = args.duration;
-  const intensity = args.intensity;
-  const frequency = args.frequency;
+  const { intensity } = args;
+  const { frequency } = args;
   const { x, y, z } = node.position;
 
   const target = node as Node & { progress: number };
@@ -208,7 +207,7 @@ function createShakeTransition(node: Node, args: ITransitionArgs) {
         node.setPosition(x, y, z);
         dict.unset(target, 'progress');
       },
-    }
+    },
   );
 }
 
@@ -333,7 +332,7 @@ export const Jelly: ITransitionEntry = {
           scale: v3(originalScale.x - strength, originalScale.y + strength, 1),
           position: v3(originalPos.x - strength * 10, originalPos.y),
         },
-        { easing: 'sineOut' }
+        { easing: 'sineOut' },
       )
       .to(
         duration * 0.3,
@@ -341,7 +340,7 @@ export const Jelly: ITransitionEntry = {
           scale: v3(originalScale.x + strength * 0.8, originalScale.y - strength * 0.8, 1),
           position: v3(originalPos.x + strength * 15, originalPos.y),
         },
-        { easing: 'quadInOut' }
+        { easing: 'quadInOut' },
       )
       .to(
         duration * 0.5,
@@ -355,7 +354,7 @@ export const Jelly: ITransitionEntry = {
             // 添加恢复阶段的微抖动
             target!.x = originalPos.x + Math.sin(ratio! * Math.PI * 8) * strength * 3;
           },
-        }
+        },
       );
   },
 };

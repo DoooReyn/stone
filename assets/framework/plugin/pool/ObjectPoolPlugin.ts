@@ -24,8 +24,8 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * @param cls 对象构造函数
    * @param options 池子配置
    */
-  register(cls: Constructor<ObjectEntry>, options: IRecyclableOptions): void {
-    const token = options.token;
+  public register(cls: Constructor<ObjectEntry>, options: IRecyclableOptions): void {
+    const { token } = options;
 
     if (this._container.has(token)) {
       throw new FastError(this.token, `对象池⁅${token}⁆重复注册`);
@@ -38,7 +38,7 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * 注销对象池
    * @param cls 对象构造函数或池子标记
    */
-  unregister(cls: Constructor<IObjectEntry> | string): void {
+  public unregister(cls: Constructor<IObjectEntry> | string): void {
     if (typeof cls === 'string') {
       if (this._container.has(cls)) {
         if (this._container.delete(cls)) {
@@ -46,7 +46,7 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
         }
       }
     } else {
-      for (let [token, pair] of this._container) {
+      for (const [token, pair] of this._container) {
         if (cls === pair[1]) {
           this._container.delete(token);
           this.logger.d(`对象池⁅${token}⁆已注销`);
@@ -61,12 +61,12 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * @param cls 对象构造函数或池子标记
    * @returns 是否存在
    */
-  has(cls: Constructor<IObjectEntry> | string): boolean {
+  public has(cls: Constructor<IObjectEntry> | string): boolean {
     if (typeof cls === 'string') {
       return this._container.has(cls);
     }
 
-    for (let [, pair] of this._container) {
+    for (const [, pair] of this._container) {
       if (cls === pair[1]) {
         return true;
       }
@@ -80,13 +80,13 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * @param cls 对象构造函数或池子标记
    * @returns 对象池实例
    */
-  poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): IObjectPool<T> {
+  public poolOf<T extends IObjectEntry>(cls: Constructor<T> | string): IObjectPool<T> {
     let token = '';
 
     if (typeof cls === 'string') {
       token = cls;
     } else {
-      for (let [key, pair] of this._container) {
+      for (const [key, pair] of this._container) {
         if (cls === pair[1]) {
           token = key;
           break;
@@ -107,7 +107,7 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * @param args 初始化参数
    * @returns 对象实例
    */
-  acquire<T extends IObjectEntry>(cls: Constructor<T>, ...args: any[]): T | undefined {
+  public acquire<T extends IObjectEntry>(cls: Constructor<T>, ...args: any[]): T | undefined {
     const inst = this.poolOf(cls);
 
     if (inst === undefined) {
@@ -121,7 +121,7 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
    * 回收对象实例到池子
    * @param instance 要回收的对象实例
    */
-  recycle<T extends IObjectEntry>(instance: T): void {
+  public recycle<T extends IObjectEntry>(instance: T): void {
     if (instance && instance.token !== undefined && instance.recycle !== undefined) {
       if (!this._container.has(instance.token)) {
         throw new FastError(this.token, `对象池⁅${instance.token}⁆未注册`);
@@ -135,14 +135,14 @@ export class ObjectPoolPlugin extends Plugin implements IObjectPoolPlugin {
   /**
    * 清理所有池子中过期未使用的对象
    */
-  clearUnused(): void {
+  public clearUnused(): void {
     this._container.forEach((v) => v[0].clearUnused());
   }
 
   /**
    * 清空所有池子
    */
-  clear(): void {
+  public clear(): void {
     this._container.forEach((p) => p[0].clear());
   }
 }

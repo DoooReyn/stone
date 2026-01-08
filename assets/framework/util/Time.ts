@@ -50,7 +50,9 @@ export const TIME_SEC = {
  */
 function lag(ms: number): void {
   const end = now() + ms;
-  while (now() < end) {}
+  while (now() < end) {
+    // loop
+  }
 }
 
 /**
@@ -260,7 +262,7 @@ function ymdhms(d?: Date): string {
  */
 function fmt(
   stamp: number,
-  unit: { day: string; hour: string; minute: string; second: string }
+  unit: { day: string; hour: string; minute: string; second: string },
 ): {
   days: number;
   hours: number;
@@ -308,7 +310,7 @@ function now() {
  */
 async function waitAsync<R = unknown>(handle: () => R, ms: number) {
   return new Promise<R>((resolve) => {
-    setTimeout(function () {
+    setTimeout(() => {
       resolve(runSync(handle)[0]!);
     }, ms);
   });
@@ -320,7 +322,7 @@ async function waitAsync<R = unknown>(handle: () => R, ms: number) {
  * @param ms 时间（毫秒）
  */
 function waitSync<R = unknown>(handle: () => R, ms: number) {
-  setTimeout(function () {
+  setTimeout(() => {
     runSync(handle);
   }, ms);
 }

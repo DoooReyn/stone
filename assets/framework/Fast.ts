@@ -18,7 +18,7 @@ class Fast {
   /** 插件容器 */
   private readonly _container: Map<string, IPlugin> = new Map();
 
-  constructor() {
+  public constructor() {
     Plugin.Of = this.acquire.bind(this);
   }
 

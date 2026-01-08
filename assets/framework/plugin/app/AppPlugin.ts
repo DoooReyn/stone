@@ -15,12 +15,12 @@ import { IAppPlugin } from './IAppPlugin';
  * 应用
  */
 export class AppPlugin extends Plugin implements IAppPlugin {
-  static readonly Token: string = PRESET_TOKEN.APP;
+  public static readonly Token: string = PRESET_TOKEN.APP;
 
-  scene: Scene;
-  stage: Canvas;
-  root: Node;
-  camera2D: Camera;
+  public scene: Scene;
+  public stage: Canvas;
+  public root: Node;
+  public camera2D: Camera;
 
   /** 屏幕点击触发器容器 */
   public readonly onTapped: Triggers = new Triggers();
@@ -42,7 +42,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     // 根节点： PRESET.ROOT
     const root = scene.getChildByName(PRESET_GUI.ROOT);
     if (!root) {
-      throw new FastError(this.token, `未正确配置根节点`);
+      throw new FastError(this.token, '未正确配置根节点');
     }
     this.root = root;
 
@@ -62,7 +62,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     // 2D相机组件
     const camera2D = cameraNode!.getComponent(Camera);
     if (!camera2D) {
-      throw new FastError(this.token, `未正确配置摄像机组件`);
+      throw new FastError(this.token, '未正确配置摄像机组件');
     }
     this.camera2D = camera2D;
 
@@ -81,7 +81,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     director.on(Director.EVENT_AFTER_UPDATE, this.onUpdate, this);
   }
 
-  onInitialize() {
+  public onInitialize() {
     return new Promise<void>((resolve, reject) => {
       const scene = director.getScene();
       if (scene) {
@@ -94,7 +94,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
             this.setup(scene);
             resolve();
           },
-          this
+          this,
         );
       }
     });
@@ -159,7 +159,7 @@ export class AppPlugin extends Plugin implements IAppPlugin {
     this.logger.d('应用设备朝向变化', orientation);
     this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(
       PRESET_EVENT_NAME.SCREEN_ORIENTATION_CHANGED,
-      orientation
+      orientation,
     );
   }
 

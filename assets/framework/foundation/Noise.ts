@@ -18,7 +18,7 @@ class Grad {
   public y: number;
   public z: number;
 
-  constructor(x: number, y: number, z: number) {
+  public constructor(x: number, y: number, z: number) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -372,7 +372,7 @@ export class Noise {
     return this.lerp(
       this.lerp(this.lerp(n000, n100, u), this.lerp(n001, n101, u), w),
       this.lerp(this.lerp(n010, n110, u), this.lerp(n011, n111, u), w),
-      v
+      v,
     );
   }
 }

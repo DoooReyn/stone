@@ -1,12 +1,12 @@
 import { IPlugin } from 'fast/foundation/Plugin';
 
 /** 配置表注册信息 */
-export type Table<R = [], I = object> = {
+export interface Table<R = [], I = object> {
   token: string;
   header: string[];
   listings?: R[];
   mappings?: Record<number | string, I>;
-};
+}
 
 /** 表格条目基础结构 */
 export interface ITableEntry {

@@ -30,27 +30,27 @@ export class Image extends Gem {
   public static GetImageAttr<S extends keyof IImageAttr>(image: Sprite, key: S) {
     let attr = undefined;
     switch (key) {
-      case 'viewMode':
-        attr = image.type;
-        break;
-      case 'sizeMode':
-        attr = image.sizeMode;
-        break;
-      case 'fillMode':
-        attr = image.fillType;
-        break;
-      case 'fillStart':
-        attr = image.fillStart;
-        break;
-      case 'fillCenter':
-        attr = image.fillCenter;
-        break;
-      case 'fillRange':
-        attr = image.fillRange;
-        break;
-      case 'gray':
-        attr = image.grayscale;
-        break;
+    case 'viewMode':
+      attr = image.type;
+      break;
+    case 'sizeMode':
+      attr = image.sizeMode;
+      break;
+    case 'fillMode':
+      attr = image.fillType;
+      break;
+    case 'fillStart':
+      attr = image.fillStart;
+      break;
+    case 'fillCenter':
+      attr = image.fillCenter;
+      break;
+    case 'fillRange':
+      attr = image.fillRange;
+      break;
+    case 'gray':
+      attr = image.grayscale;
+      break;
     }
     return attr as IImageAttr[S];
   }
@@ -113,10 +113,10 @@ export class Image extends Gem {
   // ------------------------------- 公开访问区 -------------------------------
 
   /** 适配模式 */
-  get fitMode() {
+  public get fitMode() {
     return this.$fitMode;
   }
-  set fitMode(mode: ImageFitMode) {
+  public set fitMode(mode: ImageFitMode) {
     if (this.$fitMode != mode && mode >= ImageFitMode.None && mode <= ImageFitMode.Height) {
       this.$fitMode = mode;
       this.updateView();
@@ -124,10 +124,10 @@ export class Image extends Gem {
   }
 
   /** 当前资源地址 */
-  get url() {
+  public get url() {
     return this.$url;
   }
-  set url(url: string) {
+  public set url(url: string) {
     if (url !== this.$url) {
       this._tempUrl = this.$url;
       this._loadState = LoadState.Init;
@@ -137,10 +137,10 @@ export class Image extends Gem {
   }
 
   /** 显示区域 */
-  get viewArea() {
+  public get viewArea() {
     return this.$viewArea;
   }
-  set viewArea(area: Size) {
+  public set viewArea(area: Size) {
     if (!this.$viewArea.equals(area)) {
       this.$viewArea.set(area);
       this.updateView();
@@ -150,14 +150,14 @@ export class Image extends Gem {
   /**
    * 将当前节点尺寸固化为显示区域
    */
-  syncViewArea() {
+  public syncViewArea() {
     this.viewArea = this.node.size;
   }
 
   /**
    * 清空内容
    */
-  clearContent() {
+  public clearContent() {
     if (this.$url) {
       const cache = fast.acquire<IResCachePlugin>(PRESET_TOKEN.RES_CACHE);
       cache.decRef(this.$url);
@@ -173,7 +173,7 @@ export class Image extends Gem {
    * @param key 属性名称
    * @returns
    */
-  get<S extends keyof IImageAttr>(key: S) {
+  public get<S extends keyof IImageAttr>(key: S) {
     return Image.GetImageAttr(this.$image, key);
   }
 
@@ -181,7 +181,7 @@ export class Image extends Gem {
    * 设置图像属性
    * @param attrs 图像属性
    */
-  set(attrs: Partial<IImageAttr>) {
+  public set(attrs: Partial<IImageAttr>) {
     Image.SetImageAttr(this.$image, attrs);
   }
 
@@ -246,18 +246,18 @@ export class Image extends Gem {
       const { width: aw, height: ah } = this.$viewArea;
       const { width: cw, height: ch } = content.rect;
       switch (this.$fitMode) {
-        case ImageFitMode.None:
-          area.setSize(cw, ch);
-          break;
-        case ImageFitMode.Area:
-          area.setSize(aw, ah);
-          break;
-        case ImageFitMode.Width:
-          area.setSize(aw, (cw / aw) * ch);
-          break;
-        case ImageFitMode.Height:
-          area.setSize((ch / ah) * cw, ah);
-          break;
+      case ImageFitMode.None:
+        area.setSize(cw, ch);
+        break;
+      case ImageFitMode.Area:
+        area.setSize(aw, ah);
+        break;
+      case ImageFitMode.Width:
+        area.setSize(aw, (cw / aw) * ch);
+        break;
+      case ImageFitMode.Height:
+        area.setSize((ch / ah) * cw, ah);
+        break;
       }
     }
   }

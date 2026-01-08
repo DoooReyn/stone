@@ -6,7 +6,7 @@ import { Group } from './Group';
  * 节点分组辅助工具
  */
 export class NodeGroup extends Group<Node> {
-  constructor() {
+  public constructor() {
     super();
     this.filter = isValid;
   }

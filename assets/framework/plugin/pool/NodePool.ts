@@ -18,27 +18,27 @@ export class NodePool {
   public constructor(public readonly template: Prefab | IRecyclableNode, public readonly options: IRecyclableOptions) {}
 
   /** 标识 */
-  get token() {
+  public get token() {
     return this.options.token;
   }
 
   /** 过期时间 */
-  get expires() {
+  public get expires() {
     return this.options.expires;
   }
 
   /** 扩容数量 */
-  get expands() {
+  public get expands() {
     return this.options.expands;
   }
 
   /** 容量限制 */
-  get capacity() {
+  public get capacity() {
     return this.options.capacity;
   }
 
   /** 当前数量 */
-  get size(): number {
+  public get size(): number {
     return this._container.length;
   }
 
@@ -46,7 +46,7 @@ export class NodePool {
    * 填充池子
    * @param n 目标数量
    */
-  fill(n: number): void {
+  public fill(n: number): void {
     if (n == undefined || n <= 0 || this.size >= n) return;
 
     const need = n - this.size;
@@ -60,7 +60,7 @@ export class NodePool {
    * @param args 初始化参数
    * @returns 节点实例
    */
-  acquire(...args: any[]): IRecyclableNode | undefined {
+  public acquire(...args: any[]): IRecyclableNode | undefined {
     const node: IRecyclableNode =
       this.size > 0 ? this._container.shift()! : (instantiate(this.template) as IRecyclableNode);
     node.token = this.options.token;
@@ -79,10 +79,10 @@ export class NodePool {
    * 回收节点实例
    * @param inst 要回收的节点实例
    */
-  recycle(inst: IRecyclableNode): void {
+  public recycle(inst: IRecyclableNode): void {
     if (inst && inst.isValid && inst.recycledAt === 0) {
-      const capacity = this.capacity;
-      const size = this.size;
+      const { capacity } = this;
+      const { size } = this;
       inst.createdAt = 0;
       inst.recycledAt = time.now();
       inst.recycle();
@@ -100,11 +100,11 @@ export class NodePool {
   /**
    * 清理过期未使用的节点
    */
-  clearUnused(): void {
-    const expires = this.expires;
+  public clearUnused(): void {
+    const { expires } = this;
     if (expires <= 0) return;
 
-    const expands = this.options.expands;
+    const { expands } = this.options;
     if (this.size <= expands) return;
 
     for (let i = this.size - 1 - expands; i >= 0; i--) {
@@ -116,7 +116,7 @@ export class NodePool {
   /**
    * 清空池子中的所有节点
    */
-  clear(): void {
+  public clear(): void {
     for (let i = this.size - 1; i >= 0; i--) {
       this._container[i].destroy();
       this._container.splice(i, 1);

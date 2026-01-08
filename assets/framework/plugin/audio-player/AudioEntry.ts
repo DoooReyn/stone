@@ -13,23 +13,23 @@ import { IAudioEntry, IMusicOptions, ISoundOptions } from './IAudioPlayerPlugin'
  * 音频资源条目
  */
 export class AudioEntry extends Node implements IAudioEntry {
-  token: string;
-  createdAt: number;
-  recycledAt: number;
-  source: AudioSource;
-  url: string;
-  aid: number;
-  repeats: number = 0;
-  repeatsMax: number = 0;
+  public token: string;
+  public createdAt: number;
+  public recycledAt: number;
+  public source: AudioSource;
+  public url: string;
+  public aid: number;
+  public repeats: number = 0;
+  public repeatsMax: number = 0;
 
-  constructor() {
+  public constructor() {
     super('audio-entry');
   }
 
   /** 暂停时间 */
   private _pauseAt: number = 0;
 
-  initialize() {
+  public initialize() {
     this.source = null!;
     this.url = null!;
     this._pauseAt = 0;
@@ -39,7 +39,7 @@ export class AudioEntry extends Node implements IAudioEntry {
     this.source = this.acquire(AudioSource)!;
   }
 
-  recycle(): void {
+  public recycle(): void {
     fast.acquire<IResCachePlugin>(PRESET_TOKEN.RES_CACHE).decRef(this.url);
     this.targetOff(this);
     this.url = null!;
@@ -52,14 +52,14 @@ export class AudioEntry extends Node implements IAudioEntry {
 
   /** 自音量 */
   private _selfVolume: number = 1;
-  get selfVolume() {
+  public get selfVolume() {
     return this._selfVolume;
   }
-  set selfVolume(value: number) {
+  public set selfVolume(value: number) {
     this._selfVolume = value;
   }
 
-  playMusic(arg: IResLoadOptions, volume: number, options: IMusicOptions = { volume: 1 }): number {
+  public playMusic(arg: IResLoadOptions, volume: number, options: IMusicOptions = { volume: 1 }): number {
     // 获取音频ID
     const self = this;
     const id = asc.next(PRESET_ID.AUDIO);
@@ -113,7 +113,7 @@ export class AudioEntry extends Node implements IAudioEntry {
     return id;
   }
 
-  playSound(arg: IResLoadOptions, volume: number, options?: ISoundOptions): number {
+  public playSound(arg: IResLoadOptions, volume: number, options?: ISoundOptions): number {
     // 获取音频ID
     const self = this;
     const id = asc.next(PRESET_ID.AUDIO);
@@ -180,20 +180,20 @@ export class AudioEntry extends Node implements IAudioEntry {
     return id;
   }
 
-  setVolume(value: number): void {
+  public setVolume(value: number): void {
     if (this.source) {
       this.source.volume = value;
     }
   }
 
-  pause(): void {
+  public pause(): void {
     if (this.source && this.source.playing) {
       this._pauseAt = this.source.currentTime;
       this.source.pause();
     }
   }
 
-  resume(): void {
+  public resume(): void {
     if (this.source && this._pauseAt > 0) {
       this.source.currentTime = this._pauseAt;
       this.source.play();
@@ -201,7 +201,7 @@ export class AudioEntry extends Node implements IAudioEntry {
     }
   }
 
-  stop(): void {
+  public stop(): void {
     if (this.source) {
       this.source.stop();
       this.source.clip = null;
@@ -210,7 +210,7 @@ export class AudioEntry extends Node implements IAudioEntry {
     fast.acquire<INodePoolPlugin>(PRESET_TOKEN.NODE_POOL).recycle(this);
   }
 
-  isPlaying(): boolean {
+  public isPlaying(): boolean {
     return this.source && this.source.playing;
   }
 }

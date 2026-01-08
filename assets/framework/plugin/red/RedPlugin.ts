@@ -15,7 +15,7 @@ class RedPool implements IRedPool {
   /** 红点对象池最大容量 */
   private _maxSize: number = 128;
 
-  acquire(): IRedData {
+  public acquire(): IRedData {
     if (this._container.length > 0) {
       const red = this._container.pop()!;
       red.data = undefined;
@@ -30,7 +30,7 @@ class RedPool implements IRedPool {
     };
   }
 
-  recycle(red: IRedData): void {
+  public recycle(red: IRedData): void {
     if (this._container.length < this._maxSize) {
       this._container.push(red);
     }
@@ -41,7 +41,7 @@ class RedPool implements IRedPool {
  * 红点插件
  */
 export class RedPlugin extends Plugin implements IRedPlugin {
-  static readonly Token: string = PRESET_TOKEN.RED;
+  public static readonly Token: string = PRESET_TOKEN.RED;
 
   /** 红点配置映射 */
   private _configs: Map<string, IRedConfig> = new Map();
@@ -62,7 +62,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * 注册红点配置
    * @param config 红点配置
    */
-  register(config: IRedConfig): void {
+  public register(config: IRedConfig): void {
     if (this._configs.has(config.id)) {
       this.logger.e(`红点 ⁅${config.id}⁆ 注册失败，目标已存在`);
       return;
@@ -102,7 +102,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * @param id 红点ID
    * @param data 红点数据
    */
-  updateData(id: string, data: any): void {
+  public updateData(id: string, data: any): void {
     const config = this._configs.get(id);
     if (!config) {
       this.logger.e(`红点 ⁅${id}⁆ 更新失败，目标未注册`);
@@ -143,7 +143,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * @param id 红点ID
    * @returns 是否显示红点
    */
-  getState(id: string): boolean {
+  public getState(id: string): boolean {
     const red = this._reds.get(id);
     return red ? red.visible : false;
   }
@@ -153,7 +153,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * @param id 红点ID
    * @returns 红点状态数据
    */
-  getData(id: string): IRedData | null {
+  public getData(id: string): IRedData | null {
     const red = this._reds.get(id);
     return red ? { ...red } : null;
   }
@@ -164,7 +164,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * @param callback 状态变化回调
    * @returns 取消监听的函数
    */
-  subscribe(id: string, callback: (event: IRedChangeEvent) => void): () => void {
+  public subscribe(id: string, callback: (event: IRedChangeEvent) => void): () => void {
     if (!this._listeners.has(id)) {
       this._listeners.set(id, new Set());
     }
@@ -182,7 +182,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * @param id 红点ID
    * @param callback 状态变化回调
    */
-  unsubscribe(id: string, callback: (event: IRedChangeEvent) => void): void {
+  public unsubscribe(id: string, callback: (event: IRedChangeEvent) => void): void {
     const listeners = this._listeners.get(id);
     if (listeners) {
       listeners.delete(callback);
@@ -196,7 +196,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * 批量更新红点数据
    * @param updates 批量更新数据
    */
-  batchUpdate(updates: { id: string; data: any }[]): void {
+  public batchUpdate(updates: { id: string; data: any }[]): void {
     const changedEvents: IRedChangeEvent[] = [];
     const parentIdsToUpdate = new Set<string>();
 
@@ -260,7 +260,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * 清除红点状态
    * @param id 红点ID
    */
-  clear(id: string): void {
+  public clear(id: string): void {
     const config = this._configs.get(id);
     if (!config) return;
 
@@ -289,7 +289,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * 触发红点点击事件
    * @param id 红点ID
    */
-  onClick(id: string): void {
+  public onClick(id: string): void {
     const config = this._configs.get(id);
     if (!config) {
       this.logger.e(`红点 ⁅${id}⁆ 触发失败，目标未注册`);
@@ -306,7 +306,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * 获取所有红点状态
    * @returns 所有红点状态映射
    */
-  getAllStates(): Map<string, IRedData> {
+  public getAllStates(): Map<string, IRedData> {
     const result = new Map<string, IRedData>();
     this._reds.forEach((red, id) => {
       result.set(id, { ...red });
@@ -319,7 +319,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * @param id 红点ID
    * @returns 是否存在
    */
-  has(id: string): boolean {
+  public has(id: string): boolean {
     return this._configs.has(id);
   }
 
@@ -327,7 +327,7 @@ export class RedPlugin extends Plugin implements IRedPlugin {
    * 注销红点
    * @param id 红点ID
    */
-  unregister(id: string): void {
+  public unregister(id: string): void {
     const config = this._configs.get(id);
     if (!config) {
       return;

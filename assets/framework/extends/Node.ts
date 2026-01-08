@@ -31,7 +31,7 @@ import {
   Vec3,
   VideoPlayer,
   WebView,
-  Widget
+  Widget,
 } from 'cc';
 import { EDITOR_NOT_IN_PREVIEW } from 'cc/env';
 
@@ -320,7 +320,7 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       return this.getComponent(UIRenderer)?.color;
     },
     set color(value: Color) {
-      let render = this.getComponent(UIRenderer);
+      const render = this.getComponent(UIRenderer);
       render && (render.color = value);
     },
     get scaleX() {
@@ -378,18 +378,18 @@ if (!EDITOR_NOT_IN_PREVIEW) {
       this.setRotationFromEuler(this.eulerAngles.x, this.eulerAngles.y, value);
     },
     setSize(width: number, height: number) {
-      let uiTransform = this.acquire(UITransform);
+      const uiTransform = this.acquire(UITransform);
       uiTransform.width = width;
       uiTransform.height = height;
     },
     setPivot(x: number, y: number) {
-      let uiTransform = this.acquire(UITransform);
+      const uiTransform = this.acquire(UITransform);
       uiTransform.setAnchorPoint(x, y);
     },
     setZoom(x: number, y?: number, z?: number) {
-      let xx = x ?? this.scale.x;
-      let yy = y ?? this.scale.y;
-      let zz = z ?? this.scale.z;
+      const xx = x ?? this.scale.x;
+      const yy = y ?? this.scale.y;
+      const zz = z ?? this.scale.z;
       this.setScale(xx, yy, zz);
     },
     find(path: string) {

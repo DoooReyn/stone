@@ -11,7 +11,7 @@ import {
   TTFFont,
   UITransform,
   Vec2,
-  VerticalTextAlignment
+  VerticalTextAlignment,
 } from 'cc';
 import { EDITOR } from 'cc/env';
 import { PRESET_COLOR } from 'fast/config/Color';
@@ -216,7 +216,7 @@ export class TextHyper extends Gem {
     const laidOut = this.layoutGlyphs(glyphs);
 
     for (const g of laidOut) {
-      const glyphKey = g.glyphKey;
+      const { glyphKey } = g;
       const frame = hyperAtlas.acquireGlyph(this.atlasKey, glyphKey, g.ch, g.style);
       if (!frame || !frame.isValid) {
         continue;
@@ -261,7 +261,7 @@ export class TextHyper extends Gem {
               }
               last = range;
             },
-          }
+          },
         )
         .start();
     }

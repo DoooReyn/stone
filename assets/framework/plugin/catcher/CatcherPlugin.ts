@@ -13,18 +13,18 @@ export class Catcher extends Plugin implements ICatcherPlugin {
   /** 错误报告方法 */
   private _reporter: ErrorReporter;
 
-  setErrorReporter(handle: ErrorReporter): void {
+  public setErrorReporter(handle: ErrorReporter): void {
     this._reporter = handle;
   }
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.GLOBAL];
 
-  async onInitialize() {
+  public async onInitialize() {
     const self = this;
     const gg = this.of<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
     if (gg.has('addEventListener')) {
       const addEventListener = gg.get<Function>('addEventListener')!;
-      addEventListener('unhandledrejection', function (event: PromiseRejectionEvent) {
+      addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
         self.logger.e('捕获到异步错误\n', event.reason);
         if (self._reporter) {
           self._reporter({
@@ -33,7 +33,7 @@ export class Catcher extends Plugin implements ICatcherPlugin {
           });
         }
       });
-      addEventListener('error', function (event: ErrorEvent) {
+      addEventListener('error', (event: ErrorEvent) => {
         self.logger.e('捕获到同步错误\n', event.error);
         if (self._reporter && event && event.error) {
           self._reporter({

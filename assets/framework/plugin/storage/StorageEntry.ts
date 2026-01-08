@@ -23,7 +23,7 @@ export class StorageEntry<T extends Dict> {
    * @param token 存储条目标识
    * @param template 数据模板
    */
-  constructor(public readonly token: string, public readonly template: T, private readonly _modem: IStorageModem) {
+  public constructor(public readonly token: string, public readonly template: T, private readonly _modem: IStorageModem) {
     this.onDataChanged = new Triggers();
     this.load();
   }
@@ -46,12 +46,12 @@ export class StorageEntry<T extends Dict> {
   }
 
   /** 存储条目唯一标识 */
-  get key() {
+  public get key() {
     return this._modem.generateKey(this.token);
   }
 
   /** 加载数据 */
-  load() {
+  public load() {
     if (this.data) return;
 
     const content = sys.localStorage.getItem(this.key);
@@ -78,7 +78,7 @@ export class StorageEntry<T extends Dict> {
   }
 
   /** 保存数据 */
-  save() {
+  public save() {
     sys.localStorage.setItem(this.key, this.encode());
   }
 }

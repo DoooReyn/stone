@@ -27,19 +27,19 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.ARG_PARSER, PRESET_TOKEN.STORAGE, PRESET_TOKEN.EVENT_BUS];
 
-  get language() {
+  public get language() {
     return this._current;
   }
-  set language(lang: Language) {
+  public set language(lang: Language) {
     this._current = lang;
     this.of<IStoragePlugin>(PRESET_TOKEN.STORAGE).itemOf<IStorageEntryLanguage>(
-      PRESET_STORAGE.LANGUAGE
+      PRESET_STORAGE.LANGUAGE,
     )!.data!.language = lang;
     this.of<IEventBusPlugin>(PRESET_TOKEN.EVENT_BUS).app.emit(PRESET_EVENT_NAME.LANGUAGE_CHANGED, this._current);
   }
 
-  async onInitialize() {
-    const languages = this.of<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER).args.languages;
+  public async onInitialize() {
+    const { languages } = this.of<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER).args;
     // 添加支持的语言
     for (let i = 0; i < languages.length; i++) {
       this._supported.add(languages[i]);
@@ -72,14 +72,14 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
     }
   }
 
-  isSupported(language: Language) {
+  public isSupported(language: Language) {
     return this._supported.has(language);
   }
 
-  text(id: string) {
+  public text(id: string) {
     if (this._container.has(this._current)) {
       const dictionaries = this._container.get(this._current)!;
-      for (let [, dictionary] of dictionaries) {
+      for (const [, dictionary] of dictionaries) {
         if (dictionary[id] != undefined) {
           return dictionary[id];
         }
@@ -88,10 +88,10 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
 
     this.logger.w(`未找到文本编号 ${id}`);
 
-    return 'xxx@' + id;
+    return `xxx@${ id}`;
   }
 
-  textFrom(name: string, id: string) {
+  public textFrom(name: string, id: string) {
     if (this._container.has(this._current)) {
       const dictionaries = this._container.get(this._current)!;
       if (dictionaries.has(name)) {
@@ -105,18 +105,18 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
 
     this.logger.w(`语言包${name}中不存在文本编号${id}`);
 
-    return name + '@' + id;
+    return `${name }@${ id}`;
   }
 
-  fmt(id: string, ...args: []): string {
+  public fmt(id: string, ...args: []): string {
     return literal.fmt(this.text(id), ...args);
   }
 
-  fmtFrom(packName: string, id: string, ...args: any[]): string {
+  public fmtFrom(packName: string, id: string, ...args: any[]): string {
     return literal.fmt(this.textFrom(packName, id), ...args);
   }
 
-  addPack(language: Language, packName: string, packData: LanguagePack) {
+  public addPack(language: Language, packName: string, packData: LanguagePack) {
     this._supported.add(language);
     if (this._container.has(language)) {
       const dictionaries = this._container.get(language)!;
@@ -130,7 +130,7 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
     }
   }
 
-  removePack(language: Language, name: string) {
+  public removePack(language: Language, name: string) {
     if (this._container.has(language)) {
       const dictionary = this._container.get(language)!;
       dictionary.delete(name);
@@ -141,7 +141,7 @@ export class I18nPlugin extends Plugin implements II18nPlugin {
     }
   }
 
-  clear() {
+  public clear() {
     this._supported.clear();
     this._container.clear();
   }

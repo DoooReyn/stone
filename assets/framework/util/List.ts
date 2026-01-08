@@ -89,7 +89,7 @@ function compose<I, F extends (i: I) => I>(...fns: F[]): (i: I) => I {
 function each<ItemType>(
   arr: ItemType[],
   visit: (v: ItemType, i?: number, l?: ItemType[]) => void,
-  reverse: boolean = false
+  reverse: boolean = false,
 ): void {
   const len = arr.length;
   if (len == 0) return;
@@ -276,7 +276,7 @@ function range(start: number, ended: number, step?: number): number[] {
   start = start | 0;
   ended = ended | 0;
   step = (step ?? 0) | 0;
-  let ret = [];
+  const ret = [];
   if (step > 0) {
     [start, ended] = ended > start ? [start, ended] : [ended, start];
     for (let i = start; i <= ended; i += step) {
@@ -328,7 +328,7 @@ function removeDuplicates(arr: any[], compare?: (a: any, b: any) => boolean): an
 function removeIf<ItemType>(
   arr: ItemType[],
   match: (v: ItemType, i?: number, l?: ItemType[]) => boolean,
-  reverse?: boolean
+  reverse?: boolean,
 ): void {
   let l = arr.length;
   if (l == 0) return;
@@ -380,7 +380,7 @@ function removeOne(arr: any[], val: any, reverse: boolean): void {
 function shuffle1(arr: any[]): any[] {
   let pid = -1;
   let nid = 0;
-  let length = arr.length;
+  const { length } = arr;
   while (++pid < length) {
     nid = randomInteger(pid, length);
     [arr[nid], arr[pid]] = [arr[pid], arr[nid]];
@@ -450,7 +450,7 @@ function swap(arr: any[], pid: number, nid: number): any[] {
 function until<ItemType>(
   arr: ItemType[],
   visit: (v: ItemType, i?: number, l?: ItemType[]) => boolean,
-  reverse: boolean = false
+  reverse: boolean = false,
 ): void {
   const len = arr.length;
   if (len == 0) return;
@@ -467,8 +467,8 @@ function until<ItemType>(
  * @returns 压缩后的数组
  */
 function zip(...arrays: any[]): any[] {
-  return Array.apply(null, Array(arrays[0].length)).map(function (_: any, i: number) {
-    return arrays.map(function (array) {
+  return Array.apply(null, Array(arrays[0].length)).map((_: any, i: number) => {
+    return arrays.map((array) => {
       return array[i];
     });
   });

@@ -20,7 +20,7 @@ export class StoragePlugin extends Plugin implements IStoragePlugin {
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.ARG_PARSER];
 
-  constructor() {
+  public constructor() {
     super();
 
     const argParser = this.of<IArgParserPlugin>(PRESET_TOKEN.ARG_PARSER);

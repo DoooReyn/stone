@@ -34,6 +34,7 @@ function entries(d: Dict) {
 
 /** 检查字典是否包含指定键 */
 function own(d: Dict, k: Key) {
+  // eslint-disable-next-line no-prototype-builtins
   return d.hasOwnProperty(k);
 }
 /** 检查字典是否包含指定键 */
@@ -65,6 +66,7 @@ function get(d: Dict, k: Key) {
 /** 清空字典 */
 function clear(d: Dict) {
   for (const key in d) {
+    // eslint-disable-next-line no-prototype-builtins
     if (d.hasOwnProperty(key)) {
       delete d[key];
     }
@@ -78,6 +80,7 @@ function empty(d: Dict) {
 
 /** 遍历字典 */
 function each(d: Dict, visit: (k: Key, v: any) => void) {
+  // eslint-disable-next-line no-prototype-builtins
   keys(d).forEach((k) => d.hasOwnProperty(k) && visit(k, d[k]));
 }
 
@@ -105,6 +108,7 @@ function pick<K extends Key[]>(d: Dict, keys: K): Pick<Dict, K[number]> {
 /** 从字典中排除指定键值对 */
 function omit<K extends Key[]>(d: Dict, list: K, override: boolean = false): Omit<Dict, K[number]> {
   if (override) {
+    // eslint-disable-next-line no-prototype-builtins
     list.forEach((key) => d.hasOwnProperty(key) && delete d[key]);
     return d as Omit<Dict, K[number]>;
   }
@@ -138,7 +142,7 @@ function deepCopy(d: Dict) {
 
 /** 合并字典（覆盖目标字典中的相同键） */
 function merge(dst: Dict, src: Dict) {
-  for (let key in src) {
+  for (const key in src) {
     dst[key] = src[key];
   }
   return dst;
@@ -146,7 +150,7 @@ function merge(dst: Dict, src: Dict) {
 
 /** 覆盖字典（仅覆盖目标字典中不存在的键） */
 function override(dst: Dict, src: Dict) {
-  for (let key in src) {
+  for (const key in src) {
     if (dst[key] == undefined) {
       dst[key] = src[key];
     }

@@ -31,61 +31,61 @@ export class Text extends Gem {
   public static GetTextAttr<S extends keyof ITextAttr>(text: Label, key: S): ITextAttr[S] {
     let attr = undefined;
     switch (key) {
-      case 'text':
-        attr = text.string;
-        break;
-      case 'family':
-        attr = text.useSystemFont ? text.fontFamily : text.font?.name || PRESET_GUI.TEXT_FONT.family;
-        break;
-      case 'color':
-        attr = text.color.toHEX();
-        break;
-      case 'size':
-        attr = text.fontSize;
-        break;
-      case 'multiline':
-        attr = text.enableWrapText;
-        break;
-      case 'bold':
-        attr = text.isBold;
-        break;
-      case 'italic':
-        attr = text.isItalic;
-        break;
-      case 'underline':
-        attr = text.isUnderline;
-        break;
-      case 'outline':
-        if (!text.enableOutline) {
-          attr = { color: '', width: 0 };
-        } else {
-          attr = { color: text.outlineColor.toHEX(), width: text.outlineWidth };
-        }
-        break;
-      case 'shadow':
-        if (!text.enableShadow) {
-          attr = { color: '', x: 0, y: 0, blur: 0 };
-        } else {
-          attr = {
-            color: text.shadowColor.toHEX(),
-            x: text.shadowOffset.x,
-            y: text.shadowOffset.y,
-            blur: text.shadowBlur,
-          };
-        }
-        break;
-      case 'alignHor':
-        attr = text.horizontalAlign;
-        break;
-      case 'alignVer':
-        attr = text.verticalAlign;
-        break;
-      case 'overflow':
-        attr = text.overflow;
-        break;
-      case 'cacheMode':
-        attr = text.cacheMode;
-        break;
+    case 'text':
+      attr = text.string;
+      break;
+    case 'family':
+      attr = text.useSystemFont ? text.fontFamily : text.font?.name || PRESET_GUI.TEXT_FONT.family;
+      break;
+    case 'color':
+      attr = text.color.toHEX();
+      break;
+    case 'size':
+      attr = text.fontSize;
+      break;
+    case 'multiline':
+      attr = text.enableWrapText;
+      break;
+    case 'bold':
+      attr = text.isBold;
+      break;
+    case 'italic':
+      attr = text.isItalic;
+      break;
+    case 'underline':
+      attr = text.isUnderline;
+      break;
+    case 'outline':
+      if (!text.enableOutline) {
+        attr = { color: '', width: 0 };
+      } else {
+        attr = { color: text.outlineColor.toHEX(), width: text.outlineWidth };
+      }
+      break;
+    case 'shadow':
+      if (!text.enableShadow) {
+        attr = { color: '', x: 0, y: 0, blur: 0 };
+      } else {
+        attr = {
+          color: text.shadowColor.toHEX(),
+          x: text.shadowOffset.x,
+          y: text.shadowOffset.y,
+          blur: text.shadowBlur,
+        };
+      }
+      break;
+    case 'alignHor':
+      attr = text.horizontalAlign;
+      break;
+    case 'alignVer':
+      attr = text.verticalAlign;
+      break;
+    case 'overflow':
+      attr = text.overflow;
+      break;
+    case 'cacheMode':
+      attr = text.cacheMode;
+      break;
     }
 
     return attr as ITextAttr[S];
@@ -188,15 +188,15 @@ export class Text extends Gem {
   // ------------------------------- 公开访问区 -------------------------------
 
   /** 文本内容 */
-  get text() {
+  public get text() {
     return this.$text.string;
   }
-  set text(text: string) {
+  public set text(text: string) {
     this.$text.string = text;
   }
 
   /** 字体 */
-  get font() {
+  public get font() {
     return this.$font;
   }
 
@@ -205,7 +205,7 @@ export class Text extends Gem {
    * @param key 属性名称
    * @returns
    */
-  get<S extends keyof ITextAttr>(key: S): ITextAttr[S] {
+  public get<S extends keyof ITextAttr>(key: S): ITextAttr[S] {
     return Text.GetTextAttr(this.$text, key) as ITextAttr[S];
   }
 
@@ -213,7 +213,7 @@ export class Text extends Gem {
    * 设置文本属性
    * @param key 属性名称
    */
-  set(key: Partial<ITextAttr>) {
+  public set(key: Partial<ITextAttr>) {
     Text.SetTextAttr(this.$text, key);
   }
 
@@ -221,7 +221,7 @@ export class Text extends Gem {
    * 强制更新渲染数据
    * @notes 用于异步加载字体后刷新显示，避免字体切换后文本不显示
    */
-  flush() {
+  public flush() {
     this.$text.updateRenderData(true);
   }
 

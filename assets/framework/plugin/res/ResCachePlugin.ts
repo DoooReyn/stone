@@ -10,7 +10,7 @@ import { IResCacheEntry, IResCacheOptions, IResCachePlugin, IResCacheStats, ResC
  * @description 统一管理本地和远程资源的缓存
  */
 export class ResCachePlugin extends Plugin implements IResCachePlugin {
-  static readonly Token: string = PRESET_TOKEN.RES_CACHE;
+  public static readonly Token: string = PRESET_TOKEN.RES_CACHE;
 
   /** 缓存容器 */
   private _container: Map<string, IResCacheEntry> = new Map();
@@ -19,7 +19,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * 设置缓存
    * @param options 缓存配置
    */
-  set(options: IResCacheOptions): void {
+  public set(options: IResCacheOptions): void {
     const { key, asset, source, expires = 0, refCount = 0 } = options;
 
     if (!asset || !asset.isValid) {
@@ -52,7 +52,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param key 资源键值
    * @returns 资源实例或 null
    */
-  get<T extends Asset>(key: string): T | null {
+  public get<T extends Asset>(key: string): T | null {
     const entry = this._container.get(key);
 
     if (!entry) {
@@ -85,7 +85,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param key 资源键值
    * @returns 是否存在
    */
-  has(key: string): boolean {
+  public has(key: string): boolean {
     if (!this._container.has(key)) return false;
 
     // 检查资源是否有效
@@ -109,7 +109,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param key 资源键值
    * @returns 是否删除成功
    */
-  delete(key: string): boolean {
+  public delete(key: string): boolean {
     const entry = this._container.get(key);
 
     if (entry) {
@@ -135,7 +135,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param key 资源键值
    * @returns 当前引用计数
    */
-  addRef(key: string): number {
+  public addRef(key: string): number {
     const entry = this._container.get(key);
     if (!entry) return 0;
 
@@ -153,7 +153,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param autoRelease 引用计数为 0 时是否自动释放
    * @returns 当前引用计数
    */
-  decRef(key: string, autoRelease: boolean = false): number {
+  public decRef(key: string, autoRelease: boolean = false): number {
     const entry = this._container.get(key);
     if (!entry) return 0;
     if (entry.refCount <= 0) return entry.refCount;
@@ -174,9 +174,9 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * 清理过期缓存
    * @returns 清理的数量
    */
-  clearUnused(): number {
+  public clearUnused(): number {
     const now = time.now();
-    let deleted: string[] = [];
+    const deleted: string[] = [];
 
     for (const [key, entry] of this._container) {
       if (!entry.asset.isValid) {
@@ -203,7 +203,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * 清空所有缓存
    * @note 清空容器并释放引用为0的资源
    */
-  clear(): void {
+  public clear(): void {
     const deleted: string[] = [];
 
     this._container.forEach((_, key) => {
@@ -222,7 +222,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * 获取缓存统计信息
    * @returns 统计信息
    */
-  getStats(): IResCacheStats {
+  public getStats(): IResCacheStats {
     let local = 0;
     let remote = 0;
     let permanent = 0;
@@ -256,7 +256,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param source 可选的资源来源筛选
    * @returns 键值数组
    */
-  keys(source?: ResCacheSource): string[] {
+  public keys(source?: ResCacheSource): string[] {
     if (source === undefined) {
       return Array.from(this._container.keys());
     }
@@ -276,7 +276,7 @@ export class ResCachePlugin extends Plugin implements IResCachePlugin {
    * @param source 资源来源
    * @returns 清理的数量
    */
-  clearBySource(source: ResCacheSource): number {
+  public clearBySource(source: ResCacheSource): number {
     const deleted = [];
 
     for (const [key, entry] of this._container) {

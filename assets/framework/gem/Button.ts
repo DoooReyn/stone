@@ -235,9 +235,6 @@ export class Button extends Gem {
         this.node.emit(PRESET_EVENT_NAME.BTN_CLICK_CANCEL);
         this.onClickCancel();
       }
-
-      if (this.$holdEnabled) {
-      }
     }
   }
 

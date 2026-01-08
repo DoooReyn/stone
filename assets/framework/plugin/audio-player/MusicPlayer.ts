@@ -22,7 +22,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 获取主音量
    * @returns 主音量值（0-1）
    */
-  get masterVolume(): number {
+  public get masterVolume(): number {
     return this._masterVolume;
   }
 
@@ -30,7 +30,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 设置主音量
    * @param value 音量值（0-1）
    */
-  set masterVolume(value: number) {
+  public set masterVolume(value: number) {
     this._masterVolume = value;
     if (this._entry) {
       this._entry.setVolume(this._masterVolume * this._volume);
@@ -44,7 +44,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 获取当前播放的音乐音量
    * @returns 音量值（0-1）
    */
-  get volume(): number {
+  public get volume(): number {
     return this._volume;
   }
 
@@ -52,7 +52,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 设置当前播放的音乐音量
    * @param value 音量值（0-1）
    */
-  set volume(value: number) {
+  public set volume(value: number) {
     this._volume = value;
     if (this._entry) {
       this._entry.setVolume(this._masterVolume * this._volume);
@@ -69,7 +69,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 获取当前播放的音乐ID
    * @returns 音乐ID，-1表示没有正在播放的音乐
    */
-  get current(): number {
+  public get current(): number {
     return this._current;
   }
 
@@ -80,7 +80,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 获取静音状态
    * @returns 是否静音
    */
-  get muted(): boolean {
+  public get muted(): boolean {
     return this._muted;
   }
 
@@ -88,7 +88,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * 设置静音状态
    * @param value 是否静音
    */
-  set muted(value: boolean) {
+  public set muted(value: boolean) {
     this._muted = value;
     this.muted ? this._entry?.stop() : this._entry?.resume();
   }
@@ -99,7 +99,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
    * @param options 播放选项
    * @returns 音乐ID，-1表示播放失败
    */
-  play(arg: IResLoadOptions, options?: IMusicOptions): number {
+  public play(arg: IResLoadOptions, options?: IMusicOptions): number {
     // 静音不播放
     if (this._muted) return -1;
 
@@ -137,7 +137,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
   /**
    * 暂停当前播放的音乐
    */
-  pause(): void {
+  public pause(): void {
     if (this.current > -1) {
       this._entry?.pause();
     }
@@ -146,7 +146,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
   /**
    * 恢复播放暂停的音乐
    */
-  resume(): void {
+  public resume(): void {
     if (this.current > -1) {
       this._entry?.resume();
     }
@@ -155,7 +155,7 @@ export class MusicPlayer extends Node implements IMusicPlayer {
   /**
    * 停止播放音乐并清理资源
    */
-  stop(): void {
+  public stop(): void {
     if (this.current > -1) {
       this._entry?.stop();
       this._entry = null!;

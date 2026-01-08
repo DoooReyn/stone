@@ -47,7 +47,7 @@ enum PixelFormat {
  * ASTC 压缩纹理支持
  */
 export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
-  static readonly Token: string = PRESET_TOKEN.RES_ASTC;
+  public static readonly Token: string = PRESET_TOKEN.RES_ASTC;
   /** 目标纹理格式 */
   private _format: ASTC_FORMAT = gfx.Format.ASTC_RGBA_6X6;
 
@@ -77,7 +77,7 @@ export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
     return this.isFormatSupported(this._format);
   }
 
-  async onInitialize() {
+  public async onInitialize() {
     if (sys.isBrowser) return this.logger.i('不支持的平台', platform.os, platform.platform);
 
     // ------------------- ASTC 解析预备开始 -------------------
@@ -112,7 +112,7 @@ export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
         const mipmapLevelNumber = bufferView.getUint32(COMPRESSED_HEADER_LENGTH, true);
         const mipmapLevelDataSize = bufferView.getUint32(
           COMPRESSED_HEADER_LENGTH + COMPRESSED_MIPMAP_LEVEL_COUNT_LENGTH,
-          true
+          true,
         );
         const fileHeaderByteLength =
           COMPRESSED_HEADER_LENGTH +
@@ -126,7 +126,7 @@ export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
         for (let i = 1; i < mipmapLevelNumber; i++) {
           const endOffset = bufferView.getUint32(
             COMPRESSED_HEADER_LENGTH + COMPRESSED_MIPMAP_LEVEL_COUNT_LENGTH + i * COMPRESSED_MIPMAP_DATA_SIZE_LENGTH,
-            true
+            true,
           );
           parseCompressedTexture(file, i, beginOffset, endOffset, type, out);
           beginOffset += endOffset;
@@ -143,7 +143,7 @@ export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
       beginOffset: number,
       endOffset: number,
       type: number,
-      out: IMemoryImageSource
+      out: IMemoryImageSource,
     ): void {
       parseASTCTexture(file, levelIndex, beginOffset, endOffset, out);
     }
@@ -153,12 +153,12 @@ export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
       levelIndex: number,
       beginOffset: number,
       endOffset: number,
-      out: IMemoryImageSource
+      out: IMemoryImageSource,
     ): void {
       const buffer = file instanceof ArrayBuffer ? file : file.buffer;
       const header = new Uint8Array(buffer, beginOffset, ASTC_HEADER_LENGTH);
-      const magic_val = header[0] + (header[1] << 8) + (header[2] << 16) + (header[3] << 24);
-      if (magic_val !== ASTC_MAGIC) {
+      const magicVal = header[0] + (header[1] << 8) + (header[2] << 16) + (header[3] << 24);
+      if (magicVal !== ASTC_MAGIC) {
         throw new Error('Invalid magic number in ASTC header');
       }
 
@@ -264,8 +264,8 @@ export class ResAstcPlugin extends Plugin implements IResAstcPlugin {
       ) => void;
     };
     const downloader = assetManager.downloader as Downloader;
-    const parser = assetManager.parser;
-    const factory = assetManager.factory;
+    const { parser } = assetManager;
+    const { factory } = assetManager;
     downloader.register('.astc', (url, options, oncomplete) => {
       downloader._downloadArrayBuffer(url, options, (err: any, data: ArrayBuffer) => {
         if (data) {

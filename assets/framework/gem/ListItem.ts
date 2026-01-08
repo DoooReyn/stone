@@ -7,7 +7,7 @@ const { ccclass, menu } = _decorator;
 /** 是否支持 2D 渲染排序 */
 const HasSorting2D = Sorting2D !== undefined;
 if (!HasSorting2D) {
-  console.warn(`❌当前引擎版本不支持 Sorting2D 组件，如果需要请切换到 3.8.7 及以上版本`);
+  console.warn('❌当前引擎版本不支持 Sorting2D 组件，如果需要请切换到 3.8.7 及以上版本');
 }
 
 /**
@@ -31,9 +31,7 @@ export function changeUISortingLayer(sortingNode: Node, sortingLayer: number, so
   const result = sortingLayers.find((layer) => layer.value === sortingLayer);
   if (!result) {
     // 如果没有找到对应的layer，则使用引擎内置默认层，并给出警告
-    console.warn(
-      `❌未找到对应的sortingLayer:${sortingLayer}，请检查是否已在项目设置中配置该层级。将使用默认层级代替。`
-    );
+    console.warn(`❌未找到对应的sortingLayer:${sortingLayer}，请检查是否已在项目设置中配置该层级。将使用默认层级代替。`);
     sortingLayer = sortingLayers[0].value;
   }
 
@@ -79,7 +77,7 @@ export class ListItem extends Gem {
   private _longPressTimer: number = 0; // 长按计时器
   private _isLongPressed: boolean = false; // 是否已触发长按
 
-  didAwake() {
+  protected didAwake() {
     // 一次性注册事件，生命周期内不变
     this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -87,7 +85,7 @@ export class ListItem extends Gem {
     this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
   }
 
-  didSuspend() {
+  protected didSuspend() {
     // 清理事件
     this.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -110,7 +108,7 @@ export class ListItem extends Gem {
 
   /** 关闭渲染分层 */
   public offSortLayer() {
-    let orderNumber = 0;
+    const orderNumber = 0;
     const labels = this.node.getComponentsInChildren(Label);
     for (let i = 0; i < labels.length; i++) {
       changeUISortingLayer(labels[i].node, 0, orderNumber);

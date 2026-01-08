@@ -17,7 +17,7 @@ export class GlobalPlugin extends Plugin {
    * @param varname 变量名
    * @returns 值
    */
-  get<T>(varname: string): T | undefined {
+  public get<T>(varname: string): T | undefined {
     return this._env[varname] as T | undefined;
   }
 
@@ -26,7 +26,7 @@ export class GlobalPlugin extends Plugin {
    * @param varname 变量名
    * @returns 是否存在
    */
-  has(varname: string): boolean {
+  public has(varname: string): boolean {
     return this._env[varname] !== undefined;
   }
 
@@ -35,7 +35,7 @@ export class GlobalPlugin extends Plugin {
    * @param varname 变量名
    * @param value 值
    */
-  set<T>(varname: string, value: T): void {
+  public set<T>(varname: string, value: T): void {
     if (this.has(varname)) {
       this.logger.w(`全局变量 ⁅${varname}⁆ 已覆盖`);
     } else {
@@ -48,7 +48,7 @@ export class GlobalPlugin extends Plugin {
    * 删除
    * @param varname 变量名
    */
-  unset(varname: string): void {
+  public unset(varname: string): void {
     if (this.has(varname)) {
       delete this._env[varname];
       this.logger.d(`全局变量 ⁅${varname}⁆ 已删除`);

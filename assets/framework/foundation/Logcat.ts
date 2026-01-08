@@ -57,7 +57,7 @@ export class Logger {
    * @param token 标识
    * @param level 等级
    */
-  constructor(public readonly token: string, public level: LogLevel = LogLevel.DEBUG) {}
+  public constructor(public readonly token: string, public level: LogLevel = LogLevel.DEBUG) {}
 
   /**
    * 输出日志
@@ -82,15 +82,15 @@ export class Logger {
         out.stack = new Error().stack?.split('\n').slice(2).join('\n') ?? '';
         if (args.length === 1 && typeof args[0] === 'string') {
           if (useColor) {
-            console.log('%c%s', color, prefix, args[0], '\n' + out.stack);
+            console.log('%c%s', color, prefix, args[0], `\n${out.stack}`);
           } else {
-            console.log(prefix, args[0], '\n' + out.stack);
+            console.log(prefix, args[0], `\n${out.stack}`);
           }
         } else {
           if (useColor) {
-            console.log('%c%s', color, prefix, ...args, '\n' + out.stack);
+            console.log('%c%s', color, prefix, ...args, `\n${out.stack}`);
           } else {
-            console.log(prefix, ...args, '\n' + out.stack);
+            console.log(prefix, ...args, `\n${out.stack}`);
           }
         }
       } else {
@@ -124,22 +124,22 @@ export class Logger {
   }
 
   /** 输出调试日志 */
-  d = this._output.bind(this, LogLevel.DEBUG) as VoidFn;
+  public d = this._output.bind(this, LogLevel.DEBUG) as VoidFn;
   /** 输出一般日志 */
-  i = this._output.bind(this, LogLevel.INFO) as VoidFn;
+  public i = this._output.bind(this, LogLevel.INFO) as VoidFn;
   /** 输出警告日志 */
-  w = this._output.bind(this, LogLevel.WARN) as VoidFn;
+  public w = this._output.bind(this, LogLevel.WARN) as VoidFn;
   /** 输出错误日志 */
-  e = this._output.bind(this, LogLevel.ERROR) as VoidFn;
+  public e = this._output.bind(this, LogLevel.ERROR) as VoidFn;
 
   /** 格式化输出调试日志 */
-  df = this._fmt.bind(this, LogLevel.DEBUG) as VoidFn;
+  public df = this._fmt.bind(this, LogLevel.DEBUG) as VoidFn;
   /** 格式化输出一般日志 */
-  if = this._fmt.bind(this, LogLevel.INFO) as VoidFn;
+  public if = this._fmt.bind(this, LogLevel.INFO) as VoidFn;
   /** 格式化输出警告日志 */
-  wf = this._fmt.bind(this, LogLevel.WARN) as VoidFn;
+  public wf = this._fmt.bind(this, LogLevel.WARN) as VoidFn;
   /** 格式化输出错误日志 */
-  ef = this._fmt.bind(this, LogLevel.ERROR) as VoidFn;
+  public ef = this._fmt.bind(this, LogLevel.ERROR) as VoidFn;
 }
 
 /**

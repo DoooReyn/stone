@@ -7,7 +7,7 @@ export class FastError extends Error {
    * @param token 标识
    * @param message 消息
    */
-  constructor(token: string, message?: string) {
+  public constructor(token: string, message?: string) {
     super(message);
     this.name = `FastError<${token}>`;
   }

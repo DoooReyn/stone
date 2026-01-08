@@ -27,10 +27,10 @@ export class CheckBox extends Gem {
 
   /** 是否选中 */
   @property({ displayName: '选中否？' })
-  get checked() {
+  public get checked() {
     return this.$checked;
   }
-  set checked(enabled: boolean) {
+  public set checked(enabled: boolean) {
     if (this.$checked !== enabled) {
       this.$checked = enabled;
       this.flush();

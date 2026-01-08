@@ -166,7 +166,7 @@ function shouldBreak(prevType: number, types: number[], currType: number): numbe
   return 0;
 }
 
-/** 字符串占用字素缓存 */ 
+/** 字符串占用字素缓存 */
 const CACHE: Record<string, number> = Object.create(null);
 
 /**
@@ -263,7 +263,7 @@ function iterateGraphemes(str: string): IterableIterator<string> {
 
     [Symbol.iterator]() {
       return this;
-    }
+    },
   };
 
   return iterator;

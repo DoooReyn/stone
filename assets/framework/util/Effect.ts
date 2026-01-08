@@ -12,7 +12,7 @@ function setEffect(node: Node, material: Material | null, properties?: Record<st
   const diveToProperties = material && properties;
   for (let i = 0, l = renders.length; i < l; i++) {
     if (diveToProperties) {
-      for (let p in properties) {
+      for (const p in properties) {
         material.setProperty(p, properties[p]);
       }
     }

@@ -16,18 +16,6 @@ export class CheckBoxGroup extends Gem {
   /** 日志开关 */
   public static LogEnabled: boolean = true;
 
-  /**
-   * 格式化条目状态
-   * @param entries 条目列表
-   * @param tag 标记
-   * @returns
-   */
-  public static Fmt(entries: CheckBox[], tag: string) {
-    const list = entries.map((e) => e.gName + ':' + (e.checked ? '选中' : '未选中'));
-    list.unshift(tag);
-    return list.join('\n ');
-  }
-
   // ------------------------------- 属性声明区 -------------------------------
 
   /** 脏标记 */
@@ -44,7 +32,7 @@ export class CheckBoxGroup extends Gem {
   /**
    * 条目数量
    */
-  get size() {
+  public get size() {
     return this._container.length;
   }
 
@@ -53,7 +41,7 @@ export class CheckBoxGroup extends Gem {
    * @param entry 条目
    * @returns
    */
-  has(entry: CheckBox) {
+  public has(entry: CheckBox) {
     return this.indexOf(entry) > -1;
   }
 
@@ -62,7 +50,7 @@ export class CheckBoxGroup extends Gem {
    * @param entry 条目
    * @returns
    */
-  indexOf(entry: CheckBox) {
+  public indexOf(entry: CheckBox) {
     return this._container.indexOf(entry);
   }
 
@@ -70,7 +58,7 @@ export class CheckBoxGroup extends Gem {
    * 新增条目
    * @param entry 条目
    */
-  add(entry: CheckBox) {
+  public add(entry: CheckBox) {
     !this.has(entry) && this._container.push(entry);
   }
 
@@ -78,7 +66,7 @@ export class CheckBoxGroup extends Gem {
    * 移除条目
    * @param entry 条目
    */
-  remove(entry: CheckBox) {
+  public remove(entry: CheckBox) {
     const index = this.indexOf(entry);
     if (index > -1) this._container.splice(index, 1);
   }
@@ -86,7 +74,7 @@ export class CheckBoxGroup extends Gem {
   /**
    * 清空条目
    */
-  clear() {
+  public clear() {
     this._container.length = 0;
   }
 
@@ -94,7 +82,7 @@ export class CheckBoxGroup extends Gem {
    * 选中条目
    * @param entry 当前条目
    */
-  select(entry: CheckBox) {
+  public select(entry: CheckBox) {
     if (this.has(entry)) {
       this._select(entry);
     }
@@ -104,7 +92,7 @@ export class CheckBoxGroup extends Gem {
    * 选中索引条目
    * @param index 索引
    */
-  selectIndex(index: number) {
+  public selectIndex(index: number) {
     this._select(this._container[index]);
   }
 
@@ -113,7 +101,7 @@ export class CheckBoxGroup extends Gem {
    * @param indexes 索引条目列表
    * @param solo 是否仅选中限定条目（除此之外全不选）
    */
-  selectIndexes(indexes: number[], solo: boolean = false) {
+  public selectIndexes(indexes: number[], solo: boolean = false) {
     const ranges = indexes.map((idx) => this._container[idx]).filter((v) => v !== undefined);
     this.selectRange(ranges, solo);
   }
@@ -123,9 +111,9 @@ export class CheckBoxGroup extends Gem {
    * @param ranges 条目列表
    * @param solo 是否仅选中限定条目（除此之外全不选）
    */
-  selectRange(ranges: CheckBox[], solo: boolean = false) {
+  public selectRange(ranges: CheckBox[], solo: boolean = false) {
     // 去除无效条目
-    for (let i = 0; i > ranges.length; i++) {
+    for (let i = 0; i < ranges.length; i++) {
       if (!this.has(ranges[i])) {
         ranges.splice(i, 1);
         i--;
@@ -146,14 +134,14 @@ export class CheckBoxGroup extends Gem {
   /**
    * 全选
    */
-  selectAll() {
+  public selectAll() {
     this._container.forEach(this._select, this);
   }
 
   /**
    * 反选
    */
-  selectInvert() {
+  public selectInvert() {
     this._container.forEach(this._next, this);
   }
 
@@ -161,7 +149,7 @@ export class CheckBoxGroup extends Gem {
    * 不选条目
    * @param entry 当前条目
    */
-  unselect(entry: CheckBox) {
+  public unselect(entry: CheckBox) {
     if (this.has(entry)) {
       this._unselect(entry);
     }
@@ -171,7 +159,7 @@ export class CheckBoxGroup extends Gem {
    * 不选索引条目
    * @param index
    */
-  unselectIndex(index: number) {
+  public unselectIndex(index: number) {
     this._unselect(this._container[index]);
   }
 
@@ -180,7 +168,7 @@ export class CheckBoxGroup extends Gem {
    * @param indexes 索引条目列表
    * @param solo 是否仅选中限定条目（除此之外全不选）
    */
-  unselectIndexes(indexes: number[], solo: boolean = false) {
+  public unselectIndexes(indexes: number[], solo: boolean = false) {
     const ranges = indexes.map((idx) => this._container[idx]).filter((v) => v !== undefined);
     this.unselectRange(ranges, solo);
   }
@@ -190,9 +178,9 @@ export class CheckBoxGroup extends Gem {
    * @param ranges 条目列表
    * @param solo 是否仅不选限定条目（除此之外全选）
    */
-  unselectRange(ranges: CheckBox[], solo: boolean = false) {
+  public unselectRange(ranges: CheckBox[], solo: boolean = false) {
     // 去除无效条目
-    for (let i = 0; i > ranges.length; i++) {
+    for (let i = 0; i < ranges.length; i++) {
       if (!this.has(ranges[i])) {
         ranges.splice(i, 1);
         i--;
@@ -212,7 +200,7 @@ export class CheckBoxGroup extends Gem {
   /**
    * 全不选
    */
-  unselectAll() {
+  public unselectAll() {
     this._container.forEach(this._unselect, this);
   }
 
@@ -220,19 +208,19 @@ export class CheckBoxGroup extends Gem {
    * 告知条目状态变化
    * @param entry 变化条目
    */
-  flush(entry: CheckBox) {
+  public flush(entry: CheckBox) {
     entry.checked = !entry.checked;
     this._dirty = true;
     this._dirtyEntries.push(entry);
   }
 
   /** 选中的条目列表 */
-  get selected() {
+  public get selected() {
     return this._container.filter((e) => e.checked);
   }
 
   /** 选中的索引条目列表 */
-  get selectedIndexes() {
+  public get selectedIndexes() {
     return this._container.map((e, i) => (e.checked ? i : -1)).filter((i) => i > -1);
   }
 
@@ -273,7 +261,7 @@ export class CheckBoxGroup extends Gem {
       if (CheckBoxGroup.LogEnabled) {
         this.logger.d(
           '条目变化\n',
-          this._dirtyEntries.map((e) => e.gName + ':' + (e.checked ? '选中' : '未选中')).join('\n ')
+          this._dirtyEntries.map((e) => `${e.gName}:${e.checked ? '选中' : '未选中'}`).join('\n '),
         );
       }
       this._dirty = false;

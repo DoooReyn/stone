@@ -30,7 +30,7 @@ function debounce(handle: Function, context: object = CTX, delay: number = 300) 
   let timer: number | null = null;
   return function (...args: any[]) {
     if (timer) clearTimeout(timer);
-    timer = setTimeout(function () {
+    timer = setTimeout(() => {
       handle.apply(context, args);
       timer = null;
     }, delay);
@@ -55,7 +55,7 @@ function throttle(handle: Function, context: object = CTX, delay: number = 300) 
     if (!valid) return;
     if (timer) clearTimeout(timer);
     valid = false;
-    timer = setTimeout(function () {
+    timer = setTimeout(() => {
       handle.apply(context, args);
       timer = 0;
       valid = true;
@@ -89,7 +89,7 @@ function ban() {
  * @param exec 方法
  */
 function nextTick(exec: () => void) {
-  misc.callInNextTick(function () {
+  misc.callInNextTick(() => {
     runSync(exec);
   });
 }
@@ -100,7 +100,7 @@ function nextTick(exec: () => void) {
  * @param enabled 是否启用抗锯齿
  */
 function setAntiAliasing(tex: Texture2D, enabled: boolean): void {
-  let filter = enabled ? LINEAR : NEAREST;
+  const filter = enabled ? LINEAR : NEAREST;
   tex && tex.setFilters(filter, filter);
 }
 
@@ -144,7 +144,9 @@ async function timeAsync(flag: string, operation: Promise<any>) {
  */
 function simulateLongTask(delay: number) {
   const start = performance.now();
-  while (performance.now() - start < delay) {}
+  while (performance.now() - start < delay) {
+    // loop
+  }
 }
 
 /**
@@ -155,7 +157,7 @@ function simulateLongTask(delay: number) {
  */
 function simulateProbability(probability: number, delay = 1000) {
   return new Promise<boolean>((resolve) => {
-    setTimeout(function () {
+    setTimeout(() => {
       resolve(Math.random() < probability);
     }, delay);
   });

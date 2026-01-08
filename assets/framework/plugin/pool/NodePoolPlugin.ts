@@ -21,7 +21,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param token 池子标记
    * @returns 节点池实例
    */
-  poolOf(token: string): NodePool | undefined {
+  public poolOf(token: string): NodePool | undefined {
     return this._container.get(token);
   }
 
@@ -30,8 +30,8 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param template 节点构造函数
    * @param options 池子配置
    */
-  registerByConstructor(template: Constructor<IRecyclableNode>, options: IRecyclableOptions): void {
-    const token = options.token;
+  public registerByConstructor(template: Constructor<IRecyclableNode>, options: IRecyclableOptions): void {
+    const { token } = options;
     if (this._container.has(token)) {
       throw new FastError(this.token, `节点池⁅${token}⁆重复注册`);
     }
@@ -46,8 +46,8 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param template 节点实例或预制体
    * @param options 池子配置
    */
-  registerByInstance(template: Node | Prefab, options: IRecyclableOptions): void {
-    const token = options.token;
+  public registerByInstance(template: Node | Prefab, options: IRecyclableOptions): void {
+    const { token } = options;
     if (this._container.has(token)) {
       throw new FastError(this.token, `节点池⁅${token}⁆重复注册`);
     }
@@ -75,7 +75,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * 注销节点池
    * @param token 池子标记
    */
-  unregister(token: string): void {
+  public unregister(token: string): void {
     if (this._container.has(token)) {
       this._container.delete(token);
     }
@@ -86,7 +86,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param token 池子标记
    * @returns 是否存在
    */
-  has(token: string): boolean {
+  public has(token: string): boolean {
     return this._container.has(token);
   }
 
@@ -95,7 +95,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param token 池子标记
    * @returns 模板实例
    */
-  templateOf(token: string): Prefab | IRecyclableNode | undefined {
+  public templateOf(token: string): Prefab | IRecyclableNode | undefined {
     if (!this._container.has(token)) {
       throw new FastError(this.token, `节点池⁅${token}⁆未注册`);
     }
@@ -110,7 +110,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param args 初始化参数
    * @returns 节点实例
    */
-  acquire<N extends IRecyclableNode>(token: string, ...args: any[]): N | undefined {
+  public acquire<N extends IRecyclableNode>(token: string, ...args: any[]): N | undefined {
     if (!this._container.has(token)) {
       throw new FastError(this.token, `节点池⁅${token}⁆未注册`);
     }
@@ -123,7 +123,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * 回收节点实例到池子
    * @param inst 要回收的节点实例
    */
-  recycle(inst: IRecyclableNode): void {
+  public recycle(inst: IRecyclableNode): void {
     if (inst && inst.isValid && inst.token !== undefined && inst.recycledAt === 0) {
       if (!this._container.has(inst.token)) {
         throw new FastError(this.token, `节点池⁅${inst.token}⁆未注册`);
@@ -139,7 +139,7 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
    * @param token 池子标记
    * @returns 池子中的节点数量
    */
-  sizeOf(token: string): number {
+  public sizeOf(token: string): number {
     if (this._container.has(token)) {
       return this._container.get(token)!.size;
     }
@@ -150,14 +150,14 @@ export class NodePoolPlugin extends Plugin implements INodePoolPlugin {
   /**
    * 清理所有池子中过期未使用的节点
    */
-  clearUnused(): void {
+  public clearUnused(): void {
     this._container.forEach((v) => v.clearUnused());
   }
 
   /**
    * 清空所有池子
    */
-  clear(): void {
+  public clear(): void {
     this._container.forEach((pool) => pool.clear());
   }
 }

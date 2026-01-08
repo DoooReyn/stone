@@ -26,7 +26,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 获取主音量
    * @returns 主音量值（0-1）
    */
-  get masterVolume(): number {
+  public get masterVolume(): number {
     return this._masterVolume;
   }
 
@@ -34,7 +34,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 设置主音量
    * @param value 音量值（0-1）
    */
-  set masterVolume(value: number) {
+  public set masterVolume(value: number) {
     this._masterVolume = value;
     for (const entry of this._entries) {
       entry.setVolume(this._masterVolume * entry.selfVolume);
@@ -48,7 +48,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 获取静音状态
    * @returns 是否静音
    */
-  get muted(): boolean {
+  public get muted(): boolean {
     return this._muted;
   }
 
@@ -56,7 +56,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 设置静音状态
    * @param value 是否静音
    */
-  set muted(value: boolean) {
+  public set muted(value: boolean) {
     this._muted = value;
     for (const entry of this._entries) {
       value ? entry.stop() : entry.resume();
@@ -69,7 +69,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * @param options 播放选项
    * @returns 音频ID，-1表示播放失败
    */
-  play(arg: IResLoadOptions, options: ISoundOptions = { volume: 1 }): number {
+  public play(arg: IResLoadOptions, options: ISoundOptions = { volume: 1 }): number {
     // 静音不播放
     if (this._muted) return -1;
 
@@ -111,7 +111,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 暂停音效播放
    * @param id 指定的音频ID，不传则暂停所有音效
    */
-  pause(id?: number): void {
+  public pause(id?: number): void {
     if (id != undefined) {
       this._entries.find((v) => v.aid === id)?.pause();
     } else {
@@ -125,7 +125,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 恢复音效播放
    * @param id 指定的音频ID，不传则恢复所有音效
    */
-  resume(id?: number): void {
+  public resume(id?: number): void {
     if (id != undefined) {
       this._entries.find((v) => v.aid === id)?.resume();
     } else {
@@ -139,7 +139,7 @@ export class SoundPlayer extends Node implements ISoundPlayer {
    * 停止音效播放并清理资源
    * @param id 指定的音频ID，不传则停止所有音效
    */
-  stop(id?: number): void {
+  public stop(id?: number): void {
     if (id != undefined) {
       const index = this._entries.findIndex((v) => v.aid === id);
       if (index > -1) {

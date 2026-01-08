@@ -31,39 +31,39 @@ export class TextRich extends Gem {
     let attr = undefined;
 
     switch (key) {
-      case 'alignHor':
-        attr = text.horizontalAlign;
-        break;
-      case 'alignVer':
-        attr = text.verticalAlign;
-        break;
-      case 'atlas':
-        attr = text.imageAtlas;
-        break;
-      case 'cacheMode':
-        attr = text.cacheMode;
-        break;
-      case 'color':
-        attr = text.fontColor.toHEX();
-        break;
-      case 'family':
-        attr = text.useSystemFont ? text.fontFamily : text.font?.name || PRESET_GUI.TEXT_FONT.family;
-        break;
-      case 'lineHeight':
-        attr = text.verticalAlign;
-        break;
-      case 'maxWidth':
-        attr = text.maxWidth;
-        break;
-      case 'size':
-        attr = text.fontSize;
-        break;
-      case 'text':
-        attr = text.string;
-        break;
-      case 'preventTouch':
-        attr = text.handleTouchEvent;
-        break;
+    case 'alignHor':
+      attr = text.horizontalAlign;
+      break;
+    case 'alignVer':
+      attr = text.verticalAlign;
+      break;
+    case 'atlas':
+      attr = text.imageAtlas;
+      break;
+    case 'cacheMode':
+      attr = text.cacheMode;
+      break;
+    case 'color':
+      attr = text.fontColor.toHEX();
+      break;
+    case 'family':
+      attr = text.useSystemFont ? text.fontFamily : text.font?.name || PRESET_GUI.TEXT_FONT.family;
+      break;
+    case 'lineHeight':
+      attr = text.verticalAlign;
+      break;
+    case 'maxWidth':
+      attr = text.maxWidth;
+      break;
+    case 'size':
+      attr = text.fontSize;
+      break;
+    case 'text':
+      attr = text.string;
+      break;
+    case 'preventTouch':
+      attr = text.handleTouchEvent;
+      break;
     }
 
     return attr as ITextRichAttr[S];
@@ -137,15 +137,15 @@ export class TextRich extends Gem {
   // ------------------------------- 公开访问区 -------------------------------
 
   /** 文本内容 */
-  get text() {
+  public get text() {
     return this.$text.string;
   }
-  set text(text: string) {
+  public set text(text: string) {
     this.$text.string = text;
   }
 
   /** 字体 */
-  get font() {
+  public get font() {
     return this.$font;
   }
 
@@ -154,7 +154,7 @@ export class TextRich extends Gem {
    * @param key 属性名称
    * @returns
    */
-  get<S extends keyof ITextRichAttr>(key: S): ITextRichAttr[S] {
+  public get<S extends keyof ITextRichAttr>(key: S): ITextRichAttr[S] {
     return TextRich.GetTextRichAttr(this.$text, key) as ITextRichAttr[S];
   }
 
@@ -162,7 +162,7 @@ export class TextRich extends Gem {
    * 设置文本属性
    * @param key 属性名称
    */
-  set(key: Partial<ITextRichAttr>) {
+  public set(key: Partial<ITextRichAttr>) {
     TextRich.SetTextRichAttr(this.$text, key);
   }
 
@@ -170,7 +170,7 @@ export class TextRich extends Gem {
    * 遍历富文本节点
    * @param visit 访问方法
    */
-  each(visit: (node: Node, index: number) => void) {
+  public each(visit: (node: Node, index: number) => void) {
     // @ts-ignore
     const segments = this.$text._segments;
     segments.forEach((seg, index) => {
@@ -183,7 +183,7 @@ export class TextRich extends Gem {
    * @param index 索引
    * @returns 富文本节点
    */
-  elementAt(index: number) {
+  public elementAt(index: number) {
     // @ts-ignore
     const segments = this.$text._segments;
     index = digit.clamp(index, 0, segments.length - 1);
@@ -191,7 +191,7 @@ export class TextRich extends Gem {
   }
 
   /** 富文本节点数量 */
-  get elementCount() {
+  public get elementCount() {
     // @ts-ignore
     return this.$text._segments.length;
   }

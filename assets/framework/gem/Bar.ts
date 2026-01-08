@@ -46,10 +46,10 @@ export class Bar extends Image {
 
   /** 进度条类型 */
   @property({ displayName: '类型', type: Enum(BarType) })
-  get type() {
+  public get type() {
     return this.$type;
   }
-  set type(type: BarType) {
+  public set type(type: BarType) {
     if (this.$type !== type) {
       this.$type = type;
       this.flush();
@@ -62,10 +62,10 @@ export class Bar extends Image {
 
   /** 进度条方向 */
   @property({ displayName: '方向', type: Enum(BarDirection) })
-  get direction() {
+  public get direction() {
     return this.$direction;
   }
-  set direction(dir: BarDirection) {
+  public set direction(dir: BarDirection) {
     if (this.$direction !== dir) {
       this.$direction = dir;
       this.flush();
@@ -78,10 +78,10 @@ export class Bar extends Image {
 
   /** 当前进度 */
   @property({ displayName: '进度', min: 0, max: 1, step: 0.01 })
-  get progress() {
+  public get progress() {
     return this.$progress;
   }
-  set progress(value: number) {
+  public set progress(value: number) {
     value = Math.min(Math.max(value, 0), 1);
     if (this.$progress != value) {
       this.$progress = value;
@@ -93,20 +93,20 @@ export class Bar extends Image {
    * 更新进度
    * @returns
    */
-  flush() {
+  public flush() {
     const bar = (this.$image ||= this.getComponent(Sprite)!);
     if (!bar) return;
 
     switch (this.$type) {
-      case BarType.Horizontal:
-        this.updateHorizontal();
-        break;
-      case BarType.Vertical:
-        this.updateVertical();
-        break;
-      case BarType.Circle:
-        this.updateCircle();
-        break;
+    case BarType.Horizontal:
+      this.updateHorizontal();
+      break;
+    case BarType.Vertical:
+      this.updateVertical();
+      break;
+    case BarType.Circle:
+      this.updateCircle();
+      break;
     }
   }
 

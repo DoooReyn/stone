@@ -4,7 +4,7 @@ import { sys } from 'cc';
 export const littleEndian = sys.isLittleEndian;
 
 // os
-export const os = sys.os;
+export const { os } = sys;
 export const macos = sys.OS.OSX === os;
 export const windows = sys.OS.WINDOWS === os;
 export const linux = sys.OS.LINUX === os;
@@ -33,7 +33,7 @@ export const androidBrowser = android && browser;
 export const ohosBrowser = ohos && browser;
 
 // platform
-export const platform = sys.platform;
+export const { platform } = sys;
 export const weixin = platform === sys.Platform.WECHAT_GAME;
 export const huawei = platform === sys.Platform.HUAWEI_QUICK_GAME;
 export const alipay = platform === sys.Platform.ALIPAY_MINI_GAME;

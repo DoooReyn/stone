@@ -43,7 +43,7 @@ export class RatioGroup extends Gem {
   /**
    * 条目数量
    */
-  get size() {
+  public get size() {
     return this._container.length;
   }
 
@@ -52,7 +52,7 @@ export class RatioGroup extends Gem {
    * @param entry 条目
    * @returns
    */
-  has(entry: Ratio) {
+  public has(entry: Ratio) {
     return this.indexOf(entry) > -1;
   }
 
@@ -61,7 +61,7 @@ export class RatioGroup extends Gem {
    * @param entry 条目
    * @returns
    */
-  indexOf(entry: Ratio) {
+  public indexOf(entry: Ratio) {
     return this._container.indexOf(entry);
   }
 
@@ -69,7 +69,7 @@ export class RatioGroup extends Gem {
    * 新增条目
    * @param entry 条目
    */
-  add(entry: Ratio) {
+  public add(entry: Ratio) {
     !this.has(entry) && this._container.push(entry);
   }
 
@@ -77,7 +77,7 @@ export class RatioGroup extends Gem {
    * 移除条目
    * @param entry 条目
    */
-  remove(entry: Ratio) {
+  public remove(entry: Ratio) {
     const index = this.indexOf(entry);
     if (index > -1) this._container.splice(index, 1);
   }
@@ -85,7 +85,7 @@ export class RatioGroup extends Gem {
   /**
    * 清空条目
    */
-  clear() {
+  public clear() {
     this._container.length = 0;
   }
 
@@ -93,7 +93,7 @@ export class RatioGroup extends Gem {
    * 告知条目状态变化
    * @param entry 变化条目
    */
-  flush(entry: Ratio) {
+  public flush(entry: Ratio) {
     const index = this.indexOf(entry);
     if (this._setSelectedIndex(index)) {
       if (RatioGroup.LogEnabled) {

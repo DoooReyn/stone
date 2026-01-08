@@ -12,18 +12,18 @@ import { IArgParserPlugin } from './IArgParser';
  * 参数解析器插件
  */
 export class ArgParserPlugin extends Plugin implements IArgParserPlugin {
-  static readonly Token: string = PRESET_TOKEN.ARG_PARSER;
+  public static readonly Token: string = PRESET_TOKEN.ARG_PARSER;
 
   /** 参数 */
   public args: IAppArgs = dict.deepCopy(PRESET_APP_ARGS) as IAppArgs;
 
   protected readonly $dependencies: string[] = [PRESET_TOKEN.GLOBAL];
 
-  async onInitialize() {
+  public async onInitialize() {
     this.parse();
   }
 
-  parse(args?: Dict) {
+  public parse(args?: Dict) {
     const gg = this.of<IGlobalPlugin>(PRESET_TOKEN.GLOBAL);
     if (gg.has('location')) {
       const url = gg.get<Location>('location')?.href ?? '';
@@ -44,19 +44,19 @@ export class ArgParserPlugin extends Plugin implements IArgParserPlugin {
     this.logger.i('应用参数', this.args);
   }
 
-  isEnv(env: IAppArgs['env']) {
+  public isEnv(env: IAppArgs['env']) {
     return this.args.env === env;
   }
 
-  get isDev() {
+  public get isDev() {
     return this.isEnv('dev');
   }
 
-  get isDebug() {
+  public get isDebug() {
     return this.isEnv('debug');
   }
 
-  get isProd() {
+  public get isProd() {
     return this.isEnv('prod');
   }
 }

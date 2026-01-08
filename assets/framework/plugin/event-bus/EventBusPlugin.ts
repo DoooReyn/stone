@@ -16,23 +16,23 @@ export class EventBusPlugin extends Plugin implements IEventBusPlugin {
   /** 事件渠道容器 */
   private _container: Map<string, IEventChannel> = new Map();
 
-  get shared() {
+  public get shared() {
     return this.acquire(PRESET_EVENT_CHANNEL.SHARED);
   }
 
-  get app() {
+  public get app() {
     return this.acquire(PRESET_EVENT_CHANNEL.APP);
   }
 
-  get gui() {
+  public get gui() {
     return this.acquire(PRESET_EVENT_CHANNEL.GUI);
   }
 
-  get red() {
+  public get red() {
     return this.acquire(PRESET_EVENT_CHANNEL.RED);
   }
 
-  acquire(channel: string): IEventChannel {
+  public acquire(channel: string): IEventChannel {
     if (!this._container.has(channel)) {
       this._container.set(channel, new EventChannel(channel));
     }
@@ -40,15 +40,15 @@ export class EventBusPlugin extends Plugin implements IEventBusPlugin {
     return this._container.get(channel)!;
   }
 
-  has(channel: string): boolean {
+  public has(channel: string): boolean {
     return this._container.has(channel);
   }
 
-  remove(channel: string): void {
+  public remove(channel: string): void {
     this._container.delete(channel);
   }
 
-  clear(): void {
+  public clear(): void {
     this._container.clear();
   }
 }

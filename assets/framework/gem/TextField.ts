@@ -28,24 +28,24 @@ export class TextField extends Gem {
   public static GetTextFieldAttr<S extends keyof ITextFieldAttr>(field: EditBox, key: S) {
     let attr = undefined;
     switch (key) {
-      case 'text':
-        attr = field.string;
-        break;
-      case 'tip':
-        attr = field.placeholder;
-        break;
-      case 'inputMode':
-        attr = field.inputMode;
-        break;
-      case 'inputFlag':
-        attr = field.inputFlag;
-        break;
-      case 'returnMode':
-        attr = field.returnType;
-        break;
-      case 'maxLength':
-        attr = field.maxLength;
-        break;
+    case 'text':
+      attr = field.string;
+      break;
+    case 'tip':
+      attr = field.placeholder;
+      break;
+    case 'inputMode':
+      attr = field.inputMode;
+      break;
+    case 'inputFlag':
+      attr = field.inputFlag;
+      break;
+    case 'returnMode':
+      attr = field.returnType;
+      break;
+    case 'maxLength':
+      attr = field.maxLength;
+      break;
     }
     return attr as ITextFieldAttr[S];
   }
@@ -96,10 +96,10 @@ export class TextField extends Gem {
   // ------------------------------- 公开访问区 -------------------------------
 
   /** 左边距 */
-  get padding() {
+  public get padding() {
     return this.$padding;
   }
-  set padding(p: number) {
+  public set padding(p: number) {
     if (this.$padding != p) {
       this.$padding = p;
       this.updateView();
@@ -110,7 +110,7 @@ export class TextField extends Gem {
    * 设置占位属性
    * @param attrs 属性
    */
-  setPhdAttr(attrs: Partial<ITextAttr>) {
+  public setPhdAttr(attrs: Partial<ITextAttr>) {
     const text = this.$editBox.placeholderLabel;
     if (text) {
       Text.SetTextAttr(text, attrs);
@@ -124,7 +124,7 @@ export class TextField extends Gem {
    * 设置内容属性
    * @param attrs 属性
    */
-  setTxtAttr(attrs: Partial<ITextAttr>) {
+  public setTxtAttr(attrs: Partial<ITextAttr>) {
     const text = this.$editBox.textLabel;
     if (text) {
       Text.SetTextAttr(text, attrs);
@@ -135,12 +135,12 @@ export class TextField extends Gem {
   }
 
   /** 内容字体 */
-  get txtFont() {
+  public get txtFont() {
     return this.$txtFont;
   }
 
   /** 占位字体 */
-  get phdFont() {
+  public get phdFont() {
     return this.$phdFont;
   }
 
@@ -149,7 +149,7 @@ export class TextField extends Gem {
    * @param key 属性名称
    * @returns 输入框属性
    */
-  get<S extends keyof ITextFieldAttr>(key: S) {
+  public get<S extends keyof ITextFieldAttr>(key: S) {
     return TextField.GetTextFieldAttr(this.$editBox, key);
   }
 
@@ -157,7 +157,7 @@ export class TextField extends Gem {
    * 设置输入框属性
    * @param attrs 输入框属性
    */
-  set(attrs: Partial<ITextFieldAttr>) {
+  public set(attrs: Partial<ITextFieldAttr>) {
     TextField.SetTextFieldAttr(this.$editBox, attrs);
   }
 

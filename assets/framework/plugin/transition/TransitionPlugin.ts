@@ -17,7 +17,7 @@ import {
   ScrollNumber,
   Shake,
   Vibration,
-  Wave
+  Wave,
 } from './Transitions';
 
 /**
@@ -30,7 +30,7 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
   /** 运行时缓动表：node.uuid -> Map<lib, [Tween<Node>, ITransitionArgs]> */
   private _runtime: Map<string, Map<string, [Tween<Node>, ITransitionArgs]>> = new Map();
 
-  async onInitialize() {
+  public async onInitialize() {
     this.register(BlurIn);
     this.register(BlurOut);
     this.register(DrawerIn);
@@ -46,16 +46,16 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     this.register(Jelly);
   }
 
-  destroy() {
+  public destroy() {
     this.stopAll();
     this._runtime.clear();
   }
 
-  has(lib: string): boolean {
+  public has(lib: string): boolean {
     return this._container.has(lib);
   }
 
-  register(entry: ITransitionEntry): void {
+  public register(entry: ITransitionEntry): void {
     if (this._container.has(entry.lib)) {
       this.logger.w(`过渡效果 ⁅${entry.lib}⁆ 已替换`);
     } else {
@@ -64,7 +64,7 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     this._container.set(entry.lib, entry);
   }
 
-  unregister(entry: ITransitionEntry | string): void {
+  public unregister(entry: ITransitionEntry | string): void {
     if (typeof entry === 'string') {
       this._container.delete(entry);
     } else {
@@ -72,11 +72,11 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     }
   }
 
-  clear(): void {
+  public clear(): void {
     this._container.clear();
   }
 
-  isPlaying(node: Node, lib: string): boolean {
+  public isPlaying(node: Node, lib: string): boolean {
     if (this._runtime.has(node.uuid)) {
       const entries = this._runtime.get(node.uuid)!;
       if (entries.has(lib)) {
@@ -86,11 +86,11 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     return false;
   }
 
-  async play(node: Node, lib: string, args?: ITransitionArgs): Promise<void> {
+  public async play(node: Node, lib: string, args?: ITransitionArgs): Promise<void> {
     await might.logAsync(this.internalPlay(node, lib, args), this.logger);
   }
 
-  pause(node: Node, lib: string): void {
+  public pause(node: Node, lib: string): void {
     if (this._runtime.has(node.uuid)) {
       const entries = this._runtime.get(node.uuid)!;
       if (entries.has(lib)) {
@@ -101,7 +101,7 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     }
   }
 
-  resume(node: Node, lib: string): void {
+  public resume(node: Node, lib: string): void {
     if (this._runtime.has(node.uuid)) {
       const entries = this._runtime.get(node.uuid)!;
       if (entries.has(lib)) {
@@ -112,7 +112,7 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     }
   }
 
-  stop(node: Node, lib: string): void {
+  public stop(node: Node, lib: string): void {
     if (this._runtime.has(node.uuid)) {
       const entries = this._runtime.get(node.uuid)!;
       if (entries.has(lib)) {
@@ -124,8 +124,8 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     }
   }
 
-  pauseAll(node?: Node): void {
-    const logger = this.logger;
+  public pauseAll(node?: Node): void {
+    const { logger } = this;
     if (node) {
       if (this._runtime.has(node.uuid)) {
         const entries = this._runtime.get(node.uuid)!;
@@ -146,8 +146,8 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     }
   }
 
-  resumeAll(node?: Node): void {
-    const logger = this.logger;
+  public resumeAll(node?: Node): void {
+    const { logger } = this;
     if (node) {
       if (this._runtime.has(node.uuid)) {
         const entries = this._runtime.get(node.uuid)!;
@@ -168,8 +168,8 @@ export class TransitionPlugin extends Plugin implements ITransitionPlugin {
     }
   }
 
-  stopAll(node?: Node): void {
-    const logger = this.logger;
+  public stopAll(node?: Node): void {
+    const { logger } = this;
     if (node) {
       if (this._runtime.has(node.uuid)) {
         const entries = this._runtime.get(node.uuid)!;

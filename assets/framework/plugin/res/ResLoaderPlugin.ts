@@ -41,6 +41,7 @@ import {
   ResLoadItem,
   ResPreloadItem,
 } from './IResLoaderPlugin';
+import { exists } from 'fast/util/Dict';
 
 /**
  * 加载任务
@@ -52,27 +53,27 @@ class ResLoadTask<T extends Asset> implements IResLoadTask<T> {
   /** 任务是否已取消 */
   private _aborted: boolean;
 
-  constructor(
+  public constructor(
     public readonly loader: ResLoaderPlugin,
     public readonly type: Constructor<T>,
     public readonly options: IResLoadOptions,
     public readonly onComplete?: (asset: T | null) => void,
     public readonly onSuccess?: (asset: T) => void,
-    public readonly onFail?: () => void
+    public readonly onFail?: () => void,
   ) {
     this._loading = false;
     this._aborted = false;
   }
 
-  get aborted() {
+  public get aborted() {
     return this._aborted;
   }
 
-  get loading() {
+  public get loading() {
     return this._loading;
   }
 
-  load() {
+  public load() {
     if (!this._loading) {
       this._loading = true;
 
@@ -87,7 +88,7 @@ class ResLoadTask<T extends Asset> implements IResLoadTask<T> {
     }
   }
 
-  abort() {
+  public abort() {
     this._aborted = true;
     this._loading = false;
   }
@@ -97,11 +98,11 @@ class ResLoadTask<T extends Asset> implements IResLoadTask<T> {
  * 本地资源容器
  */
 class ResLocal implements IResLocal {
-  constructor(public readonly loader: ResLoaderPlugin) {}
+  public constructor(public readonly loader: ResLoaderPlugin) {}
 
   private _parsed: Map<string, boolean> = new Map();
 
-  parsePath(path: string): [string, string] {
+  public parsePath(path: string): [string, string] {
     const arr = path.split('@');
     if (arr.length == 1) {
       return ['resources', arr[0]];
@@ -111,12 +112,13 @@ class ResLocal implements IResLocal {
     }
   }
 
-  pathOf(uuid: string) {
+  public pathOf(uuid: string) {
     let path = '';
     assetManager.bundles.find((ab) => {
       // @ts-ignore
       return ab.config.assetInfos.find((cfg: any) => {
         if (cfg.uuid === uuid) {
+          // eslint-disable-next-line prefer-destructuring
           path = cfg.path;
           return true;
         }
@@ -126,12 +128,13 @@ class ResLocal implements IResLocal {
     return path;
   }
 
-  uuidOf(path: string) {
+  public uuidOf(path: string) {
     let uuid = '';
     assetManager.bundles.find((bun) => {
       // @ts-ignore
       return bun.config.assetInfos.find((cfg: any) => {
         if (cfg.path === path) {
+          // eslint-disable-next-line prefer-destructuring
           uuid = cfg.uuid;
           return true;
         }
@@ -141,11 +144,11 @@ class ResLocal implements IResLocal {
     return uuid;
   }
 
-  hasAB(ab: string): boolean {
+  public hasAB(ab: string): boolean {
     return assetManager.bundles.has(ab) || (<any>assetManager)._projectBundles.includes(ab);
   }
 
-  loadAB(ab: string) {
+  public loadAB(ab: string) {
     return new Promise<AssetManager.Bundle | null>((resolve) => {
       if (!this.hasAB(ab)) {
         this.loader.logger.e(`资源包 ⁅${ab}⁆ 加载失败，目标不存在`);
@@ -168,7 +171,7 @@ class ResLocal implements IResLocal {
     });
   }
 
-  unloadAB(ab: string, releaseAll: boolean = false) {
+  public unloadAB(ab: string, releaseAll: boolean = false) {
     const bun = assetManager.getBundle(ab);
     if (bun) {
       if (releaseAll) {
@@ -178,147 +181,152 @@ class ResLocal implements IResLocal {
     }
   }
 
-  has(path: string) {
-    return new Promise<boolean>(async (resolve) => {
+  public has(path: string) {
+    return new Promise<boolean>((resolve) => {
       if (this._parsed.has(path)) {
         return resolve(this._parsed.get(path)!);
       }
 
       const [ab, raw] = this.parsePath(path);
-      const bun = await this.loadAB(ab);
-      if (bun) {
-        const info = bun.getInfoWithPath(raw);
-        const exists = info == null ? false : true;
-        this._parsed.set(path, exists);
-        resolve(exists);
-      } else {
-        this._parsed.set(path, false);
-        resolve(false);
-      }
+      this.loadAB(ab).then((bun) => {
+        if (bun) {
+          const info = bun.getInfoWithPath(raw);
+          const exists = info == null ? false : true;
+          this._parsed.set(path, exists);
+          resolve(exists);
+        } else {
+          this._parsed.set(path, false);
+          resolve(false);
+        }
+      });
     });
   }
 
-  preload<T extends Asset>(type: Constructor<T>, path: string) {
-    return new Promise<boolean>(async (resolve) => {
-      const exists = await this.has(path);
-      if (!exists) return resolve(false);
+  public preload<T extends Asset>(type: Constructor<T>, path: string) {
+    return new Promise<boolean>((resolve) => {
+      this.has(path).then((exists) => {
+        if (!exists) return resolve(false);
 
-      const [ab, raw] = this.parsePath(path);
-      const bun = await this.loadAB(ab);
-      if (bun) {
-        let url = raw;
-        const typeName = js.getClassName(type);
-        if (typeName === 'cc.SpriteFrame') {
-          url += '/spriteFrame';
-        } else if (typeName === 'cc.Texture2D') {
-          url += '/texture';
-        }
-        const info = bun.getInfoWithPath(url, type);
-        if (info) {
-          bun.preload(url, type, (err, data) => {
-            resolve(err ? false : true);
-          });
-        }
-      }
+        const [ab, raw] = this.parsePath(path);
+        this.loadAB(ab).then((bun) => {
+          if (bun) {
+            let url = raw;
+            const typeName = js.getClassName(type);
+            if (typeName === 'cc.SpriteFrame') {
+              url += '/spriteFrame';
+            } else if (typeName === 'cc.Texture2D') {
+              url += '/texture';
+            }
+            const info = bun.getInfoWithPath(url, type);
+            if (info) {
+              bun.preload(url, type, (err, data) => {
+                resolve(err ? false : true);
+              });
+            }
+          }
+        });
+      });
     });
   }
 
-  load<T extends Asset>(type: Constructor<T>, path: string) {
-    return new Promise<T | null>(async (resolve) => {
-      const exists = await this.has(path);
-      if (!exists) return resolve(null);
+  public load<T extends Asset>(type: Constructor<T>, path: string) {
+    return new Promise<T | null>((resolve) => {
+      this.has(path).then((exists) => {
+        if (!exists) return resolve(null);
 
-      const [ab, raw] = this.parsePath(path);
-      const bun = await this.loadAB(ab);
-      if (bun) {
-        let url = raw;
-        const typeName = js.getClassName(type);
-        if (typeName === 'cc.SpriteFrame') {
-          url += '/spriteFrame';
-        } else if (typeName === 'cc.Texture2D') {
-          url += '/texture';
-        }
-        const info = bun.getInfoWithPath(url, type);
-        if (info) {
-          bun.load(url, type, (err, res) => {
-            if (err) {
+        const [ab, raw] = this.parsePath(path);
+        this.loadAB(ab).then((bun) => {
+          if (bun) {
+            let url = raw;
+            const typeName = js.getClassName(type);
+            if (typeName === 'cc.SpriteFrame') {
+              url += '/spriteFrame';
+            } else if (typeName === 'cc.Texture2D') {
+              url += '/texture';
+            }
+            const info = bun.getInfoWithPath(url, type);
+            if (info) {
+              bun.load(url, type, (err, res) => {
+                if (err) {
+                  this.loader.logger.e(`资源 l:⁅${ab}@${url}⁆ 加载失败`);
+                  resolve(null);
+                } else {
+                  resolve(res);
+                }
+              });
+            } else {
               this.loader.logger.e(`资源 l:⁅${ab}@${url}⁆ 加载失败`);
               resolve(null);
-            } else {
-              resolve(res);
             }
-          });
-        } else {
-          this.loader.logger.e(`资源 l:⁅${ab}@${url}⁆ 加载失败`);
-          resolve(null);
-        }
-      } else {
-        resolve(null);
-      }
+          } else {
+            resolve(null);
+          }
+        });
+      });
     });
   }
 
-  loadImage(path: string) {
+  public loadImage(path: string) {
     return this.load<ImageAsset>(ImageAsset, path);
   }
 
-  loadTexture(path: string) {
+  public loadTexture(path: string) {
     return this.load(Texture2D, path);
   }
 
-  loadSpriteFrame(path: string) {
+  public loadSpriteFrame(path: string) {
     return this.load(SpriteFrame, path);
   }
 
-  loadAtlas(path: string) {
+  public loadAtlas(path: string) {
     return this.load(SpriteAtlas, path);
   }
 
-  loadPrefab(path: string) {
+  public loadPrefab(path: string) {
     return this.load(Prefab, path);
   }
 
-  loadText(path: string) {
+  public loadText(path: string) {
     return this.load(TextAsset, path);
   }
 
-  loadJson(path: string) {
+  public loadJson(path: string) {
     return this.load(JsonAsset, path);
   }
 
-  loadSpine(path: string) {
+  public loadSpine(path: string) {
     return this.load(sp.SkeletonData, path);
   }
 
-  loadFont(path: string) {
+  public loadFont(path: string) {
     return this.load(TTFFont, path);
   }
 
-  loadBitmapFont(path: string) {
+  public loadBitmapFont(path: string) {
     return this.load(BitmapFont, path);
   }
 
-  loadAudio(path: string) {
+  public loadAudio(path: string) {
     return this.load(AudioClip, path);
   }
 
-  loadParticle(path: string) {
+  public loadParticle(path: string) {
     return this.load(ParticleAsset, path);
   }
 
-  loadTmx(path: string) {
+  public loadTmx(path: string) {
     return this.load(TiledMapAsset, path);
   }
 
-  loadBinary(path: string) {
+  public loadBinary(path: string) {
     return this.load(BufferAsset, path);
   }
 
-  loadVideo(path: string) {
+  public loadVideo(path: string) {
     return this.load(VideoClip, path);
   }
 
-  loadAnimation(path: string) {
+  public loadAnimation(path: string) {
     return this.load(AnimationClip, path);
   }
 }
@@ -330,7 +338,7 @@ export class ResRemote implements IResRemote {
   /** 携带参数 */
   private _params: Record<string, string> = Object.create(null);
 
-  constructor(public readonly loader: ResLoaderPlugin) {}
+  public constructor(public readonly loader: ResLoaderPlugin) {}
 
   /** 资源服务器地址 */
   public get server() {
@@ -363,6 +371,7 @@ export class ResRemote implements IResRemote {
 
   /** 解析矩形信息 TexturePacker */
   public parseRect(rect: string) {
+    // eslint-disable-next-line no-useless-escape
     rect = rect.replace(/[\{\}]/g, '');
     const rectArr = rect.split(',').map(parseFloat);
     return new Rect(...rectArr);
@@ -404,7 +413,7 @@ export class ResRemote implements IResRemote {
    */
   private internalLoad<T extends Asset>(key: string, urls: string | string[], parser: (asset: any) => T) {
     return new Promise<T | null>((resolve) => {
-      const cacheKey = 'r:' + key;
+      const cacheKey = `r:${key}`;
       let asset: T | null = this.loader.of<IResCachePlugin>(PRESET_TOKEN.RES_CACHE).get<T>(cacheKey);
       if (asset) {
         return resolve(asset as T);
@@ -439,7 +448,7 @@ export class ResRemote implements IResRemote {
 
     let url = path.join(this.server, raw);
     if (params.length) {
-      url += '?' + params.join('&');
+      url += `?${params.join('&')}`;
     }
 
     return url;
@@ -502,7 +511,7 @@ export class ResRemote implements IResRemote {
       const asset = SpriteFrame.createWithImage(image);
       const uuid = this.nativeUrlOf(urls[0]);
       asset._nativeAsset = nativeAsset;
-      image._uuid = uuid + '/image';
+      image._uuid = `${uuid}/image`;
       asset._uuid = asset._nativeUrl = uuid;
       assetManager.dependUtil._depends.add(asset._uuid, {
         deps: [],
@@ -547,8 +556,8 @@ export class ResRemote implements IResRemote {
       asset.fntConfig = nJson;
       asset.spriteFrame = frame;
       asset._nativeAsset = nImage;
-      image._uuid = uuid + '/image';
-      frame._uuid = uuid + '/spriteFrame';
+      image._uuid = `${uuid}/image`;
+      frame._uuid = `${uuid}/spriteFrame`;
       asset._uuid = asset._nativeUrl = uuid;
       assetManager.assets.add(image._uuid, image);
       assetManager.assets.add(frame._uuid, frame);
@@ -619,8 +628,8 @@ export class ResRemote implements IResRemote {
       asset.atlasText = nAtlas;
       asset.textures = [tex];
       asset.textureNames = [this.getAtlasName(nAtlas)];
-      image._uuid = uuid + '/image';
-      tex._uuid = uuid + '/texture';
+      image._uuid = `${uuid}/image`;
+      tex._uuid = `${uuid}/texture`;
       asset._uuid = asset._nativeUrl = uuid;
       assetManager.assets.add(image._uuid, image);
       assetManager.assets.add(tex._uuid, tex);
@@ -662,12 +671,12 @@ export class ResRemote implements IResRemote {
         }
         spriteFrames.push(frame);
         spriteFramesMap[k] = frame;
-        frame._uuid = uuid + '/spriteFrame/' + k;
+        frame._uuid = `${uuid}/spriteFrame/${k}`;
       });
       asset.spriteFrames = spriteFramesMap;
       asset._nativeAsset = nImage;
-      image._uuid = uuid + '/image';
-      tex._uuid = uuid + '/texture';
+      image._uuid = `${uuid}/image`;
+      tex._uuid = `${uuid}/texture`;
       asset._uuid = asset._nativeUrl = uuid;
       assetManager.assets.add(image._uuid, image);
       assetManager.assets.add(tex._uuid, tex);
@@ -691,7 +700,7 @@ export class ResRemote implements IResRemote {
       const asset = SpriteFrame.createWithImage(image);
       const uuid = this.nativeUrlOf(urls[0]);
       asset._nativeAsset = native;
-      image._uuid = uuid + '/image';
+      image._uuid = `${uuid}/image`;
       asset._uuid = asset._nativeUrl = uuid;
       assetManager.assets.add(image._uuid, image);
       assetManager.dependUtil._depends.add(asset._uuid, {
@@ -735,7 +744,7 @@ export class ResRemote implements IResRemote {
       const uuid = this.nativeUrlOf(urls[0]);
       asset.image = image;
       asset._nativeAsset = native;
-      image._uuid = uuid + '/image';
+      image._uuid = `${uuid}/image`;
       asset._uuid = asset._nativeUrl = uuid;
       assetManager.assets.add(image._uuid, image);
       assetManager.dependUtil._depends.add(asset._uuid, {
@@ -771,37 +780,37 @@ export class ResRemote implements IResRemote {
    * @param path 资源路径
    * @returns 资源实例
    */
-  async load<T extends Asset>(type: Constructor<T>, path: string): Promise<T | null> {
+  public async load<T extends Asset>(type: Constructor<T>, path: string): Promise<T | null> {
     const typeName = js.getClassName(type);
     // 根据类型调用对应的远程加载方法
     switch (typeName) {
-      case 'cc.ImageAsset':
-        return (await this.loadImage(path)) as unknown as T | null;
-      case 'cc.SpriteFrame':
-        return (await this.loadSpriteFrame(path)) as unknown as T | null;
-      case 'cc.SpriteAtlas':
-        return (await this.loadSpriteAtlas(path)) as unknown as T | null;
-      case 'cc.Texture2D':
-        return (await this.loadTexture(path)) as unknown as T | null;
-      case 'cc.TextAsset':
-        return (await this.loadText(path)) as unknown as T | null;
-      case 'cc.JsonAsset':
-        return (await this.loadJson(path)) as unknown as T | null;
-      case 'sp.SkeletonData':
-        return (await this.loadSpine(path)) as unknown as T | null;
-      case 'cc.TTFFont':
-        return (await this.loadTTFFont(path)) as unknown as T | null;
-      case 'cc.BitmapFont':
-        return (await this.loadBitmapFont(path)) as unknown as T | null;
-      case 'cc.AudioClip':
-        return (await this.loadAudio(path)) as unknown as T | null;
-      case 'cc.BufferAsset':
-        return (await this.loadBinary(path)) as unknown as T | null;
-      case 'cc.VideoClip':
-        return (await this.loadVideo(path)) as unknown as T | null;
-      default:
-        this.loader.logger.w(`不支持的远程资源类型: ${typeName}`);
-        return null;
+    case 'cc.ImageAsset':
+      return (await this.loadImage(path)) as unknown as T | null;
+    case 'cc.SpriteFrame':
+      return (await this.loadSpriteFrame(path)) as unknown as T | null;
+    case 'cc.SpriteAtlas':
+      return (await this.loadSpriteAtlas(path)) as unknown as T | null;
+    case 'cc.Texture2D':
+      return (await this.loadTexture(path)) as unknown as T | null;
+    case 'cc.TextAsset':
+      return (await this.loadText(path)) as unknown as T | null;
+    case 'cc.JsonAsset':
+      return (await this.loadJson(path)) as unknown as T | null;
+    case 'sp.SkeletonData':
+      return (await this.loadSpine(path)) as unknown as T | null;
+    case 'cc.TTFFont':
+      return (await this.loadTTFFont(path)) as unknown as T | null;
+    case 'cc.BitmapFont':
+      return (await this.loadBitmapFont(path)) as unknown as T | null;
+    case 'cc.AudioClip':
+      return (await this.loadAudio(path)) as unknown as T | null;
+    case 'cc.BufferAsset':
+      return (await this.loadBinary(path)) as unknown as T | null;
+    case 'cc.VideoClip':
+      return (await this.loadVideo(path)) as unknown as T | null;
+    default:
+      this.loader.logger.w(`不支持的远程资源类型: ${typeName}`);
+      return null;
     }
   }
 }
@@ -826,7 +835,7 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     let raw = path.slice(2);
     if (this.isLocal(path)) {
       raw = this.local.parsePath(raw).join('@');
-      return [ResCacheSource.Local, 'l:' + raw, raw];
+      return [ResCacheSource.Local, `l:${raw}`, raw];
     } else if (this.isRemote(path)) {
       return [ResCacheSource.Remote, path, raw];
     } else {
@@ -834,19 +843,19 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     }
   }
 
-  isRemote(path: string): boolean {
+  public isRemote(path: string): boolean {
     return path.startsWith('r:');
   }
 
-  isLocal(path: string) {
+  public isLocal(path: string) {
     return path.startsWith('l:');
   }
 
-  loadBundle(bundle: string): Promise<AssetManager.Bundle | null> {
+  public loadBundle(bundle: string): Promise<AssetManager.Bundle | null> {
     return this.local.loadAB(bundle);
   }
 
-  unloadBundle(bundle: string, releaseAll: boolean = false): void {
+  public unloadBundle(bundle: string, releaseAll: boolean = false): void {
     // 清理该包的所有缓存
     const cache = this.of<IResCachePlugin>(PRESET_TOKEN.RES_CACHE);
     const prefix = `l:${bundle}@`;
@@ -863,9 +872,9 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     this.logger.df(`资源包 ⁅${bundle}⁆ 已加载`);
   }
 
-  async preload(
+  public async preload(
     items: ResPreloadItem[],
-    onProgress?: (finished: number, total: number, path: string, loaded: boolean) => void
+    onProgress?: (finished: number, total: number, path: string, loaded: boolean) => void,
   ): Promise<void> {
     const total = items.length;
     let finished = 0;
@@ -890,7 +899,7 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     this.logger.i(`资源预加载完成: ${finished}/${total}`);
   }
 
-  async load<T extends Asset>(type: Constructor<T>, options: IResLoadOptions): Promise<T | null> {
+  public async load<T extends Asset>(type: Constructor<T>, options: IResLoadOptions): Promise<T | null> {
     const { path, cacheExpires = PRESET_RES.ASSET_EXPIRES_MS } = options;
     const [source, key, raw] = this.parsePath(path);
     if (source == ResCacheSource.Unknown) {
@@ -929,84 +938,84 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     return asset;
   }
 
-  loadImage(path: string): Promise<ImageAsset | null> {
+  public loadImage(path: string): Promise<ImageAsset | null> {
     return this.load(ImageAsset, { path });
   }
 
-  loadSpriteFrame(path: string): Promise<SpriteFrame | null> {
+  public loadSpriteFrame(path: string): Promise<SpriteFrame | null> {
     return this.load(SpriteFrame, { path });
   }
 
-  loadAtlas(path: string): Promise<SpriteAtlas | null> {
+  public loadAtlas(path: string): Promise<SpriteAtlas | null> {
     return this.load(SpriteAtlas, { path });
   }
 
-  loadTexture(path: string): Promise<Texture2D | null> {
+  public loadTexture(path: string): Promise<Texture2D | null> {
     return this.load(Texture2D, { path });
   }
 
-  loadPrefab(path: string): Promise<Prefab | null> {
+  public loadPrefab(path: string): Promise<Prefab | null> {
     return this.load(Prefab, { path });
   }
 
-  loadText(path: string): Promise<TextAsset | null> {
+  public loadText(path: string): Promise<TextAsset | null> {
     return this.load(TextAsset, { path });
   }
 
-  loadJson(path: string): Promise<JsonAsset | null> {
+  public loadJson(path: string): Promise<JsonAsset | null> {
     return this.load(JsonAsset, { path });
   }
 
-  loadSpine(path: string): Promise<sp.SkeletonData | null> {
+  public loadSpine(path: string): Promise<sp.SkeletonData | null> {
     return this.load(sp.SkeletonData, { path });
   }
 
-  loadFont(path: string): Promise<TTFFont | null> {
+  public loadFont(path: string): Promise<TTFFont | null> {
     return this.load(TTFFont, { path });
   }
 
-  loadBitmapFont(path: string): Promise<BitmapFont | null> {
+  public loadBitmapFont(path: string): Promise<BitmapFont | null> {
     return this.load(BitmapFont, { path });
   }
 
-  loadAudio(path: string): Promise<AudioClip | null> {
+  public loadAudio(path: string): Promise<AudioClip | null> {
     return this.load(AudioClip, { path });
   }
 
-  loadParticle(path: string): Promise<ParticleAsset | null> {
+  public loadParticle(path: string): Promise<ParticleAsset | null> {
     return this.load(ParticleAsset, { path });
   }
 
-  loadTmx(path: string): Promise<TiledMapAsset | null> {
+  public loadTmx(path: string): Promise<TiledMapAsset | null> {
     return this.load(TiledMapAsset, { path });
   }
 
-  loadBinary(path: string): Promise<BufferAsset | null> {
+  public loadBinary(path: string): Promise<BufferAsset | null> {
     return this.load(BufferAsset, { path });
   }
 
-  loadVideo(path: string): Promise<VideoClip | null> {
+  public loadVideo(path: string): Promise<VideoClip | null> {
     return this.load(VideoClip, { path });
   }
 
-  loadAnimation(path: string): Promise<AnimationClip | null> {
+  public loadAnimation(path: string): Promise<AnimationClip | null> {
     return this.load(AnimationClip, { path });
   }
 
-  release(path: string): void {
+  public release(path: string): void {
     const [source, key] = this.parsePath(path);
     if (source !== ResCacheSource.Unknown) {
       this.of<IResCachePlugin>(PRESET_TOKEN.RES_CACHE).delete(key, true);
     }
   }
 
-  async loadMany(
+  public async loadMany(
     items: ResLoadItem[],
-    onProgress?: (finished: number, total: number, path?: string, loaded?: boolean) => void
+    onProgress?: (finished: number, total: number, path?: string, loaded?: boolean) => void,
   ): Promise<void> {
     const total = items.length;
     let finished = 0;
-    let finishedList = [];
+    const finishedList = [];
 
     for (const item of items) {
       const [type, options] = item;
@@ -1015,9 +1024,9 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
 
       if (asset) {
         finished++;
-        finishedList.push('✅ ' + url);
+        finishedList.push(`✅ ${url}`);
       } else {
-        finishedList.push('❌ ' + url);
+        finishedList.push(`❌ ${url}`);
         this.logger.e(`资源 ⁅${url}⁆ 加载失败`);
       }
 
@@ -1029,14 +1038,14 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     this.logger.i(`资源加载完成：${finished}/${total}`, finishedList);
   }
 
-  loadBatch(items: ResLoadItem[]) {
+  public loadBatch(items: ResLoadItem[]) {
     return Promise.allSettled(items.map((v) => this.load(...v)));
   }
 
-  loadSequence(
+  public loadSequence(
     tasks: ResLoadItem[],
     onProgress?: (finished: number, total: number, path: string, success: boolean) => void,
-    onComplete?: (finished: number, total: number) => void | Promise<void>
+    onComplete?: (finished: number, total: number) => void | Promise<void>,
   ): () => void {
     const total = tasks.length;
     let index = 0;
@@ -1087,14 +1096,14 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
     };
   }
 
-  loadParallel(
+  public loadParallel(
     items: ResLoadItem[],
     onProgress?: (finished: number, total: number, path: string, success: boolean) => void,
     onComplete?: (finished: number, total: number) => void,
-    concurrency: number = 0
+    concurrency: number = 0,
   ) {
     let finished = 0;
-    let total = items.length;
+    const total = items.length;
     let aborted = false;
 
     if (concurrency <= 0) {
@@ -1117,7 +1126,7 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
             if (!asset) {
               this.logger.e(`资源 ⁅${url}⁆ 加载失败`);
             }
-          })
+          }),
       );
       tasks.forEach((task) => task.load());
 
@@ -1147,7 +1156,7 @@ export class ResLoaderPlugin extends Plugin implements IResLoaderPlugin {
             if (!asset) {
               this.logger.e(`资源 ⁅${url}⁆ 加载失败`);
             }
-          })
+          }),
       );
 
       const queue = list.split(tasks, concurrency);

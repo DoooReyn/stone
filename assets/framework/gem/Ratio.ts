@@ -26,10 +26,10 @@ export class Ratio extends Gem {
 
   /** 是否选中 */
   @property({ displayName: '选中否？' })
-  get selected() {
+  public get selected() {
     return this.$selected;
   }
-  set selected(enabled: boolean) {
+  public set selected(enabled: boolean) {
     if (this.$selected !== enabled) {
       this.$selected = enabled;
       this.flush();
@@ -38,7 +38,7 @@ export class Ratio extends Gem {
 
   // ------------------------------- 公开访问区 -------------------------------
 
-  flush() {
+  public flush() {
     if (this.$mark) {
       this.$mark.active = this.$selected;
     }

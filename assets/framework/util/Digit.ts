@@ -136,7 +136,7 @@ function quadraticBezier(
   y2: number,
   cx: number,
   cy: number,
-  t: number
+  t: number,
 ): [number, number] {
   const x = (1 - t) ** 2 * x1 + 2 * (1 - t) * t * cx + t ** 2 * x2;
   const y = (1 - t) ** 2 * y1 + 2 * (1 - t) * t * cy + t ** 2 * y2;
@@ -153,7 +153,7 @@ function cubicBezier(
   cx1: number,
   cy1: number,
   cx2: number,
-  cy2: number
+  cy2: number,
 ): [number, number] {
   const x = (1 - t) ** 3 * x1 + 3 * (1 - t) ** 2 * t * cx1 + 3 * (1 - t) * t ** 2 * cx2 + t ** 3 * x2;
   const y = (1 - t) ** 3 * y1 + 3 * (1 - t) ** 2 * t * cy1 + 3 * (1 - t) * t ** 2 * cy2 + t ** 3 * y2;

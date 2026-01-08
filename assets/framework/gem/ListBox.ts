@@ -13,7 +13,7 @@ import {
   UITransform,
   Vec2,
   Vec3,
-  Widget
+  Widget,
 } from 'cc';
 import { FastError } from 'fast/foundation/Error';
 
@@ -28,7 +28,7 @@ class InternalNodePool {
   private nodes: Node[] = [];
   private useNodeMode: boolean = false;
 
-  constructor(prefabs: Prefab[], nodes?: Node[]) {
+  public constructor(prefabs: Prefab[], nodes?: Node[]) {
     this.prefabs = prefabs;
     this.nodes = nodes || [];
     this.useNodeMode = (nodes && nodes.length > 0)!;
@@ -38,7 +38,7 @@ class InternalNodePool {
     }
   }
 
-  get(typeIndex: number): Node | null {
+  public get(typeIndex: number): Node | null {
     const pool = this.pools.get(typeIndex);
     if (!pool) {
       console.error(`[VScrollView NodePool] 类型 ${typeIndex} 不存在`);
@@ -68,7 +68,7 @@ class InternalNodePool {
     return newNode;
   }
 
-  put(node: Node, typeIndex: number) {
+  public put(node: Node, typeIndex: number) {
     if (!node) return;
     const pool = this.pools.get(typeIndex);
     if (!pool) {
@@ -81,7 +81,7 @@ class InternalNodePool {
     pool.push(node);
   }
 
-  clear() {
+  public clear() {
     this.pools.forEach((pool) => {
       pool.forEach((node) => node.destroy());
       pool.length = 0;
@@ -89,7 +89,7 @@ class InternalNodePool {
     this.pools.clear();
   }
 
-  getStats() {
+  public getStats() {
     const stats: any = {};
     this.pools.forEach((pool, type) => {
       stats[`type${type}`] = pool.length;
@@ -548,7 +548,7 @@ export class ListBox extends Gem {
     }
   }
 
-  async didLaunch() {
+  protected async didLaunch() {
     this.content = this.getContentNode();
     if (!this.content) return;
     const mask = this.node.getComponent(Mask);
@@ -596,7 +596,7 @@ export class ListBox extends Gem {
     this.bindGlobalTouch();
   }
 
-  didPostTerminate() {
+  protected didPostTerminate() {
     input.off(Input.EventType.TOUCH_END, this.onGlobalTouchEnd, this);
     input.off(Input.EventType.TOUCH_CANCEL, this.onGlobalTouchEnd, this);
     this.node.off(Node.EventType.TOUCH_START, this.onDown, this);
@@ -667,14 +667,14 @@ export class ListBox extends Gem {
         const size = this.isVertical() ? this._viewportTf.width : this._viewportTf.height;
         n.addComponent(UITransform).setContentSize(
           this.isVertical() ? size : this.itemMainSize,
-          this.isVertical() ? this.itemMainSize : size
+          this.isVertical() ? this.itemMainSize : size,
         );
         return n;
       };
     }
-    let item_pre = this.provideNodeFn(0);
-    if (item_pre instanceof Promise) item_pre = await item_pre;
-    const uit = item_pre.getComponent(UITransform)!;
+    let itemPrev = this.provideNodeFn(0);
+    if (itemPrev instanceof Promise) itemPrev = await itemPrev;
+    const uit = itemPrev.getComponent(UITransform)!;
     if (this.isVertical()) {
       this.itemMainSize = uit.height;
       this.itemCrossSize = uit.width;
@@ -687,7 +687,7 @@ export class ListBox extends Gem {
     const visibleLines = Math.ceil(this._viewportSize / stride);
     this._slots = Math.max(1, (visibleLines + this.buffer + 2) * this.gridCount);
     for (let i = 0; i < this._slots; i++) {
-      const n = instantiate(item_pre);
+      const n = instantiate(itemPrev);
       n.parent = this.content!;
       const itf = n.getComponent(UITransform);
       if (itf) {
@@ -728,7 +728,7 @@ export class ListBox extends Gem {
         this.logger.d('[VirtualScrollView] 初始化节点池（兼容模式）');
         this._nodePool = new InternalNodePool(this.itemPrefabs);
       } else {
-        throw new FastError('[VirtualScrollView] 需要至少一个 itemNode 或 itemPrefab');
+        throw new FastError(this.gType, '[VirtualScrollView] 需要至少一个 itemNode 或 itemPrefab');
       }
       this.initDynamicSlots();
       return;
@@ -739,9 +739,7 @@ export class ListBox extends Gem {
     const hasPrefabs = this.itemPrefabs.length > 0;
 
     if ((useNodeMode && !hasNodes && !hasPrefabs) || (!useNodeMode && !hasPrefabs) || !this.getItemTypeIndexFn) {
-      throw new FastError(
-        '[VirtualScrollView] 不等大小模式必须提供以下之一：\n1. getItemHeightFn 回调函数\n2. itemNodes/itemPrefabs 数组 + getItemTypeIndexFn 回调函数'
-      );
+      throw new FastError(this.gType, '[VirtualScrollView] 不等大小模式必须提供以下之一：\n1. getItemHeightFn 回调函数\n2. itemNodes/itemPrefabs 数组 + getItemTypeIndexFn 回调函数');
     }
 
     // 根据模式选择模板源
@@ -795,9 +793,7 @@ export class ListBox extends Gem {
     this._slotPrefabIndices = new Array(this._slots).fill(-1);
     this._slotFirstIndex = 0;
     this.layoutSlots(this._slotFirstIndex, true);
-    console.log(
-      `[VScrollView] 初始化槽位: ${this._slots} (总数据: ${this.totalCount}, 视口尺寸: ${this._viewportSize})`
-    );
+    console.log(`[VScrollView] 初始化槽位: ${this._slots} (总数据: ${this.totalCount}, 视口尺寸: ${this._viewportSize})`);
   }
 
   private buildPrefixSum() {
@@ -1107,7 +1103,7 @@ export class ListBox extends Gem {
             onUpdate: () => {
               this.updateVisible(false);
             },
-          }
+          },
         )
         .call(() => {
           this.updateVisible(true);
@@ -1539,7 +1535,7 @@ export class ListBox extends Gem {
 
   private updateVisible(force: boolean) {
     if (!this.useVirtualList) return;
-    let scrollPos = this.getContentMainPos();
+    const scrollPos = this.getContentMainPos();
     let searchPos: number;
     if (this.isVertical()) {
       searchPos = math.clamp(scrollPos, 0, this._contentSize);
@@ -1614,7 +1610,7 @@ export class ListBox extends Gem {
   private async layoutSingleSlot(node: Node | null, idx: number, slot: number) {
     if (!this.useVirtualList) return;
     if (this.useDynamicSize) {
-      let targetPrefabIndex = this.getItemTypeIndexFn!(idx);
+      const targetPrefabIndex = this.getItemTypeIndexFn!(idx);
       const currentPrefabIndex = this._slotPrefabIndices[slot];
       let newNode: Node | null = null;
       if (currentPrefabIndex === targetPrefabIndex && this._slotNodes[slot]) {
@@ -1767,7 +1763,7 @@ export class ListBox extends Gem {
 
   private updateItemClickHandler(node: Node, index: number) {
     if (!this.useVirtualList) return;
-    let itemScript = node.acquire(ListItem)!;
+    const itemScript = node.acquire(ListItem)!;
     this._initSortLayerFlag ? itemScript.onSortLayer() : itemScript.offSortLayer();
     itemScript.useItemClickEffect = this.onItemClickFn ? true : false;
     if (!itemScript.onClickCallback) {

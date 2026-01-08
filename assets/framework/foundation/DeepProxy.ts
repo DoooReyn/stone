@@ -52,7 +52,7 @@ export class DeepProxy<T extends object> implements IDeepProxy<T> {
    * @param _handler 代理处理器
    * @param options 深层代理配置
    */
-  constructor(private readonly _target: T, private _handler: ProxyHandler<any>, options: IDeepProxyOptions = {}) {
+  public constructor(private readonly _target: T, private _handler: ProxyHandler<any>, options: IDeepProxyOptions = {}) {
     this._options = {
       proxyArrays: false,
       proxyFunctions: false,

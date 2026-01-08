@@ -15,8 +15,8 @@ export class Group<T extends object = any> {
   /** 对象过滤器 */
   public filter: undefined | ((d: T) => boolean);
 
-  constructor() {
-    this.id = 'group_' + asc.next(PRESET_ID.GROUP);
+  public constructor() {
+    this.id = `group_${asc.next(PRESET_ID.GROUP)}`;
   }
 
   /**
@@ -88,7 +88,7 @@ export class Group<T extends object = any> {
  * 节点分组辅助工具
  */
 export class NodeGroup extends Group<Node> {
-  constructor() {
+  public constructor() {
     super();
     this.filter = isValid;
   }
@@ -98,7 +98,7 @@ export class NodeGroup extends Group<Node> {
  * 组件分组辅助工具
  */
 export class ComponentGroup<T extends Component> extends Group<T> {
-  constructor() {
+  public constructor() {
     super();
     this.filter = (v: T) => {
       return v && v.isValid;

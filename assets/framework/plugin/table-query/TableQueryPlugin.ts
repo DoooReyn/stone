@@ -26,7 +26,7 @@ import { IQuery, ITableEntry, ITableQueryPlugin, Table } from './ITableQueryPlug
  * ```
  */
 export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
-  static readonly Token: string = PRESET_TOKEN.TABLE_QUERY;
+  public static readonly Token: string = PRESET_TOKEN.TABLE_QUERY;
 
   /** 配置表容器 */
   private _tables: Map<string, Table<unknown, unknown>> = new Map();
@@ -59,21 +59,21 @@ export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
     }
   }
 
-  register<R, I>(table: Table<R, I>) {
+  public register<R, I>(table: Table<R, I>) {
     if (!this._tables.has(table.token)) {
       this._tables.set(table.token, table);
     }
   }
 
-  registerBatch(...tables: Table<unknown, unknown>[]) {
+  public registerBatch(...tables: Table<unknown, unknown>[]) {
     tables.forEach((t) => this.register(t));
   }
 
-  has(token: string) {
+  public has(token: string) {
     return this._tables.has(token);
   }
 
-  async parse<R = [], I = ITableEntry>(token: string, input: string | Uint8Array) {
+  public async parse<R = [], I = ITableEntry>(token: string, input: string | Uint8Array) {
     return new Promise<Table<R, I>>((resolve, reject) => {
       if (!this._tables.has(token)) {
         return reject(`配置表 ⁅${token}⁆ 解析失败，目标未注册`);
@@ -98,7 +98,7 @@ export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
     });
   }
 
-  one<T extends ITableEntry>(token: string, id: string | number): T | undefined {
+  public one<T extends ITableEntry>(token: string, id: string | number): T | undefined {
     if (!this._tables.has(token)) {
       this.logger.e(`配置表 ⁅${token}⁆ 查询失败，目标未注册`);
       return undefined;
@@ -123,10 +123,10 @@ export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
     return result;
   }
 
-  field<T extends ITableEntry, K extends keyof T = keyof T>(
+  public field<T extends ITableEntry, K extends keyof T = keyof T>(
     token: string,
     id: string | number,
-    key: K
+    key: K,
   ): T[K] | undefined {
     const entry = this.one<T>(token, id);
     if (!entry) {
@@ -135,10 +135,10 @@ export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
     return entry[key];
   }
 
-  fields<T extends ITableEntry, K extends keyof T = keyof T>(
+  public fields<T extends ITableEntry, K extends keyof T = keyof T>(
     token: string,
     id: string | number,
-    keys: K[]
+    keys: K[],
   ): Pick<T, K> | undefined {
     const entry = this.one<T>(token, id);
 
@@ -149,7 +149,7 @@ export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
     return dict.pick(entry, keys as unknown as Key[]) as Pick<T, K>;
   }
 
-  query<T extends ITableEntry>(token: string, query: IQuery<T>): T[] {
+  public query<T extends ITableEntry>(token: string, query: IQuery<T>): T[] {
     if (!this._tables.has(token)) {
       this.logger.e(`配置表 ⁅${token}⁆ 查询失败，目标未注册`);
       return [];
@@ -214,7 +214,7 @@ export class TableQueryPlugin extends Plugin implements ITableQueryPlugin {
     return result as T[];
   }
 
-  invalidateCache(cacheKey?: string) {
+  public invalidateCache(cacheKey?: string) {
     if (cacheKey) {
       this._caches.delete(cacheKey);
     } else {

@@ -19,7 +19,7 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
 
   protected $dependencies: string[] = [PRESET_TOKEN.ARG_PARSER];
 
-  async onInitialize() {
+  public async onInitialize() {
     this.initDebugPanel();
     this.monitorTextures();
 
@@ -51,6 +51,7 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
         const hash = self.getHash();
         that._texturesMap.set(this.getHash(), this);
         that.appendTextureLog('创建纹理', hash);
+        // eslint-disable-next-line prefer-rest-params
         return construct.apply(self, arguments);
       };
       Texture2D.prototype.destroy = function () {
@@ -58,6 +59,7 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
         const hash = self.getHash();
         that._texturesMap.delete(hash);
         that.appendTextureLog('销毁纹理', hash);
+        // eslint-disable-next-line prefer-rest-params
         return destruct.apply(self, arguments);
       };
       director.on(Director.EVENT_AFTER_DRAW, debugPanel.update, debugPanel);
@@ -77,12 +79,12 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
       debugPanel.addItem(
         'texSize',
         '纹理内存',
-        () => `${(director.root!.device.memoryStatus.textureSize / 1024 / 1024).toFixed(2)}M`
+        () => `${(director.root!.device.memoryStatus.textureSize / 1024 / 1024).toFixed(2)}M`,
       );
       debugPanel.addItem(
         'bufSize',
         '纹理缓冲',
-        () => `${(director.root!.device.memoryStatus.bufferSize / 1024 / 1024).toFixed(2)}M`
+        () => `${(director.root!.device.memoryStatus.bufferSize / 1024 / 1024).toFixed(2)}M`,
       );
       debugPanel.addItem('dynamicAtlas', '动态图集', () => {
         return [
@@ -145,7 +147,7 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
 
   public dumpTextures() {
     if (this.debuggerAllowed) {
-      let textures = [] as { hash: number; width: number; height: number; memoryUsage: string }[];
+      const textures = [] as { hash: number; width: number; height: number; memoryUsage: string }[];
       let totalMemory = 0;
       this._texturesMap.forEach((v) => {
         const memory = (v.width * v.height * 4) / 1024;
@@ -153,14 +155,14 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
           hash: v.getHash(),
           width: v.width,
           height: v.height,
-          memoryUsage: memory.toFixed(2) + 'K',
+          memoryUsage: `${memory.toFixed(2) }K`,
         });
         totalMemory += memory / 1024;
       });
       this.logger.d(`占用内存${totalMemory.toFixed(2)}M`);
       console.table(
         textures.sort((a, b) => b.width * b.height - a.width * a.height),
-        ['hash', 'width', 'height', 'memoryUsage']
+        ['hash', 'width', 'height', 'memoryUsage'],
       );
     }
   }
@@ -172,7 +174,7 @@ export class ProfilerPlugin extends Plugin implements IProfilerPlugin {
   public addDebugItem(
     key: string,
     title: string,
-    getter: () => string | number | undefined | null
+    getter: () => string | number | undefined | null,
   ): HTMLElement | undefined {
     if (this.debuggerAllowed) {
       return debugPanel.addItem(key, title, getter);
