@@ -4,46 +4,6 @@ import { Gem } from './Gem';
 
 const { ccclass, menu } = _decorator;
 
-/** 是否支持 2D 渲染排序 */
-const HasSorting2D = Sorting2D !== undefined;
-if (!HasSorting2D) {
-  console.warn('❌当前引擎版本不支持 Sorting2D 组件，如果需要请切换到 3.8.7 及以上版本');
-}
-
-/**
- * 更改UI节点的渲染排序层级
- * @param Node 节点
- * @param number 层级
- * @param number 顺序
- */
-export function changeUISortingLayer(sortingNode: Node, sortingLayer: number, sortingOrder?: number) {
-  if (!HasSorting2D) {
-    return;
-  }
-
-  let sortingLayers = settings.querySettings('engine', 'sortingLayers') as any[];
-
-  // 编辑器bug，默认有default，但是读取出来没有，需要自己配置一个后才会有默认数据
-  if (!sortingLayers || sortingLayers.length === 0) {
-    sortingLayers = [{ id: 0, value: 0, name: 'default' }];
-  }
-
-  const result = sortingLayers.find((layer) => layer.value === sortingLayer);
-  if (!result) {
-    // 如果没有找到对应的layer，则使用引擎内置默认层，并给出警告
-    console.warn(`❌未找到对应的sortingLayer:${sortingLayer}，请检查是否已在项目设置中配置该层级。将使用默认层级代替。`);
-    sortingLayer = sortingLayers[0].value;
-  }
-
-  const sort2d = sortingNode.acquire(Sorting2D);
-  if (sort2d) {
-    sort2d.sortingLayer = sortingLayer;
-    if (sortingOrder !== undefined) {
-      sort2d.sortingOrder = sortingOrder;
-    }
-  }
-}
-
 /**
  * 虚拟列表子项组件
  * @description 修改自 https://github.com/soidaken/VScrollView
@@ -54,6 +14,38 @@ export function changeUISortingLayer(sortingNode: Node, sortingLayer: number, so
 @ccclass('Gem/ListItem')
 @menu('Gem/ListItem')
 export class ListItem extends Gem {
+  /** 是否支持 2D 渲染排序 */
+  public static readonly HasSorting2D = Sorting2D !== undefined;
+
+  public static ChangeUISortingLayer(sortingNode: Node, sortingLayer: number, sortingOrder?: number) {
+    if (!ListItem.HasSorting2D) {
+      console.warn('⚠️ 当前引擎版本不支持 Sorting2D 组件，如果需要请切换到 3.8.7 及以上版本');
+      return;
+    }
+
+    let sortingLayers = settings.querySettings('engine', 'sortingLayers') as any[];
+
+    // 编辑器bug，默认有default，但是读取出来没有，需要自己配置一个后才会有默认数据
+    if (!sortingLayers || sortingLayers.length === 0) {
+      sortingLayers = [{ id: 0, value: 0, name: 'default' }];
+    }
+
+    const result = sortingLayers.find((layer) => layer.value === sortingLayer);
+    if (!result) {
+      // 如果没有找到对应的layer，则使用引擎内置默认层，并给出警告
+      console.warn(`⚠️ 未找到对应的渲染排序层级:${sortingLayer}，请检查是否已在项目设置中配置。将使用默认层级代替。`);
+      sortingLayer = sortingLayers[0].value;
+    }
+
+    const sort2d = sortingNode.acquire(Sorting2D);
+    if (sort2d) {
+      sort2d.sortingLayer = sortingLayer;
+      if (sortingOrder !== undefined) {
+        sort2d.sortingOrder = sortingOrder;
+      }
+    }
+  }
+
   /** 当前 item 对应的数据索引 */
   public dataIndex: number = -1;
 
@@ -101,7 +93,7 @@ export class ListItem extends Gem {
     let orderNumber = 1;
     const labels = this.node.getComponentsInChildren(Label);
     for (let i = 0; i < labels.length; i++) {
-      changeUISortingLayer(labels[i].node, 0, orderNumber);
+      ListItem.ChangeUISortingLayer(labels[i].node, 0, orderNumber);
       orderNumber++;
     }
   }
@@ -111,7 +103,7 @@ export class ListItem extends Gem {
     const orderNumber = 0;
     const labels = this.node.getComponentsInChildren(Label);
     for (let i = 0; i < labels.length; i++) {
-      changeUISortingLayer(labels[i].node, 0, orderNumber);
+      ListItem.ChangeUISortingLayer(labels[i].node, 0, orderNumber);
       // const item = labels[i];
       // const sort2d = item.node.getComponent(Sorting2D);
       // sort2d && (sort2d.enabled = false);
