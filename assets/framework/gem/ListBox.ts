@@ -22,12 +22,21 @@ import { ListItem } from './ListItem';
 
 const { ccclass, property, menu } = _decorator;
 
+/**
+ * 内部节点池，用于管理虚拟列表中的节点复用
+ * @internal
+ */
 class InternalNodePool {
   private pools: Map<number, Node[]> = new Map();
   private prefabs: Prefab[] = [];
   private nodes: Node[] = [];
   private useNodeMode: boolean = false;
 
+  /**
+   * 创建节点池
+   * @param prefabs - 预制体数组（Prefab 模式）
+   * @param nodes - 节点数组（Node 模式，可选）
+   */
   public constructor(prefabs: Prefab[], nodes?: Node[]) {
     this.prefabs = prefabs;
     this.nodes = nodes || [];
@@ -38,10 +47,18 @@ class InternalNodePool {
     }
   }
 
+  /**
+   * 从池中获取指定类型的节点
+   * @param typeIndex - 类型索引
+   * @returns 节点实例，如果获取失败返回 null
+   * @remarks
+   * - 优先从池中复用节点
+   * - 如果池为空，则从模板实例化新节点
+   */
   public get(typeIndex: number): Node | null {
     const pool = this.pools.get(typeIndex);
     if (!pool) {
-      console.error(`[VScrollView NodePool] 类型 ${typeIndex} 不存在`);
+      console.error(`[ListBox NodePool] 类型 ${typeIndex} 不存在`);
       return null;
     }
     if (pool.length > 0) {
@@ -53,14 +70,14 @@ class InternalNodePool {
     if (this.useNodeMode) {
       const sourceNode = this.nodes[typeIndex];
       if (!sourceNode) {
-        console.error(`[VScrollView NodePool] Node 类型 ${typeIndex} 模板不存在`);
+        console.error(`[ListBox NodePool] Node 类型 ${typeIndex} 模板不存在`);
         return null;
       }
       newNode = instantiate(sourceNode);
     } else {
       const sourcePrefab = this.prefabs[typeIndex];
       if (!sourcePrefab) {
-        console.error(`[VScrollView NodePool] Prefab 类型 ${typeIndex} 模板不存在`);
+        console.error(`[ListBox NodePool] Prefab 类型 ${typeIndex} 模板不存在`);
         return null;
       }
       newNode = instantiate(sourcePrefab);
@@ -68,11 +85,19 @@ class InternalNodePool {
     return newNode;
   }
 
+  /**
+   * 将节点归还到池中
+   * @param node - 要归还的节点
+   * @param typeIndex - 类型索引
+   * @remarks
+   * - 节点会被设置为非活动状态并从父节点移除
+   * - 如果池不存在，节点会被销毁
+   */
   public put(node: Node, typeIndex: number) {
     if (!node) return;
     const pool = this.pools.get(typeIndex);
     if (!pool) {
-      console.error(`[VScrollView NodePool] 类型 ${typeIndex} 不存在`);
+      console.error(`[ListBox NodePool] 类型 ${typeIndex} 不存在`);
       node.destroy();
       return;
     }
@@ -81,6 +106,12 @@ class InternalNodePool {
     pool.push(node);
   }
 
+  /**
+   * 清空节点池
+   * @remarks
+   * - 销毁所有池中的节点
+   * - 清空所有池
+   */
   public clear() {
     this.pools.forEach((pool) => {
       pool.forEach((node) => node.destroy());
@@ -89,6 +120,10 @@ class InternalNodePool {
     this.pools.clear();
   }
 
+  /**
+   * 获取节点池统计信息
+   * @returns 包含各类型节点数量的对象
+   */
   public getStats() {
     const stats: any = {};
     this.pools.forEach((pool, type) => {
@@ -548,11 +583,21 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 组件启动时的初始化
+   * @remarks
+   * - 初始化 content 容器
+   * - 检查并设置 Mask 组件
+   * - 根据模式初始化虚拟列表
+   * - 兼容旧版本的废弃属性
+   * - 绑定触摸事件
+   * @override
+   */
   protected async didLaunch() {
     this.content = this.getContentNode();
     if (!this.content) return;
     const mask = this.node.getComponent(Mask);
-    if (!mask) console.warn('[VirtualScrollView] 建议在视窗节点挂一个 Mask 组件用于裁剪');
+    if (!mask) this.logger.w('建议在视窗节点挂一个 Mask 组件用于裁剪');
     this.gridCount = Math.max(1, Math.round(this.gridCount));
     if (!this.useVirtualList) {
       this._viewportSize = this.getViewportMainSize();
@@ -596,6 +641,14 @@ export class ListBox extends Gem {
     this.bindGlobalTouch();
   }
 
+  /**
+   * 组件终止时的清理
+   * @remarks
+   * - 移除所有触摸事件监听器
+   * - 清空节点池
+   * - 销毁模板节点和预制体节点
+   * @override
+   */
   protected didPostTerminate() {
     input.off(Input.EventType.TOUCH_END, this.onGlobalTouchEnd, this);
     input.off(Input.EventType.TOUCH_CANCEL, this.onGlobalTouchEnd, this);
@@ -641,7 +694,7 @@ export class ListBox extends Gem {
 
   private onGlobalTouchEnd(event: EventTouch) {
     if (this._isTouching) {
-      console.log('[VScrollView] Global touch end detected');
+      this.logger.d('Global touch end detected');
       this.onUp(event);
     }
   }
@@ -662,7 +715,7 @@ export class ListBox extends Gem {
         if (this.itemPrefab) return instantiate(this.itemPrefab);
         if (this._templateNode) return instantiate(this._templateNode);
         // 都没有则警告并创建默认节点
-        console.warn('[VirtualScrollView] 没有提供 itemNode/itemPrefab 或模板节点');
+        this.logger.w('没有提供 itemNode/itemPrefab 或模板节点');
         const n = new Node('item-auto-create');
         const size = this.isVertical() ? this._viewportTf.width : this._viewportTf.height;
         n.addComponent(UITransform).setContentSize(
@@ -739,14 +792,17 @@ export class ListBox extends Gem {
     const hasPrefabs = this.itemPrefabs.length > 0;
 
     if ((useNodeMode && !hasNodes && !hasPrefabs) || (!useNodeMode && !hasPrefabs) || !this.getItemTypeIndexFn) {
-      throw new FastError(this.gType, '[VirtualScrollView] 不等大小模式必须提供以下之一：\n1. getItemHeightFn 回调函数\n2. itemNodes/itemPrefabs 数组 + getItemTypeIndexFn 回调函数');
+      throw new FastError(
+        this.gType,
+        '[VirtualScrollView] 不等大小模式必须提供以下之一：\n1. getItemHeightFn 回调函数\n2. itemNodes/itemPrefabs 数组 + getItemTypeIndexFn 回调函数',
+      );
     }
 
     // 根据模式选择模板源
     const templates = useNodeMode && hasNodes ? this.itemNodes : this.itemPrefabs;
     const modeName = useNodeMode && hasNodes ? 'Node' : 'Prefab';
 
-    console.log(`[VirtualScrollView] 使用采样模式（从 ${modeName} 采样尺寸）`);
+    this.logger.i(`使用采样模式（从 ${modeName} 采样尺寸）`);
 
     // 初始化节点池
     if (useNodeMode && hasNodes) {
@@ -763,7 +819,7 @@ export class ListBox extends Gem {
       const size = this.isVertical() ? uit?.height || 100 : uit?.width || 100;
       this._prefabSizeCache.set(i, size);
       sampleNode.destroy();
-      console.log(`[VirtualScrollView] ${modeName}[${i}] 采样尺寸: ${size}`);
+      this.logger.i(`${modeName}[${i}] 采样尺寸: ${size}`);
     }
     this._itemSizes = [];
     for (let i = 0; i < this.totalCount; i++) {
@@ -772,7 +828,7 @@ export class ListBox extends Gem {
       if (size !== undefined) {
         this._itemSizes.push(size);
       } else {
-        console.warn(`[VirtualScrollView] 索引 ${i} 的类型索引 ${typeIndex} 无效，使用默认尺寸`);
+        this.logger.w(`索引 ${i} 的类型索引 ${typeIndex} 无效，使用默认尺寸`);
         this._itemSizes.push(this._prefabSizeCache.get(0) || 100);
       }
     }
@@ -793,9 +849,16 @@ export class ListBox extends Gem {
     this._slotPrefabIndices = new Array(this._slots).fill(-1);
     this._slotFirstIndex = 0;
     this.layoutSlots(this._slotFirstIndex, true);
-    console.log(`[VScrollView] 初始化槽位: ${this._slots} (总数据: ${this.totalCount}, 视口尺寸: ${this._viewportSize})`);
+    this.logger.i(`初始化槽位: ${this._slots} (总数据: ${this.totalCount}, 视口尺寸: ${this._viewportSize})`);
   }
 
+  /**
+   * 构建前缀和数组
+   * @remarks
+   * - 前缀和数组用于快速计算任意 item 的位置
+   * - 会同时更新内容大小和边界
+   * @private
+   */
   private buildPrefixSum() {
     const n = this._itemSizes.length;
     this._prefixPositions = new Array(n);
@@ -820,6 +883,15 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 根据位置计算对应的 item 索引
+   * @param pos - 滚动位置
+   * @returns item 索引
+   * @remarks
+   * - 使用二分查找在 _prefixPositions 中查找
+   * - 如果在 header 区域内，返回 0
+   * @private
+   */
   private posToFirstIndex(pos: number): number {
     // _prefixPositions 已经包含了 headerSpacing，直接查找即可
     if (pos <= this.headerSpacing) return 0; // 修改：如果在 header 区域内，返回 0
@@ -839,6 +911,15 @@ export class ListBox extends Gem {
     return Math.max(0, ans - 1);
   }
 
+  /**
+   * 计算当前可见区域的索引范围
+   * @param scrollPos - 滚动位置
+   * @returns 包含 start 和 end 的范围对象
+   * @remarks
+   * - 范围包含缓冲区
+   * - start 和 end 都会被限制在有效范围内
+   * @private
+   */
   private calcVisibleRange(scrollPos: number): { start: number; end: number } {
     const n = this._prefixPositions.length;
     if (n === 0) return { start: 0, end: 0 };
@@ -856,6 +937,16 @@ export class ListBox extends Gem {
     return { start: Math.max(0, start - this.buffer), end: Math.min(n, end + this.buffer) };
   }
 
+  /**
+   * 每帧更新
+   * @param dt - 帧间隔时间（秒）
+   * @remarks
+   * - 处理惯性滚动和边界弹跳
+   * - 处理刷新和加载状态的弹簧效果
+   * - 处理分页吸附逻辑
+   * - 更新可见区域
+   * @override
+   */
   protected didTick(dt: number) {
     if (!this.content || this._isTouching || this._scrollTween) return;
     let pos = this.getContentMainPos();
@@ -926,13 +1017,22 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 更新指定索引的 item 高度（仅不等大小模式）
+   * @param index - item 索引
+   * @param newSize - 新高度（可选，如果不提供则使用 getItemHeightFn 获取）
+   * @remarks
+   * - 仅在 {@link useDynamicSize} 为 true 时可用
+   * - 如果高度未变化，则不执行任何操作
+   * - 更新后会重新计算前缀和并刷新可见区域
+   */
   public updateItemHeight(index: number, newSize?: number) {
     if (!this.useDynamicSize) {
-      console.warn('[VScrollView] 只有不等大小模式支持 updateItemHeight');
+      this.logger.w('只有不等大小模式支持 updateItemHeight');
       return;
     }
     if (index < 0 || index >= this.totalCount) {
-      console.warn(`[VScrollView] 索引 ${index} 超出范围`);
+      this.logger.w(`索引 ${index} 超出范围`);
       return;
     }
     let size = newSize;
@@ -940,7 +1040,7 @@ export class ListBox extends Gem {
       if (this.getItemHeightFn) {
         size = this.getItemHeightFn(index);
       } else {
-        console.error('[VScrollView] 没有提供 newSize 参数，且未设置 getItemHeightFn');
+        this.logger.e('没有提供 newSize 参数，且未设置 getItemHeightFn');
         return;
       }
     }
@@ -950,6 +1050,15 @@ export class ListBox extends Gem {
     this.updateVisible(true);
   }
 
+  /**
+   * 从指定索引开始重建前缀和数组
+   * @param startIndex - 开始重建的索引
+   * @remarks
+   * - 如果 startIndex 为 0，则完全重建
+   * - 否则从 startIndex - 1 的位置开始累加
+   * - 会同时更新内容大小和边界
+   * @private
+   */
   private rebuildPrefixSumFrom(startIndex: number) {
     if (startIndex === 0) {
       this.buildPrefixSum();
@@ -974,14 +1083,25 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 批量更新多个 item 的高度（仅不等大小模式）
+   * @param updates - 包含索引和高度的对象数组
+   * @remarks
+   * - 仅在 {@link useDynamicSize} 为 true 时可用
+   * - 从最小变化索引开始重建前缀和，提高效率
+   * - 如果没有任何高度变化，则不执行任何操作
+   */
   public updateItemHeights(updates: Array<{ index: number; height: number }>) {
     if (!this.useDynamicSize) {
-      console.warn('[VScrollView] 只有不等大小模式支持 updateItemHeights');
+      this.logger.w('只有不等大小模式支持 updateItemHeights');
       return;
     }
+
     if (updates.length === 0) return;
+
     let minIndex = this.totalCount;
     let hasChange = false;
+
     for (const { index, height } of updates) {
       if (index < 0 || index >= this.totalCount) continue;
       if (this._itemSizes[index] !== height) {
@@ -990,24 +1110,43 @@ export class ListBox extends Gem {
         hasChange = true;
       }
     }
+
     if (!hasChange) return;
+
     this.rebuildPrefixSumFrom(minIndex);
     this.updateVisible(true);
   }
 
+  /**
+   * 刷新列表数据
+   * @param data - 数据数组或数据总数
+   * @remarks
+   * - 仅在虚拟列表模式下可用
+   * - 如果传入数组，使用数组长度作为总数
+   * - 如果传入数字，直接使用该数字作为总数
+   */
   public refreshList(data: any[] | number) {
     if (!this.useVirtualList) {
-      console.warn('[VirtualScrollView] 简单滚动模式不支持 refreshList');
+      this.logger.w('简单滚动模式不支持 refreshList');
       return;
     }
+
     if (typeof data === 'number') this.setTotalCount(data);
     else this.setTotalCount(data.length);
   }
 
+  /**
+   * 设置列表总条数
+   * @param count - 总条数
+   * @remarks
+   * - 仅在虚拟列表模式下可用
+   * - 如果数量增加，新增的 item 会标记为需要播放出现动画
+   * - 会自动重新计算内容大小和布局
+   */
   public setTotalCount(count: number) {
     this.getContentNode();
     if (!this.useVirtualList) {
-      console.warn('[VScrollView] 非虚拟列表模式，不支持 setTotalCount');
+      this.logger.w('非虚拟列表模式，不支持 setTotalCount');
       return;
     }
     this.upWidgetAlignment();
@@ -1072,7 +1211,7 @@ export class ListBox extends Gem {
         this._slotNodes.push(null!);
         this._slotPrefabIndices.push(-1);
       }
-      console.log(`[VScrollView] 槽位扩展: ${oldSlots} -> ${this._slots} (总数据: ${this.totalCount})`);
+      this.logger.i(`槽位扩展: ${oldSlots} -> ${this._slots} (总数据: ${this.totalCount})`);
     }
   }
 
@@ -1114,16 +1253,35 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 滚动到列表顶部
+   * @param animate - 是否使用动画，默认为 false
+   * @param duration - 动画时长（秒），如果不提供则根据距离自动计算
+   */
   public scrollToTop(animate = false, duration?: number) {
     const target = this.isVertical() ? this._boundsMin : this._boundsMax;
     this.scrollToPosition(target, animate, duration);
   }
 
+  /**
+   * 滚动到列表底部
+   * @param animate - 是否使用动画，默认为 false
+   * @param duration - 动画时长（秒），如果不提供则根据距离自动计算
+   */
   public scrollToBottom(animate = false, duration?: number) {
     const target = this.isVertical() ? this._boundsMax : this._boundsMin;
     this.scrollToPosition(target, animate, duration);
   }
 
+  /**
+   * 滚动到指定索引的 item
+   * @param index - item 索引
+   * @param animate - 是否使用动画，默认为 false
+   * @param duration - 动画时长（秒），如果不提供则根据距离自动计算
+   * @remarks
+   * - 索引会被限制在有效范围内
+   * - 等大小模式和不等大小模式使用不同的位置计算方式
+   */
   public scrollToIndex(index: number, animate = false, duration?: number) {
     index = math.clamp(index | 0, 0, Math.max(0, this.totalCount - 1));
     let targetPos = 0;
@@ -1145,6 +1303,13 @@ export class ListBox extends Gem {
     this.scrollToPosition(targetPos, animate, duration);
   }
 
+  /**
+   * 开启或关闭渲染分层
+   * @param onoff - true 为开启，false 为关闭
+   * @remarks
+   * - 开启后，所有可见的 item 都会启用渲染分层
+   * - 关闭后，所有可见的 item 都会禁用渲染分层
+   */
   public onOffSortLayer(onoff: boolean) {
     this._initSortLayerFlag = onoff;
     this.onOffSortLayerOperation();
@@ -1173,19 +1338,32 @@ export class ListBox extends Gem {
     this.updateVisible(true);
   }
 
+  /**
+   * 立即跳转到列表顶部（无动画）
+   */
   public flashToTop() {
     const target = this.isVertical() ? this._boundsMin : this._boundsMax;
     this.flashToPosition(target);
   }
 
+  /**
+   * 立即跳转到列表底部（无动画）
+   */
   public flashToBottom() {
     const target = this.isVertical() ? this._boundsMax : this._boundsMin;
     this.flashToPosition(target);
   }
 
+  /**
+   * 立即跳转到指定索引的 item（无动画）
+   * @param index - item 索引
+   * @remarks
+   * - 仅在虚拟列表模式下可用
+   * - 索引会被限制在有效范围内
+   */
   public flashToIndex(index: number) {
     if (!this.useVirtualList) {
-      console.warn('[VirtualScrollView] 简单滚动模式不支持 flashToIndex');
+      this.logger.w('简单滚动模式不支持 flashToIndex');
       return;
     }
     index = math.clamp(index | 0, 0, Math.max(0, this.totalCount - 1));
@@ -1207,11 +1385,20 @@ export class ListBox extends Gem {
     this.flashToPosition(targetPos);
   }
 
+  /**
+   * 刷新指定索引的 item（仅当前可见的 item）
+   * @param index - item 索引
+   * @remarks
+   * - 仅在虚拟列表模式下可用
+   * - 只有当前可见范围内的 item 会被刷新
+   * - 会调用 {@link renderItemFn} 重新渲染该 item
+   */
   public refreshIndex(index: number) {
     if (!this.useVirtualList) {
-      console.warn('[VirtualScrollView] 简单滚动模式不支持 refreshIndex');
+      this.logger.w('简单滚动模式不支持 refreshIndex');
       return;
     }
+
     const first = this._slotFirstIndex;
     const last = first + this._slots - 1;
     if (index < first || index > last) return;
@@ -1313,7 +1500,7 @@ export class ListBox extends Gem {
     let isPullingRefresh = false;
     let isPullingLoadMore = false;
 
-    // console.log(`delta: ${delta}, pos: ${pos}, minBound: ${minBound}, maxBound: ${maxBound}`);
+    // this.logger.d(`delta: ${delta}, pos: ${pos}, minBound: ${minBound}, maxBound: ${maxBound}`);
 
     if (this.enablePullRefresh && !this._isRefreshing) {
       // 纵向：顶部下拉（pos < minBound 且向下拉）
@@ -1327,7 +1514,7 @@ export class ListBox extends Gem {
         const resistance = 1 - Math.min(overOffset / this.pullRefreshMaxOffset, 1) * (1 - this.pullDampingRate);
         finalDelta = delta * resistance;
         this._pullOffset = Math.min(overOffset + Math.abs(finalDelta), this.pullRefreshMaxOffset);
-        // console.log(`[VScrollView] 下拉偏移: ${this._pullOffset}`);
+        // this.logger.d(`下拉偏移: ${this._pullOffset}`);
 
         // 更新刷新状态
         if (this._pullOffset >= this.pullRefreshThreshold) {
@@ -1351,7 +1538,7 @@ export class ListBox extends Gem {
         finalDelta = delta * resistance;
         this._loadOffset = Math.min(overOffset + Math.abs(finalDelta), this.loadMoreMaxOffset);
 
-        // console.log(`[VScrollView] 上拉偏移: ${this._loadOffset}`);
+        // this.logger.d(`上拉偏移: ${this._loadOffset}`);
         // 更新加载状态
         if (this._loadOffset >= this.loadMoreThreshold) {
           this.updateLoadMoreState(LoadMoreState.READY, this._loadOffset);
@@ -1483,8 +1670,12 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 完成刷新（外部调用）
-   * @param success 是否刷新成功
+   * 完成下拉刷新（外部调用）
+   * @param success - 是否刷新成功，默认为 true
+   * @remarks
+   * - 应在刷新操作完成后调用
+   * - 如果成功，会显示完成状态后自动恢复
+   * - 如果失败，直接恢复到空闲状态
    */
   public finishRefresh(success: boolean = true) {
     if (!this._isRefreshing) return;
@@ -1501,8 +1692,12 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 完成加载更多（外部调用）
-   * @param hasMore 是否还有更多数据
+   * 完成上拉加载更多（外部调用）
+   * @param hasMore - 是否还有更多数据，默认为 true
+   * @remarks
+   * - 应在加载操作完成后调用
+   * - 如果没有更多数据，会显示"没有更多"状态
+   * - 如果还有更多数据，会显示完成状态后自动恢复
    */
   public finishLoadMore(hasMore: boolean = true) {
     if (!this._isLoadingMore) return;
@@ -1524,7 +1719,10 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 重置加载更多状态（当数据清空或重新加载时调用）
+   * 重置加载更多状态
+   * @remarks
+   * - 应在数据清空或重新加载时调用
+   * - 会重置所有加载相关的状态和标志
    */
   public resetLoadMoreState() {
     this._hasMore = true;
@@ -1533,6 +1731,15 @@ export class ListBox extends Gem {
     this.updateLoadMoreState(LoadMoreState.IDLE, 0);
   }
 
+  /**
+   * 更新可见区域的 item 布局
+   * @param force - 是否强制刷新所有可见项
+   * @remarks
+   * - 根据滚动位置计算可见范围
+   * - 使用节点复用机制减少创建销毁
+   * - 支持增量更新和强制全量更新
+   * @private
+   */
   private updateVisible(force: boolean) {
     if (!this.useVirtualList) return;
     const scrollPos = this.getContentMainPos();
@@ -1607,6 +1814,17 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 布局单个槽位的 item
+   * @param node - 节点实例
+   * @param idx - item 索引
+   * @param slot - 槽位索引
+   * @remarks
+   * - 支持等大小模式和不等大小模式
+   * - 不等大小模式会使用节点池复用节点
+   * - 会自动处理点击事件和出现动画
+   * @private
+   */
   private async layoutSingleSlot(node: Node | null, idx: number, slot: number) {
     if (!this.useVirtualList) return;
     if (this.useDynamicSize) {
@@ -1622,7 +1840,7 @@ export class ListBox extends Gem {
         if (this._nodePool) {
           newNode = this._nodePool.get(targetPrefabIndex);
           if (!newNode) {
-            console.error(`[VScrollView] 无法获取类型 ${targetPrefabIndex} 的节点`);
+            this.logger.e(`无法获取类型 ${targetPrefabIndex} 的节点`);
             return;
           }
           newNode.parent = this.content;
@@ -1631,7 +1849,7 @@ export class ListBox extends Gem {
         }
       }
       if (!newNode) {
-        console.error(`[VScrollView] 槽位 ${slot} 节点为空，索引 ${idx}`);
+        this.logger.e(`槽位 ${slot} 节点为空，索引 ${idx}`);
         return;
       }
       newNode.active = true;
@@ -1779,6 +1997,15 @@ export class ListBox extends Gem {
     itemScript.setDataIndex(index);
   }
 
+  /**
+   * 布局所有槽位的 item
+   * @param firstIndex - 起始 item 索引
+   * @param forceRender - 是否强制渲染
+   * @remarks
+   * - 遍历所有槽位，为每个槽位设置对应的 item
+   * - 超出数据范围的槽位会被隐藏
+   * @private
+   */
   private layoutSlots(firstIndex: number, forceRender: boolean) {
     if (!this.useVirtualList) return;
     for (let s = 0; s < this._slots; s++) {
@@ -1792,6 +2019,14 @@ export class ListBox extends Gem {
     }
   }
 
+  /**
+   * 重新计算内容大小和滚动边界
+   * @remarks
+   * - 根据当前模式和参数计算内容总大小
+   * - 同时更新 content 节点的尺寸
+   * - 计算滚动的最小和最大边界
+   * @private
+   */
   private recomputeContentSize() {
     if (!this.useVirtualList) {
       this._contentSize = this.isVertical() ? this._contentTf.height : this._contentTf.width;
@@ -1823,18 +2058,27 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 获取当前页索引
+   * 获取当前页索引（仅分页吸附模式）
+   * @returns 当前页索引
+   * @remarks
+   * - 仅在 {@link enablePageSnap} 为 true 时有效
+   * - 等大小模式返回行/列索引，不等大小模式返回 item 索引
    */
   public getCurrentPageIndex(): number {
     return this._currentPageIndex;
   }
 
   /**
-   * 滚动到指定页
+   * 滚动到指定页（仅分页吸附模式）
+   * @param pageIndex - 目标页索引
+   * @param animate - 是否使用动画，默认为 true
+   * @remarks
+   * - 仅在 {@link enablePageSnap} 为 true 时可用
+   * - 页索引会被限制在有效范围内
    */
   public scrollToPage(pageIndex: number, animate: boolean = true) {
     if (!this.enablePageSnap) {
-      console.warn('[VScrollView] 未启用分页吸附模式');
+      this.logger.w('未启用分页吸附模式');
       return;
     }
 
@@ -1850,6 +2094,14 @@ export class ListBox extends Gem {
   /**
    * 获取最大页索引
    */
+  /**
+   * 获取最大页索引（仅分页吸附模式）
+   * @returns 最大页索引
+   * @remarks
+   * - 等大小模式返回最大行/列索引
+   * - 不等大小模式返回最大 item 索引
+   * @private
+   */
   private getMaxPageIndex(): number {
     if (this.useDynamicSize) {
       return Math.max(0, this.totalCount - 1);
@@ -1861,6 +2113,11 @@ export class ListBox extends Gem {
 
   /**
    * 根据当前位置计算最近的页索引
+   * @returns 最近的页索引
+   * @remarks
+   * - 不等大小模式：遍历所有 item 找到距离当前位置最近的
+   * - 等大小模式：根据行/列索引计算
+   * @private
    */
   private getNearestPageIndex(): number {
     const pos = this.getContentMainPos();
@@ -1893,7 +2150,14 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 根据页索引计算目标位置
+   * 根据页索引计算目标滚动位置
+   * @param pageIndex - 页索引
+   * @returns 目标滚动位置
+   * @remarks
+   * - 不等大小模式：使用 _prefixPositions 数组
+   * - 等大小模式：根据行/列索引和间距计算
+   * - 横向模式需要取负值
+   * @private
    */
   private getPagePosition(pageIndex: number): number {
     let targetPos = 0;
@@ -1914,7 +2178,12 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 更新当前页并触发回调
+   * 更新当前页索引并触发回调
+   * @param pageIndex - 新的页索引
+   * @remarks
+   * - 只有页索引发生变化时才会触发回调
+   * - 会调用 {@link onPageChangeFn} 回调函数
+   * @private
    */
   private updateCurrentPage(pageIndex: number) {
     if (this._currentPageIndex !== pageIndex) {
@@ -1926,7 +2195,12 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 执行分页吸附
+   * 执行分页吸附（当速度降低到阈值时自动调用）
+   * @remarks
+   * - 仅在 {@link enablePageSnap} 为 true 时有效
+   * - 会滚动到最近的页位置
+   * - 如果已经在目标位置，只更新页码
+   * @private
    */
   private performPageSnap() {
     if (!this.enablePageSnap) return;
@@ -1952,7 +2226,12 @@ export class ListBox extends Gem {
     this.updateCurrentPage(targetPage);
   }
   /**
-   * 根据滑动距离执行分页吸附
+   * 根据滑动距离执行分页吸附（触摸结束时调用）
+   * @remarks
+   * - 仅在 {@link enablePageSnap} 为 true 时有效
+   * - 根据滑动距离和方向判断是否翻页
+   * - 纵向和横向模式的判断逻辑不同
+   * @private
    */
   private performPageSnapByDistance() {
     if (!this.enablePageSnap) return;
@@ -2005,7 +2284,12 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 获取当前页的尺寸
+   * 获取当前页的尺寸（用于计算翻页阈值）
+   * @returns 当前页的尺寸
+   * @remarks
+   * - 不等大小模式：返回当前页 item 的尺寸
+   * - 等大小模式：返回 item 尺寸加间距
+   * @private
    */
   private getCurrentPageSize(): number {
     if (this.useDynamicSize) {
@@ -2017,7 +2301,13 @@ export class ListBox extends Gem {
   }
 
   /**
-   * 根据位置计算页索引
+   * 根据滚动位置计算对应的页索引
+   * @param pos - 滚动位置
+   * @returns 页索引
+   * @remarks
+   * - 不等大小模式：使用 {@link posToFirstIndex} 计算
+   * - 等大小模式：根据行/列索引计算
+   * @private
    */
   private getPageIndexByPosition(pos: number): number {
     const searchPos = this.isVertical() ? pos : -pos;

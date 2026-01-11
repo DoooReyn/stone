@@ -17,6 +17,16 @@ export class ListItem extends Gem {
   /** 是否支持 2D 渲染排序 */
   public static readonly HasSorting2D = Sorting2D !== undefined;
 
+  /**
+   * 为节点设置 2D 渲染排序层级
+   * @param sortingNode - 需要设置排序的节点
+   * @param sortingLayer - 排序层级值（对应项目设置中的 sortingLayers）
+   * @param sortingOrder - 可选，排序顺序值，同一层级内数值越大越靠前
+   * @remarks
+   * - 如果引擎版本不支持 Sorting2D 组件，会输出警告并直接返回
+   * - 如果指定的 sortingLayer 不存在，会使用默认层级并输出警告
+   * - 此方法会自动获取或添加 Sorting2D 组件到目标节点
+   */
   public static ChangeUISortingLayer(sortingNode: Node, sortingLayer: number, sortingOrder?: number) {
     if (!ListItem.HasSorting2D) {
       console.warn('⚠️ 当前引擎版本不支持 Sorting2D 组件，如果需要请切换到 3.8.7 及以上版本');
@@ -69,6 +79,13 @@ export class ListItem extends Gem {
   private _longPressTimer: number = 0; // 长按计时器
   private _isLongPressed: boolean = false; // 是否已触发长按
 
+  /**
+   * 组件唤醒时的初始化
+   * @remarks
+   * - 注册所有触摸事件监听器
+   * - 事件在组件生命周期内保持不变
+   * @override
+   */
   protected didAwake() {
     // 一次性注册事件，生命周期内不变
     this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
@@ -77,6 +94,13 @@ export class ListItem extends Gem {
     this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
   }
 
+  /**
+   * 组件挂起时的清理
+   * @remarks
+   * - 移除所有触摸事件监听器
+   * - 防止内存泄漏
+   * @override
+   */
   protected didSuspend() {
     // 清理事件
     this.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
@@ -86,8 +110,15 @@ export class ListItem extends Gem {
   }
 
   /**
-   * 将所有子节点的 Label 组件渲染单独排序在一起,并且item的每个lable组件都独立一个orderNumber,以免交错断合批
-   * @param node
+   * 启用渲染分层，将所有子节点的 Label 组件独立排序
+   * @remarks
+   * - 每个 Label 组件分配独立的 orderNumber，避免交错导致的合批中断
+   * - 通常用于解决复杂 UI 中的渲染顺序问题
+   * @example
+   * ```typescript
+   * listItem.onSortLayer(); // 启用渲染分层
+   * listItem.offSortLayer(); // 禁用渲染分层
+   * ```
    */
   public onSortLayer() {
     let orderNumber = 1;
@@ -98,7 +129,12 @@ export class ListItem extends Gem {
     }
   }
 
-  /** 关闭渲染分层 */
+  /**
+   * 禁用渲染分层，将所有 Label 组件重置到默认排序层级
+   * @remarks
+   * - 所有 Label 组件的 orderNumber 都会被重置为 0
+   * - 与 {@link onSortLayer} 配合使用，用于动态切换渲染分层状态
+   */
   public offSortLayer() {
     const orderNumber = 0;
     const labels = this.node.getComponentsInChildren(Label);
@@ -111,11 +147,25 @@ export class ListItem extends Gem {
     }
   }
 
-  /** 外部调用：更新数据索引 */
+  /**
+   * 设置当前 item 对应的数据索引
+   * @param index - 数据索引值，通常对应数据源中的位置
+   * @remarks
+   * - 由虚拟列表组件在复用 item 时调用
+   * - 索引用于在点击和长按回调中标识当前 item
+   */
   public setDataIndex(index: number) {
     this.dataIndex = index;
   }
 
+  /**
+   * 每帧更新
+   * @param dt - 帧间隔时间（秒）
+   * @remarks
+   * - 如果正在触摸且未取消，累加长按计时器
+   * - 当计时器达到阈值时触发长按事件
+   * @override
+   */
   protected update(dt: number): void {
     // 如果正在触摸且未取消，累加长按计时
     if (this._touchStartNode && !this._isCanceled && !this._isLongPressed) {
@@ -126,6 +176,14 @@ export class ListItem extends Gem {
     }
   }
 
+  /**
+   * 触发长按事件
+   * @remarks
+   * - 设置长按标志位，防止重复触发
+   * - 调用长按回调函数（如果已设置）
+   * - 恢复节点缩放状态
+   * @private
+   */
   private triggerLongPress() {
     this._isLongPressed = true;
     if (this.onLongPressCallback) {
@@ -135,6 +193,15 @@ export class ListItem extends Gem {
     this.restoreScale();
   }
 
+  /**
+   * 触摸开始事件处理
+   * @param e - 触摸事件对象
+   * @remarks
+   * - 初始化触摸状态和计时器
+   * - 记录触摸起始位置
+   * - 如果启用了点击效果，执行缩放反馈
+   * @private
+   */
   private onTouchStart(e: EventTouch) {
     // console.log("_onTouchStart");
     this._touchStartNode = this.node;
@@ -149,6 +216,14 @@ export class ListItem extends Gem {
     }
   }
 
+  /**
+   * 触摸移动事件处理
+   * @param e - 触摸事件对象
+   * @remarks
+   * - 计算触摸移动距离
+   * - 如果移动距离超过阈值，判定为滑动操作，取消点击和长按
+   * @private
+   */
   private onTouchMove(e: EventTouch) {
     if (this._isCanceled) return;
 
@@ -165,6 +240,16 @@ export class ListItem extends Gem {
     }
   }
 
+  /**
+   * 触摸结束事件处理
+   * @param e - 触摸事件对象
+   * @remarks
+   * - 如果已取消或已触发长按，重置状态并返回
+   * - 计算触摸移动距离，小于阈值则判定为点击
+   * - 触发点击回调（如果已设置）
+   * - 重置所有触摸相关状态
+   * @private
+   */
   private onTouchEnd(e: EventTouch) {
     if (this._isCanceled) {
       this.reset();
@@ -194,17 +279,41 @@ export class ListItem extends Gem {
     this.reset();
   }
 
+  /**
+   * 触摸取消事件处理
+   * @param e - 触摸事件对象
+   * @remarks
+   * - 恢复节点缩放状态
+   * - 重置所有触摸相关状态
+   * @private
+   */
   private onTouchCancel(e: EventTouch) {
     this.restoreScale();
     this.reset();
   }
 
+  /**
+   * 恢复节点缩放状态
+   * @remarks
+   * - 如果启用了点击效果，将节点缩放恢复到 1.0
+   * - 通常在触摸结束或取消时调用
+   * @private
+   */
   private restoreScale() {
     if (this.useItemClickEffect && this.node.children.length > 0) {
       this.node.setScale(1.0, 1.0);
     }
   }
 
+  /**
+   * 重置触摸相关状态
+   * @remarks
+   * - 清除触摸起始节点
+   * - 重置取消标志
+   * - 重置长按计时器和标志
+   * - 通常在触摸结束或取消时调用
+   * @private
+   */
   private reset() {
     this._touchStartNode = null;
     this._isCanceled = false;
