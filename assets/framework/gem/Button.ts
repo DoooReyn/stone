@@ -96,6 +96,12 @@ export class Button extends Gem {
   protected $holdingLastTime: number = 0;
   /** 节点路径 */
   protected $path: string = '';
+  /** 缩放倍数 */
+  protected $zoom = {
+    [ButtonState.Normal]: 1.0,
+    [ButtonState.Pressed]: 0.925,
+    [ButtonState.Disabled]: 1.0,
+  };
 
   // ------------------------------- 公开访问区 -------------------------------
 
@@ -126,6 +132,25 @@ export class Button extends Gem {
   }
   public set hoverable(enabled: boolean) {
     this.$hoverEnabled = enabled;
+  }
+
+  /**
+   * 获取按钮预设缩放系数
+   * @param state 按钮状态
+   * @returns 按钮指定状态下的预设缩放系数
+   */
+  public getZoom(state: ButtonState) {
+    return this.$zoom[state];
+  }
+
+  /**
+   * 获取按钮预设缩放系数
+   * @param state 按钮状态
+   * @param zoom 缩放系数
+   */
+  public setZoom(state: ButtonState, zoom: number) {
+    this.$zoom[state] = zoom;
+    this.node.setScale(zoom, zoom);
   }
 
   // ------------------------------- 受限访问区 -------------------------------
@@ -164,6 +189,15 @@ export class Button extends Gem {
         this.onHolding(dt);
       }
     }
+  }
+
+  /**
+   * 应用按钮指定状态下的缩放系数
+   * @param state 按钮状态
+   */
+  protected applyZoom(state: ButtonState) {
+    const z = this.$zoom[state];
+    this.node.setScale(z, z);
   }
 
   /**
@@ -353,6 +387,7 @@ export class Button extends Gem {
    */
   protected onClickStart() {
     fast.logger.d(this.$path, '触摸落下');
+    this.applyZoom(ButtonState.Pressed);
   }
 
   /**
@@ -361,6 +396,7 @@ export class Button extends Gem {
    */
   protected onClickEnd() {
     fast.logger.d(this.$path, '触摸结束');
+    this.applyZoom(ButtonState.Normal);
   }
 
   /**
@@ -369,6 +405,7 @@ export class Button extends Gem {
    */
   protected onClickCancel() {
     fast.logger.d(this.$path, '触摸取消');
+    this.applyZoom(ButtonState.Normal);
   }
 
   /**
