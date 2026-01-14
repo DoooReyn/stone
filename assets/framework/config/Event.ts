@@ -82,4 +82,6 @@ export const PRESET_EVENT_NAME = {
   DRAG_DROP_INSIDE: 'gui:drag-drop-inside',
   /** 拖放：置放失败 */
   DRAG_DROP_OUTSIDE: 'gui:drag-drop-outside',
+  /** 滑动条：滑块位置变化 */
+  SLIDE_POS_CHANGED: 'gui:slide',
 };
