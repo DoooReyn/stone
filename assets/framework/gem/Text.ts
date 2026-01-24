@@ -6,7 +6,6 @@ import { fast } from 'fast/Fast';
 import { IResLoaderPlugin } from 'fast/plugin/res/IResLoaderPlugin';
 import { ITextAttr } from 'fast/Types';
 import { be, color } from 'fast/util';
-import { notUndefined } from 'fast/util/Be';
 
 import { Gem } from './Gem';
 

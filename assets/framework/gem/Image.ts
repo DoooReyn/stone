@@ -253,10 +253,10 @@ export class Image extends Gem {
         area.setSize(aw, ah);
         break;
       case ImageFitMode.Width:
-        area.setSize(aw, (cw / aw) * ch);
+        area.setSize(aw, (aw / cw) * ch);
         break;
       case ImageFitMode.Height:
-        area.setSize((ch / ah) * cw, ah);
+        area.setSize((ah / ch) * cw, ah);
         break;
       }
     }
